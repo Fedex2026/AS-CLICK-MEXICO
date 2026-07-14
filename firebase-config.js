@@ -4,7 +4,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/12.16.0/firebas
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "PEGA_AQUI_TU_API_KEY_REAL",
+  apiKey: "AIzaSyDeuQxzRhfVB9rXKD1pnOrNMXbrZnDj4UU",
   authDomain: "as-clicl-mexico.firebaseapp.com",
   databaseURL: "https://as-clicl-mexico-default-rtdb.firebaseio.com",
   projectId: "as-clicl-mexico",
