@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>AS CLICK | Asistencia Vial</title>
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <meta name="theme-color" content="#052b5c" />
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- MENÚ LATERAL DE ESCRITORIO -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="brand">
+        <div class="brandLogo">
+          AS CLICK
+        </div>
+
+        <small>ASISTENCIA VIAL</small>
+      </div>
+
+      <nav class="sidebarNav">
+
+        <button
+          type="button"
+          class="navItem active"
+          data-section="inicio"
+          onclick="cambiarSeccion('inicio', this)"
+        >
+          <span>⌂</span>
+          Inicio
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="servicios"
+          onclick="cambiarSeccion('servicios', this)"
+        >
+          <span>⚒</span>
+          Mis servicios
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="vehiculos"
+          onclick="cambiarSeccion('vehiculos', this)"
+        >
+          <span>▣</span>
+          Vehículos
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="beneficios"
+          onclick="cambiarSeccion('beneficios', this)"
+        >
+          <span>％</span>
+          Beneficios
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="historial"
+          onclick="cambiarSeccion('historial', this)"
+        >
+          <span>◷</span>
+          Historial
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="perfil"
+          onclick="cambiarSeccion('perfil', this)"
+        >
+          <span>♙</span>
+          Perfil
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="ayuda"
+          onclick="cambiarSeccion('ayuda', this)"
+        >
+          <span>?</span>
+          Ayuda
+        </button>
+
+        <button
+          type="button"
+          class="navItem logout"
+          onclick="cerrarSesion()"
+        >
+          <span>↪</span>
+          Cerrar sesión
+        </button>
+
+      </nav>
+
+      <div class="advisorCard">
+        <div class="advisorIcon">◖◗</div>
+
+        <p>¿Necesitas ayuda?</p>
+        <b>Hablar con un asesor</b>
+
+        <button
+          type="button"
+          onclick="hablarAsesor()"
+        >
+          Iniciar chat
+        </button>
+
+        <small>o llámanos</small>
+        <strong>55 1234 5678</strong>
+        <small>Atención 24/7</small>
+      </div>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="mainContent">
+
+      <!-- BARRA SUPERIOR -->
+      <header class="topbar">
+
+        <div class="mobileBrand">
+
+          <button
+            type="button"
+            class="menuButton"
+            onclick="abrirMenuMovil()"
+          >
+            ☰
+          </button>
+
+          <div>
+            <b>AS CLICK</b>
+            <small>ASISTENCIA VIAL</small>
+          </div>
+
+        </div>
+
+        <nav class="topNavigation">
+
+          <button
+            type="button"
+            class="active"
+            onclick="cambiarSeccion('inicio')"
+          >
+            ⌂ Inicio
+          </button>
+
+          <button
+            type="button"
+            onclick="cambiarSeccion('servicios')"
+          >
+            ⚒ Mis servicios
+          </button>
+
+          <button
+            type="button"
+            onclick="cambiarSeccion('beneficios')"
+          >
+            ▣ Beneficios
+          </button>
+
+          <button
+            type="button"
+            onclick="abrirNotificaciones()"
+          >
+            ♧ Notificaciones
+            <span class="notificationCounter">3</span>
+          </button>
+
+        </nav>
+
+        <div class="topActions">
+
+          <div class="membershipBadge">
+            ✓ Membresía activa
+          </div>
+
+          <button
+            type="button"
+            class="userButton"
+            onclick="abrirMenuUsuario()"
+          >
+            <span class="avatar">L</span>
+            <span>Leonardo</span>
+            <small>⌄</small>
+          </button>
+
+        </div>
+
+      </header>
+
+      <!-- SECCIÓN INICIO -->
+      <section
+        class="pageSection active"
+        id="seccion-inicio"
+      >
+
+        <!-- BIENVENIDA -->
+        <section class="welcomeCard">
+
+          <div class="welcomeUser">
+
+            <div class="largeAvatar">
+              👤
+            </div>
+
+            <div>
+              <h1>Hola, Leonardo</h1>
+
+              <p>
+                Membresía:
+                <b>ASC-000245</b>
+
+                <span class="activeStatus">
+                  ACTIVA
+                </span>
+              </p>
+
+              <p>
+                Vigencia:
+                <b>14 de julio de 2027</b>
+              </p>
+
+              <p>
+                Plan:
+                <b>AS CLICK Particular</b>
+              </p>
+            </div>
+
+          </div>
+
+          <div class="vehiclePreview">
+
+            <div class="vehicleHeader">
+              <span>Mi vehículo principal</span>
+
+              <button
+                type="button"
+                onclick="cambiarSeccion('vehiculos')"
+              >
+                Ver todos mis vehículos
+              </button>
+            </div>
+
+            <div class="vehicleBody">
+
+              <div class="vehicleImage">
+                🚙
+              </div>
+
+              <div>
+                <b>Chevrolet Tahoe 2021</b>
+                <span>Placas: ABC-123-A</span>
+                <span>Color: Negro</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- SERVICIOS -->
+        <section class="servicesSection">
+
+          <h2>¿Qué servicio necesitas?</h2>
+
+          <div class="serviceGrid">
+
+            <article class="serviceCard blue">
+
+              <div class="serviceIcon">👤</div>
+
+              <h3>Solicitar Ajustador</h3>
+
+              <p>
+                Atención en accidentes con ajustador profesional.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Ajustador')"
+              >
+                Solicitar ahora
+              </button>
+
+            </article>
+
+            <article class="serviceCard green">
+
+              <div class="serviceIcon">⚖</div>
+
+              <h3>Solicitar Abogado</h3>
+
+              <p>
+                Asesoría legal y defensa especializada.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Abogado')"
+              >
+                Solicitar ahora
+              </button>
+
+            </article>
+
+            <article class="serviceCard orange">
+
+              <div class="serviceIcon">🔧</div>
+
+              <h3>Auxilio Vial</h3>
+
+              <p>
+                Paso de corriente, cambio de llanta, gasolina y más.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Auxilio vial')"
+              >
+                Solicitar ahora
+              </button>
+
+            </article>
+
+            <article class="serviceCard purple">
+
+              <div class="serviceIcon">🚛</div>
+
+              <h3>Cotizar Grúa</h3>
+
+              <p>
+                Cotiza y solicita tu servicio de grúa al instante.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Grúa')"
+              >
+                Cotizar ahora
+              </button>
+
+            </article>
+
+          </div>
+
+        </section>
+
+        <!-- EMERGENCIAS -->
+        <section class="emergencySection">
+
+          <div class="sectionHeading emergencyHeading">
+            ⚠ ALERTAS DE EMERGENCIA
+          </div>
+
+          <div class="emergencyGrid">
+
+            <article class="emergencyCard">
+
+              <div class="emergencyIcon">
+                🚗
+              </div>
+
+              <div class="emergencyContent">
+
+                <h3>ALERTA MONTACHOQUES</h3>
+
+                <p>
+                  Envía tu ubicación a los miembros activos cercanos
+                  para recibir apoyo inmediato.
+                </p>
+
+                <button
+                  type="button"
+                  onclick="activarAlerta('Montachoques')"
+                >
+                  Activar alerta
+                </button>
+
+              </div>
+
+            </article>
+
+            <article class="emergencyCard">
+
+              <div class="emergencyIcon">
+                🥷
+              </div>
+
+              <div class="emergencyContent">
+
+                <h3>ALERTA ROBO</h3>
+
+                <p>
+                  Envía tu ubicación a los miembros activos cercanos
+                  y reporta el incidente.
+                </p>
+
+                <button
+                  type="button"
+                  onclick="activarAlerta('Robo')"
+                >
+                  Activar alerta
+                </button>
+
+              </div>
+
+            </article>
+
+            <article class="warningCard">
+
+              <div class="warningIcon">
+                ⚠
+              </div>
+
+              <div>
+                <h3>Importante</h3>
+
+                <p>
+                  El uso falso o irresponsable de estas alertas puede
+                  generar sanciones o cancelación de la membresía.
+                </p>
+
+                <button
+                  type="button"
+                  onclick="mostrarTerminos()"
+                >
+                  Ver términos y condiciones
+                </button>
+              </div>
+
+            </article>
+
+          </div>
+
+        </section>
+
+        <!-- PARTE INFERIOR -->
+        <section class="dashboardBottom">
+
+          <div class="recentServices">
+
+            <h2>Mis servicios recientes</h2>
+
+            <div class="tableWrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Folio</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+
+                <tbody id="recentServicesBody">
+
+                  <tr>
+                    <td>SRV-00125</td>
+                    <td>Ajustador</td>
+                    <td>12 jul 2026, 10:30 a.m.</td>
+
+                    <td>
+                      <span class="status process">
+                        En proceso
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="detailButton"
+                        onclick="verDetalle('SRV-00125')"
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>SRV-00124</td>
+                    <td>Auxilio vial</td>
+                    <td>10 jul 2026, 08:15 a.m.</td>
+
+                    <td>
+                      <span class="status finished">
+                        Terminado
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="detailButton"
+                        onclick="verDetalle('SRV-00124')"
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>SRV-00123</td>
+                    <td>Grúa</td>
+                    <td>08 jul 2026, 03:45 p.m.</td>
+
+                    <td>
+                      <span class="status finished">
+                        Terminado
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="detailButton"
+                        onclick="verDetalle('SRV-00123')"
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+          <aside class="membershipInfo">
+
+            <h2>Información de tu membresía</h2>
+
+            <div class="infoRow">
+              <span>▣</span>
+
+              <div>
+                <small>Membresía</small>
+                <b>AS CLICK Particular</b>
+              </div>
+            </div>
+
+            <div class="infoRow">
+              <span>▱</span>
+
+              <div>
+                <small>Número</small>
+                <b>ASC-000245</b>
+              </div>
+            </div>
+
+            <div class="infoRow">
+              <span>◷</span>
+
+              <div>
+                <small>Vigencia</small>
+                <b>14 de julio de 2027</b>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="verMembresia()"
+            >
+              Ver beneficios incluidos
+            </button>
+
+          </aside>
+
+        </section>
+
+      </section>
+
+      <!-- MIS SERVICIOS -->
+      <section
+        class="pageSection"
+        id="seccion-servicios"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">⚒</div>
+
+          <h2>Mis servicios</h2>
+
+          <p>
+            Aquí aparecerán todas las solicitudes de ajustador,
+            abogado, auxilio vial y grúa.
+          </p>
+
+          <button
+            type="button"
+            onclick="cambiarSeccion('inicio')"
+          >
+            Regresar al inicio
+          </button>
+        </div>
+
+      </section>
+
+      <!-- VEHÍCULOS -->
+      <section
+        class="pageSection"
+        id="seccion-vehiculos"
+      >
+
+        <div class="placeholderPage">
+
+          <div class="placeholderIcon">🚙</div>
+
+          <h2>Mis vehículos</h2>
+
+          <div class="vehicleFullCard">
+
+            <div class="vehicleFullImage">🚙</div>
+
+            <div>
+              <h3>Chevrolet Tahoe 2021</h3>
+              <p>Placas: ABC-123-A</p>
+              <p>Color: Negro</p>
+              <span>Vehículo principal</span>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            onclick="agregarVehiculo()"
+          >
+            + Agregar vehículo
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- BENEFICIOS -->
+      <section
+        class="pageSection"
+        id="seccion-beneficios"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">★</div>
+          <h2>Beneficios</h2>
+          <p>Consulta los beneficios incluidos en tu membresía.</p>
+        </div>
+
+      </section>
+
+      <!-- HISTORIAL -->
+      <section
+        class="pageSection"
+        id="seccion-historial"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">◷</div>
+          <h2>Historial</h2>
+          <p>Historial completo de servicios y solicitudes.</p>
+        </div>
+
+      </section>
+
+      <!-- PERFIL -->
+      <section
+        class="pageSection"
+        id="seccion-perfil"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">👤</div>
+          <h2>Mi perfil</h2>
+          <p>Administra tus datos personales y de contacto.</p>
+        </div>
+
+      </section>
+
+      <!-- AYUDA -->
+      <section
+        class="pageSection"
+        id="seccion-ayuda"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">◖◗</div>
+          <h2>Ayuda</h2>
+          <p>Habla con uno de nuestros asesores.</p>
+
+          <button
+            type="button"
+            onclick="hablarAsesor()"
+          >
+            Hablar con un asesor
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- MENÚ INFERIOR MÓVIL -->
+    <nav class="mobileBottomNav">
+
+      <button
+        type="button"
+        class="active"
+        onclick="cambiarSeccion('inicio', this)"
+      >
+        <span>⌂</span>
+        Inicio
+      </button>
+
+      <button
+        type="button"
+        onclick="cambiarSeccion('servicios', this)"
+      >
+        <span>⚒</span>
+        Mis servicios
+      </button>
+
+      <button
+        type="button"
+        onclick="cambiarSeccion('beneficios', this)"
+      >
+        <span>▣</span>
+        Beneficios
+      </button>
+
+      <button
+        type="button"
+        onclick="cambiarSeccion('perfil', this)"
+      >
+        <span>♙</span>
+        Perfil
+      </button>
+
+    </nav>
+
+    <!-- FONDO MENÚ MÓVIL -->
+    <div
+      class="menuOverlay"
+      id="menuOverlay"
+      onclick="cerrarMenuMovil()"
+    ></div>
+
+    <!-- MODAL -->
+    <div
+      class="modalOverlay"
+      id="modalOverlay"
+      onclick="cerrarModal(event)"
+    >
+
+      <div class="modal" id="modal">
+
+        <button
+          type="button"
+          class="modalClose"
+          onclick="cerrarModal()"
+        >
+          ✕
+        </button>
+
+        <div
+          class="modalIcon"
+          id="modalIcon"
+        >
+          ✓
+        </div>
+
+        <h2 id="modalTitle">
+          Solicitud enviada
+        </h2>
+
+        <p id="modalText">
+          Tu solicitud fue registrada correctamente.
+        </p>
+
+        <button
+          type="button"
+          class="modalMainButton"
+          onclick="cerrarModal()"
+        >
+          Entendido
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
