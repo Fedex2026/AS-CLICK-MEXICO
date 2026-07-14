@@ -1,11 +1,10 @@
-// Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
+  apiKey: "PEGA_AQUI_TU_API_KEY_REAL",
   authDomain: "as-clicl-mexico.firebaseapp.com",
   databaseURL: "https://as-clicl-mexico-default-rtdb.firebaseio.com",
   projectId: "as-clicl-mexico",
