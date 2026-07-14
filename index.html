@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="verificando-sesion">
 <head>
   <meta charset="UTF-8" />
 
@@ -13,6 +13,13 @@
   <link rel="stylesheet" href="styles.css" />
 
   <meta name="theme-color" content="#052b5c" />
+
+  <!-- OCULTA EL DASHBOARD MIENTRAS FIREBASE REVISA LA SESIÓN -->
+  <style>
+    html.verificando-sesion body {
+      visibility: hidden;
+    }
+  </style>
 </head>
 
 <body>
@@ -813,7 +820,8 @@
 
   </div>
 
-  <script src="app.js"></script>
+  <!-- APP.JS AHORA SE CARGA COMO MÓDULO PARA USAR FIREBASE -->
+  <script type="module" src="app.js"></script>
 
 </body>
 </html>
