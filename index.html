@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="verificando-sesion">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
 
@@ -13,13 +13,6 @@
   <link rel="stylesheet" href="styles.css" />
 
   <meta name="theme-color" content="#052b5c" />
-
-  <!-- OCULTA EL DASHBOARD MIENTRAS FIREBASE REVISA LA SESIÓN -->
-  <style>
-    html.verificando-sesion body {
-      visibility: hidden;
-    }
-  </style>
 </head>
 
 <body>
@@ -121,9 +114,13 @@
       </nav>
 
       <div class="advisorCard">
-        <div class="advisorIcon">◖◗</div>
+
+        <div class="advisorIcon">
+          ◖◗
+        </div>
 
         <p>¿Necesitas ayuda?</p>
+
         <b>Hablar con un asesor</b>
 
         <button
@@ -134,8 +131,11 @@
         </button>
 
         <small>o llámanos</small>
+
         <strong>55 1234 5678</strong>
+
         <small>Atención 24/7</small>
+
       </div>
 
     </aside>
@@ -192,14 +192,20 @@
             onclick="abrirNotificaciones()"
           >
             ♧ Notificaciones
-            <span class="notificationCounter">3</span>
+
+            <span class="notificationCounter">
+              3
+            </span>
           </button>
 
         </nav>
 
         <div class="topActions">
 
-          <div class="membershipBadge">
+          <div
+            class="membershipBadge"
+            id="badgeMembresia"
+          >
             ✓ Membresía activa
           </div>
 
@@ -208,8 +214,17 @@
             class="userButton"
             onclick="abrirMenuUsuario()"
           >
-            <span class="avatar">L</span>
-            <span>Leonardo</span>
+            <span
+              class="avatar"
+              id="avatarUsuario"
+            >
+              L
+            </span>
+
+            <span id="nombreUsuarioTop">
+              Leonardo
+            </span>
+
             <small>⌄</small>
           </button>
 
@@ -233,26 +248,42 @@
             </div>
 
             <div>
-              <h1>Hola, Leonardo</h1>
+
+              <h1 id="nombreBienvenida">
+                Hola, Leonardo
+              </h1>
 
               <p>
                 Membresía:
-                <b>ASC-000245</b>
 
-                <span class="activeStatus">
+                <b id="numeroMembresiaPrincipal">
+                  ASC-000245
+                </b>
+
+                <span
+                  class="activeStatus"
+                  id="estadoMembresiaPrincipal"
+                >
                   ACTIVA
                 </span>
               </p>
 
               <p>
                 Vigencia:
-                <b>14 de julio de 2027</b>
+
+                <b id="vigenciaPrincipal">
+                  14 de julio de 2027
+                </b>
               </p>
 
               <p>
                 Plan:
-                <b>AS CLICK Particular</b>
+
+                <b id="planPrincipal">
+                  AS CLICK Particular
+                </b>
               </p>
+
             </div>
 
           </div>
@@ -260,7 +291,10 @@
           <div class="vehiclePreview">
 
             <div class="vehicleHeader">
-              <span>Mi vehículo principal</span>
+
+              <span>
+                Mi vehículo principal
+              </span>
 
               <button
                 type="button"
@@ -268,6 +302,7 @@
               >
                 Ver todos mis vehículos
               </button>
+
             </div>
 
             <div class="vehicleBody">
@@ -291,15 +326,21 @@
         <!-- SERVICIOS -->
         <section class="servicesSection">
 
-          <h2>¿Qué servicio necesitas?</h2>
+          <h2>
+            ¿Qué servicio necesitas?
+          </h2>
 
           <div class="serviceGrid">
 
             <article class="serviceCard blue">
 
-              <div class="serviceIcon">👤</div>
+              <div class="serviceIcon">
+                👤
+              </div>
 
-              <h3>Solicitar Ajustador</h3>
+              <h3>
+                Solicitar Ajustador
+              </h3>
 
               <p>
                 Atención en accidentes con ajustador profesional.
@@ -316,9 +357,13 @@
 
             <article class="serviceCard green">
 
-              <div class="serviceIcon">⚖</div>
+              <div class="serviceIcon">
+                ⚖
+              </div>
 
-              <h3>Solicitar Abogado</h3>
+              <h3>
+                Solicitar Abogado
+              </h3>
 
               <p>
                 Asesoría legal y defensa especializada.
@@ -335,9 +380,13 @@
 
             <article class="serviceCard orange">
 
-              <div class="serviceIcon">🔧</div>
+              <div class="serviceIcon">
+                🔧
+              </div>
 
-              <h3>Auxilio Vial</h3>
+              <h3>
+                Auxilio Vial
+              </h3>
 
               <p>
                 Paso de corriente, cambio de llanta, gasolina y más.
@@ -354,9 +403,13 @@
 
             <article class="serviceCard purple">
 
-              <div class="serviceIcon">🚛</div>
+              <div class="serviceIcon">
+                🚛
+              </div>
 
-              <h3>Cotizar Grúa</h3>
+              <h3>
+                Cotizar Grúa
+              </h3>
 
               <p>
                 Cotiza y solicita tu servicio de grúa al instante.
@@ -392,7 +445,9 @@
 
               <div class="emergencyContent">
 
-                <h3>ALERTA MONTACHOQUES</h3>
+                <h3>
+                  ALERTA MONTACHOQUES
+                </h3>
 
                 <p>
                   Envía tu ubicación a los miembros activos cercanos
@@ -418,7 +473,9 @@
 
               <div class="emergencyContent">
 
-                <h3>ALERTA ROBO</h3>
+                <h3>
+                  ALERTA ROBO
+                </h3>
 
                 <p>
                   Envía tu ubicación a los miembros activos cercanos
@@ -443,7 +500,10 @@
               </div>
 
               <div>
-                <h3>Importante</h3>
+
+                <h3>
+                  Importante
+                </h3>
 
                 <p>
                   El uso falso o irresponsable de estas alertas puede
@@ -456,6 +516,7 @@
                 >
                   Ver términos y condiciones
                 </button>
+
               </div>
 
             </article>
@@ -469,7 +530,9 @@
 
           <div class="recentServices">
 
-            <h2>Mis servicios recientes</h2>
+            <h2>
+              Mis servicios recientes
+            </h2>
 
             <div class="tableWrapper">
 
@@ -500,6 +563,7 @@
 
                     <td>
                       <button
+                        type="button"
                         class="detailButton"
                         onclick="verDetalle('SRV-00125')"
                       >
@@ -521,6 +585,7 @@
 
                     <td>
                       <button
+                        type="button"
                         class="detailButton"
                         onclick="verDetalle('SRV-00124')"
                       >
@@ -542,6 +607,7 @@
 
                     <td>
                       <button
+                        type="button"
                         class="detailButton"
                         onclick="verDetalle('SRV-00123')"
                       >
@@ -560,33 +626,50 @@
 
           <aside class="membershipInfo">
 
-            <h2>Información de tu membresía</h2>
+            <h2>
+              Información de tu membresía
+            </h2>
 
             <div class="infoRow">
+
               <span>▣</span>
 
               <div>
                 <small>Membresía</small>
-                <b>AS CLICK Particular</b>
+
+                <b id="membresiaInformacion">
+                  AS CLICK Particular
+                </b>
               </div>
+
             </div>
 
             <div class="infoRow">
+
               <span>▱</span>
 
               <div>
                 <small>Número</small>
-                <b>ASC-000245</b>
+
+                <b id="numeroMembresiaInformacion">
+                  ASC-000245
+                </b>
               </div>
+
             </div>
 
             <div class="infoRow">
+
               <span>◷</span>
 
               <div>
                 <small>Vigencia</small>
-                <b>14 de julio de 2027</b>
+
+                <b id="vigenciaInformacion">
+                  14 de julio de 2027
+                </b>
               </div>
+
             </div>
 
             <button
@@ -609,9 +692,14 @@
       >
 
         <div class="placeholderPage">
-          <div class="placeholderIcon">⚒</div>
 
-          <h2>Mis servicios</h2>
+          <div class="placeholderIcon">
+            ⚒
+          </div>
+
+          <h2>
+            Mis servicios
+          </h2>
 
           <p>
             Aquí aparecerán todas las solicitudes de ajustador,
@@ -624,6 +712,7 @@
           >
             Regresar al inicio
           </button>
+
         </div>
 
       </section>
@@ -636,19 +725,38 @@
 
         <div class="placeholderPage">
 
-          <div class="placeholderIcon">🚙</div>
+          <div class="placeholderIcon">
+            🚙
+          </div>
 
-          <h2>Mis vehículos</h2>
+          <h2>
+            Mis vehículos
+          </h2>
 
           <div class="vehicleFullCard">
 
-            <div class="vehicleFullImage">🚙</div>
+            <div class="vehicleFullImage">
+              🚙
+            </div>
 
             <div>
-              <h3>Chevrolet Tahoe 2021</h3>
-              <p>Placas: ABC-123-A</p>
-              <p>Color: Negro</p>
-              <span>Vehículo principal</span>
+
+              <h3>
+                Chevrolet Tahoe 2021
+              </h3>
+
+              <p>
+                Placas: ABC-123-A
+              </p>
+
+              <p>
+                Color: Negro
+              </p>
+
+              <span>
+                Vehículo principal
+              </span>
+
             </div>
 
           </div>
@@ -671,9 +779,19 @@
       >
 
         <div class="placeholderPage">
-          <div class="placeholderIcon">★</div>
-          <h2>Beneficios</h2>
-          <p>Consulta los beneficios incluidos en tu membresía.</p>
+
+          <div class="placeholderIcon">
+            ★
+          </div>
+
+          <h2>
+            Beneficios
+          </h2>
+
+          <p>
+            Consulta los beneficios incluidos en tu membresía.
+          </p>
+
         </div>
 
       </section>
@@ -685,9 +803,19 @@
       >
 
         <div class="placeholderPage">
-          <div class="placeholderIcon">◷</div>
-          <h2>Historial</h2>
-          <p>Historial completo de servicios y solicitudes.</p>
+
+          <div class="placeholderIcon">
+            ◷
+          </div>
+
+          <h2>
+            Historial
+          </h2>
+
+          <p>
+            Historial completo de servicios y solicitudes.
+          </p>
+
         </div>
 
       </section>
@@ -699,9 +827,19 @@
       >
 
         <div class="placeholderPage">
-          <div class="placeholderIcon">👤</div>
-          <h2>Mi perfil</h2>
-          <p>Administra tus datos personales y de contacto.</p>
+
+          <div class="placeholderIcon">
+            👤
+          </div>
+
+          <h2>
+            Mi perfil
+          </h2>
+
+          <p>
+            Administra tus datos personales y de contacto.
+          </p>
+
         </div>
 
       </section>
@@ -713,9 +851,18 @@
       >
 
         <div class="placeholderPage">
-          <div class="placeholderIcon">◖◗</div>
-          <h2>Ayuda</h2>
-          <p>Habla con uno de nuestros asesores.</p>
+
+          <div class="placeholderIcon">
+            ◖◗
+          </div>
+
+          <h2>
+            Ayuda
+          </h2>
+
+          <p>
+            Habla con uno de nuestros asesores.
+          </p>
 
           <button
             type="button"
@@ -723,6 +870,7 @@
           >
             Hablar con un asesor
           </button>
+
         </div>
 
       </section>
@@ -781,7 +929,10 @@
       onclick="cerrarModal(event)"
     >
 
-      <div class="modal" id="modal">
+      <div
+        class="modal"
+        id="modal"
+      >
 
         <button
           type="button"
@@ -820,8 +971,10 @@
 
   </div>
 
-  <!-- APP.JS AHORA SE CARGA COMO MÓDULO PARA USAR FIREBASE -->
-  <script type="module" src="app.js"></script>
+  <script
+    type="module"
+    src="app.js"
+  ></script>
 
 </body>
 </html>
