@@ -1,0 +1,1149 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --navy-950: #021b3a;
+  --navy-900: #052b5c;
+  --navy-800: #073d7c;
+  --navy-700: #0a58b5;
+  --blue: #1265d8;
+  --blue-dark: #0c55ba;
+  --blue-light: #eaf3ff;
+  --white: #ffffff;
+  --page: #eef3f8;
+  --text: #1f2f44;
+  --muted: #6f7f93;
+  --border: #dce5ef;
+  --green: #21a762;
+  --red: #e6404d;
+  --orange: #f59e0b;
+  --shadow: 0 24px 60px rgba(7, 35, 72, 0.18);
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active,
+a:active {
+  transform: scale(0.985);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* =========================================
+   ESTRUCTURA GENERAL
+========================================= */
+
+.registerPage {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(420px, 0.95fr) minmax(560px, 1.25fr);
+}
+
+/* =========================================
+   LADO IZQUIERDO
+========================================= */
+
+.registerHero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--white);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(3, 38, 82, 0.97),
+      rgba(4, 71, 137, 0.91)
+    ),
+    radial-gradient(
+      circle at 18% 18%,
+      rgba(61, 146, 255, 0.34),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 80% 76%,
+      rgba(0, 184, 148, 0.18),
+      transparent 30%
+    );
+}
+
+.registerHero::before,
+.registerHero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.registerHero::before {
+  width: 420px;
+  height: 420px;
+  top: -150px;
+  right: -130px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 0 0 60px rgba(255, 255, 255, 0.025),
+    0 0 0 120px rgba(255, 255, 255, 0.018);
+}
+
+.registerHero::after {
+  width: 330px;
+  height: 330px;
+  left: -140px;
+  bottom: -120px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 12, 35, 0.06),
+      rgba(0, 12, 35, 0.28)
+    );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  width: min(620px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 46px 52px 32px;
+}
+
+.brand,
+.mobileBrand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brandMark {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #ffffff, #d7eaff);
+  color: var(--navy-900);
+  font-size: 18px;
+  font-weight: 1000;
+  box-shadow: 0 12px 30px rgba(0, 20, 50, 0.24);
+}
+
+.brand h1,
+.mobileBrand h1 {
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -1.1px;
+}
+
+.brand p,
+.mobileBrand p {
+  margin-top: 5px;
+  color: #b9d6f1;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.heroText {
+  margin-top: 82px;
+  max-width: 540px;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #cfe5fb;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.heroText h2 {
+  margin-top: 19px;
+  max-width: 530px;
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -2.4px;
+}
+
+.heroText > p {
+  margin-top: 20px;
+  max-width: 510px;
+  color: #c6dbef;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.heroFeatures {
+  display: grid;
+  gap: 12px;
+  margin-top: 38px;
+}
+
+.heroFeature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 68px;
+  padding: 13px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+}
+
+.heroFeature > span {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #bff7d5;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.heroFeature b {
+  display: block;
+  font-size: 13px;
+}
+
+.heroFeature small {
+  display: block;
+  margin-top: 3px;
+  color: #bdd2e6;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.heroEmergency {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 13px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 116, 126, 0.27);
+  border-radius: 13px;
+  background: rgba(119, 10, 28, 0.14);
+}
+
+.heroEmergency > span {
+  font-size: 26px;
+}
+
+.heroEmergency b {
+  display: block;
+  font-size: 13px;
+}
+
+.heroEmergency small {
+  display: block;
+  margin-top: 3px;
+  color: #d8c4ca;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.heroFooter {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-top: 34px;
+  color: #a9c3dd;
+  font-size: 10px;
+}
+
+/* =========================================
+   PANEL DERECHO
+========================================= */
+
+.registerPanel {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 36px 28px;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(18, 101, 216, 0.08),
+      transparent 32%
+    ),
+    #f5f8fb;
+}
+
+.registerCard {
+  width: min(760px, 100%);
+  padding: 34px 38px;
+  border: 1px solid rgba(215, 225, 236, 0.92);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: var(--shadow);
+}
+
+.mobileBrand {
+  display: none;
+  margin-bottom: 24px;
+}
+
+.mobileBrand .brandMark {
+  width: 45px;
+  height: 45px;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #0c63d2, #063d82);
+  color: #fff;
+  box-shadow: none;
+}
+
+.mobileBrand h1 {
+  color: var(--navy-900);
+  font-size: 22px;
+}
+
+.mobileBrand p {
+  color: #6c85a1;
+}
+
+.registerHeader {
+  margin-bottom: 24px;
+}
+
+.welcomeTag {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: var(--blue);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+}
+
+.registerHeader h2 {
+  color: #143354;
+  font-size: 31px;
+  line-height: 1.12;
+  letter-spacing: -0.8px;
+}
+
+.registerHeader p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* =========================================
+   MENSAJES
+========================================= */
+
+.registerMessage {
+  display: none;
+  margin-bottom: 18px;
+  padding: 12px 13px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.registerMessage.visible {
+  display: block;
+}
+
+.registerMessage.error {
+  border-color: #f2b9bf;
+  background: #fff1f2;
+  color: #b92936;
+}
+
+.registerMessage.success {
+  border-color: #b9e5cb;
+  background: #eefbf3;
+  color: #137841;
+}
+
+.registerMessage.info {
+  border-color: #bdd9f6;
+  background: #edf6ff;
+  color: #1765ac;
+}
+
+/* =========================================
+   SECCIONES DEL FORMULARIO
+========================================= */
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formSection {
+  padding: 20px;
+  border: 1px solid #e0e8f0;
+  border-radius: 14px;
+  background: #fbfdff;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 18px;
+}
+
+.sectionHeading > span {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #e6f0ff;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.sectionHeading b {
+  display: block;
+  color: #233b55;
+  font-size: 13px;
+}
+
+.sectionHeading small {
+  display: block;
+  margin-top: 3px;
+  color: #8391a1;
+  font-size: 10px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 14px;
+}
+
+.formGroup {
+  min-width: 0;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.formGroup label,
+.membershipNumberBlock label,
+.modalCard label {
+  display: block;
+  margin-bottom: 7px;
+  color: #34465b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================
+   INPUTS Y SELECT
+========================================= */
+
+.inputWrapper,
+.selectWrapper {
+  position: relative;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+  color: #7c8da1;
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.inputWrapper input,
+.selectWrapper select,
+.modalCard input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #d7e0ea;
+  border-radius: 10px;
+  background: #f9fbfd;
+  color: #20344b;
+  outline: none;
+  font-size: 13px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+
+.inputWrapper input,
+.selectWrapper select {
+  padding: 12px 44px 12px 42px;
+}
+
+.selectWrapper select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.selectWrapper::after {
+  content: "⌄";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-54%);
+  color: #7e8da0;
+  pointer-events: none;
+}
+
+.modalCard input {
+  padding: 12px 13px;
+}
+
+.inputWrapper input::placeholder,
+.modalCard input::placeholder {
+  color: #9aa8b8;
+}
+
+.inputWrapper input:focus,
+.selectWrapper select:focus,
+.modalCard input:focus {
+  border-color: #4f91df;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(18, 101, 216, 0.1);
+}
+
+.inputWrapper input.error,
+.selectWrapper select.error,
+.modalCard input.error {
+  border-color: #e65360;
+  box-shadow: 0 0 0 4px rgba(230, 83, 96, 0.08);
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #75869a;
+  font-size: 15px;
+}
+
+.passwordToggle:hover {
+  background: #edf3f8;
+}
+
+.fieldError {
+  display: block;
+  min-height: 14px;
+  margin-top: 5px;
+  color: #d33d4a;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+/* =========================================
+   OPCIONES MEMBRESÍA
+========================================= */
+
+.membershipOptions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.membershipOption {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 74px;
+  padding: 13px;
+  border: 1px solid #d4dfeb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #34485f;
+  text-align: left;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.membershipOption:hover {
+  border-color: #7daee6;
+  background: #f6faff;
+}
+
+.membershipOption.active {
+  border-color: var(--blue);
+  background: #edf5ff;
+  box-shadow: 0 0 0 4px rgba(18, 101, 216, 0.08);
+}
+
+.membershipOption > span {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #e8f2ff;
+  color: var(--blue);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.membershipOption.active > span {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.membershipOption b {
+  display: block;
+  font-size: 12px;
+}
+
+.membershipOption small {
+  display: block;
+  margin-top: 3px;
+  color: #7a899a;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.membershipNumberBlock {
+  margin-top: 16px;
+}
+
+.membershipHelp {
+  margin-top: 1px;
+  color: #8291a2;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.nonMemberNotice {
+  display: flex;
+  gap: 11px;
+  margin-top: 16px;
+  padding: 13px;
+  border: 1px solid #f2d59b;
+  border-radius: 11px;
+  background: #fff9ec;
+}
+
+.nonMemberNotice > span {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #ffefc8;
+  font-size: 16px;
+}
+
+.nonMemberNotice b {
+  display: block;
+  color: #8a5a05;
+  font-size: 11px;
+}
+
+.nonMemberNotice p {
+  margin-top: 4px;
+  color: #8a744d;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+/* =========================================
+   TÉRMINOS
+========================================= */
+
+.termsRow {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #5e6f83;
+  font-size: 11px;
+  line-height: 1.55;
+  cursor: pointer;
+  user-select: none;
+}
+
+.termsRow > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.customCheckbox {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  margin-top: 1px;
+  border: 1px solid #b9c7d5;
+  border-radius: 5px;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.termsRow > input:checked + .customCheckbox {
+  border-color: var(--blue);
+  background: var(--blue);
+}
+
+.termsRow > input:checked + .customCheckbox::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.termsRow button {
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-size: inherit;
+  font-weight: 700;
+}
+
+.termsRow button:hover {
+  text-decoration: underline;
+}
+
+.termsError {
+  margin-top: -11px;
+}
+
+/* =========================================
+   BOTÓN CREAR CUENTA
+========================================= */
+
+.registerButton {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1265d8, #084ca8);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  box-shadow: 0 12px 28px rgba(18, 101, 216, 0.28);
+  transition:
+    transform 0.2s,
+    filter 0.2s,
+    box-shadow 0.2s;
+}
+
+.registerButton:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 15px 34px rgba(18, 101, 216, 0.35);
+}
+
+.registerButton:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+  opacity: 0.72;
+  box-shadow: none;
+}
+
+.registerButton.loading .registerButtonText {
+  opacity: 0;
+}
+
+.registerSpinner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  display: none;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: girar 0.75s linear infinite;
+}
+
+.registerButton.loading .registerSpinner {
+  display: block;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   INICIAR SESIÓN
+========================================= */
+
+.loginAccess {
+  margin-top: 20px;
+  padding-top: 19px;
+  border-top: 1px solid #e7edf3;
+  text-align: center;
+}
+
+.loginAccess p {
+  color: #718093;
+  font-size: 11px;
+}
+
+.loginAccess a {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 9px;
+  border: 1px solid var(--blue);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 900;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+
+.loginAccess a:hover {
+  background: var(--blue);
+  color: white;
+  box-shadow: 0 10px 24px rgba(18, 101, 216, 0.18);
+}
+
+/* =========================================
+   MODALES
+========================================= */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(1, 19, 43, 0.64);
+  backdrop-filter: blur(4px);
+}
+
+.modalOverlay.active {
+  display: flex;
+}
+
+.modalCard {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 29px 25px 24px;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 30px 90px rgba(0, 20, 48, 0.34);
+  animation: mostrarModal 0.2s ease;
+}
+
+@keyframes mostrarModal {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #728196;
+  font-size: 16px;
+}
+
+.modalClose:hover {
+  background: #eef3f8;
+}
+
+.modalIcon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 15px;
+  border-radius: 14px;
+  background: #eaf3ff;
+  color: var(--blue);
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.modalCard h2 {
+  color: #173857;
+  font-size: 23px;
+  letter-spacing: -0.4px;
+}
+
+.modalCard > p {
+  margin-top: 8px;
+  color: #6f7f91;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.modalPrimaryButton {
+  width: 100%;
+  min-height: 45px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #1265d8, #084ca8);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.modalPrimaryButton:hover {
+  filter: brightness(1.06);
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1080px) {
+  .registerPage {
+    grid-template-columns: minmax(360px, 0.82fr) minmax(500px, 1.18fr);
+  }
+
+  .heroContent {
+    padding: 38px 36px 28px;
+  }
+
+  .heroText {
+    margin-top: 68px;
+  }
+
+  .heroText h2 {
+    font-size: 41px;
+  }
+
+  .registerCard {
+    padding: 30px;
+  }
+}
+
+/* =========================================
+   CELULAR Y TABLETA VERTICAL
+========================================= */
+
+@media (max-width: 820px) {
+  body {
+    background:
+      radial-gradient(
+        circle at top,
+        rgba(29, 104, 201, 0.18),
+        transparent 28%
+      ),
+      #edf3f8;
+  }
+
+  .registerPage {
+    display: block;
+    min-height: 100vh;
+  }
+
+  .registerHero {
+    display: none;
+  }
+
+  .registerPanel {
+    min-height: 100vh;
+    padding: 20px 14px;
+    background:
+      linear-gradient(
+        180deg,
+        #062e61 0,
+        #062e61 170px,
+        #eef3f8 170px,
+        #eef3f8 100%
+      );
+  }
+
+  .registerCard {
+    margin-top: 18px;
+    padding: 25px 20px 23px;
+    border-radius: 17px;
+  }
+
+  .mobileBrand {
+    display: flex;
+  }
+
+  .registerHeader h2 {
+    font-size: 27px;
+  }
+
+  .registerHeader p {
+    font-size: 12px;
+  }
+}
+
+/* =========================================
+   CELULAR
+========================================= */
+
+@media (max-width: 600px) {
+  .formGrid,
+  .membershipOptions {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+
+  .formSection {
+    padding: 16px;
+  }
+}
+
+/* =========================================
+   CELULAR PEQUEÑO
+========================================= */
+
+@media (max-width: 420px) {
+  .registerPanel {
+    padding: 12px 10px 18px;
+  }
+
+  .registerCard {
+    margin-top: 8px;
+    padding: 22px 15px 20px;
+  }
+
+  .brandMark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mobileBrand h1 {
+    font-size: 20px;
+  }
+
+  .registerHeader h2 {
+    font-size: 25px;
+  }
+
+  .formSection {
+    padding: 14px;
+  }
+
+  .sectionHeading {
+    align-items: flex-start;
+  }
+
+  .inputWrapper input,
+  .selectWrapper select {
+    min-height: 46px;
+  }
+
+  .membershipOption {
+    min-height: 68px;
+  }
+
+  .termsRow {
+    font-size: 10px;
+  }
+}
+
+/* =========================================
+   ACCESIBILIDAD
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
