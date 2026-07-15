@@ -1,1305 +1,819 @@
-import {
-  auth,
-  db
-} from "./firebase-config.js";
-
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-import {
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-/* =========================================
-   CONFIGURACIÓN
-========================================= */
-
-/*
-  Número de WhatsApp de cabina.
-
-  Debe incluir:
-  52 + lada + número
-
-  Ejemplo:
-  525512345678
-*/
-
-const TELEFONO_CABINA = "525512345678";
-const TELEFONO_ASESOR = "525512345678";
-
-/* =========================================
-   VARIABLES
-========================================= */
-
-let seccionActual = "inicio";
-let usuarioActual = null;
-
-let perfilActual = {
-  nombre: "Usuario",
-  telefono: "",
-  correo: "",
-
-  tipoCliente: "particular",
-
-  tieneMembresia: false,
-  numeroMiembro: "",
-  estadoMembresia: "sin_membresia",
-  tipoMembresia: "",
-  vigencia: "",
-
-  tarifa: "publico_general",
-  puedeUsarAlertas: false,
-
-  marca: "",
-  subMarca: "",
-  color: "",
-  placas: "",
-  serie: ""
-};
-
-/* =========================================
-   PROTEGER EL DASHBOARD
-========================================= */
-
-onAuthStateChanged(
-  auth,
-  async user => {
-    if (!user) {
-      window.location.replace(
-        "./login.html"
-      );
-
-      return;
-    }
-
-    usuarioActual = user;
-
-    try {
-      await cargarDatosUsuario(user);
-    } catch (error) {
-      console.error(
-        "Error al cargar los datos del usuario:",
-        error
-      );
-
-      cargarDatosBasicos(user);
-
-      mostrarModal(
-        "⚠",
-        "No fue posible cargar tu perfil",
-        "Tu sesión está activa, pero no pudimos cargar todos tus datos. Revisa tu conexión e inténtalo nuevamente."
-      );
-    }
-  }
-);
-
-/* =========================================
-   CARGAR PERFIL DESDE FIRESTORE
-========================================= */
-
-async function cargarDatosUsuario(user) {
-  const referenciaUsuario = doc(
-    db,
-    "usuarios",
-    user.uid
-  );
-
-  const documentoUsuario =
-    await getDoc(referenciaUsuario);
-
-  if (!documentoUsuario.exists()) {
-    cargarDatosBasicos(user);
-    return;
-  }
-
-  const datos =
-    documentoUsuario.data();
-
-  const vehiculo =
-    datos.vehiculoPrincipal || {};
-
-  const nombre =
-    datos.nombre ||
-    user.displayName ||
-    obtenerNombreCorreo(user.email) ||
-    "Usuario";
-
-  perfilActual = {
-    nombre,
-
-    telefono:
-      datos.telefono || "",
-
-    correo:
-      datos.correo ||
-      user.email ||
-      "",
-
-    tipoCliente:
-      datos.tipoCliente ||
-      "particular",
-
-    tieneMembresia:
-      datos.tieneMembresia === true,
-
-    numeroMiembro:
-      datos.numeroMiembro ||
-      datos.numeroSocio ||
-      "",
-
-    estadoMembresia:
-      normalizarEstado(
-        datos.estadoMembresia ||
-        datos.estatus ||
-        (
-          datos.tieneMembresia
-            ? "activa"
-            : "sin_membresia"
-        )
-      ),
-
-    tipoMembresia:
-      datos.tipoMembresia ||
-      datos.plan ||
-      "",
-
-    vigencia:
-      formatearVigencia(
-        datos.vigencia ||
-        datos.finVigencia ||
-        ""
-      ),
-
-    tarifa:
-      datos.tarifa ||
-      (
-        datos.tieneMembresia
-          ? "preferencial"
-          : "publico_general"
-      ),
-
-    puedeUsarAlertas:
-      datos.puedeUsarAlertas === true,
-
-    marca:
-      datos.marca ||
-      vehiculo.marca ||
-      "",
-
-    subMarca:
-      datos.subMarca ||
-      datos.submarca ||
-      vehiculo.subMarca ||
-      vehiculo.submarca ||
-      "",
-
-    color:
-      datos.color ||
-      vehiculo.color ||
-      "",
-
-    placas:
-      datos.placas ||
-      vehiculo.placas ||
-      "",
-
-    serie:
-      datos.serie ||
-      vehiculo.serie ||
-      ""
-  };
-
-  /*
-    Las alertas únicamente se habilitan cuando:
-
-    - Tiene membresía
-    - Está activa
-    - Firestore permite usar alertas
-  */
-
-  perfilActual.puedeUsarAlertas =
-    perfilActual.tieneMembresia === true &&
-    perfilActual.estadoMembresia === "activa" &&
-    datos.puedeUsarAlertas !== false;
-
-  actualizarDatosPantalla(
-    perfilActual
-  );
-}
-
-function cargarDatosBasicos(user) {
-  const nombre =
-    user.displayName ||
-    obtenerNombreCorreo(user.email) ||
-    "Usuario";
-
-  perfilActual = {
-    nombre,
-    telefono: "",
-    correo: user.email || "",
-
-    tipoCliente: "particular",
-
-    tieneMembresia: false,
-    numeroMiembro: "",
-    estadoMembresia:
-      "sin_membresia",
-    tipoMembresia: "",
-    vigencia: "",
-
-    tarifa:
-      "publico_general",
-
-    puedeUsarAlertas:
-      false,
-
-    marca: "",
-    subMarca: "",
-    color: "",
-    placas: "",
-    serie: ""
-  };
-
-  actualizarDatosPantalla(
-    perfilActual
-  );
-}
-
-function obtenerNombreCorreo(correo) {
-  if (!correo) return "";
-
-  const nombre =
-    correo.split("@")[0] || "";
-
-  return nombre
-    .replace(/[._-]/g, " ")
-    .replace(
-      /\b\w/g,
-      letra => letra.toUpperCase()
-    );
-}
-
-function normalizarEstado(estado) {
-  return String(estado || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "_");
-}
-
-function formatearVigencia(valor) {
-  if (!valor) return "";
-
-  /*
-    Si Firestore entrega un Timestamp.
-  */
-
-  if (
-    typeof valor === "object" &&
-    typeof valor.toDate === "function"
-  ) {
-    return valor
-      .toDate()
-      .toLocaleDateString(
-        "es-MX",
-        {
-          day: "2-digit",
-          month: "long",
-          year: "numeric"
-        }
-      );
-  }
-
-  /*
-    Si ya viene como texto legible,
-    se conserva.
-  */
-
-  const texto =
-    String(valor).trim();
-
-  if (!texto) return "";
-
-  /*
-    Si viene como ISO:
-    2027-07-14
-    o
-    2027-07-14T00:00:00.000Z
-  */
-
-  if (
-    /^\d{4}-\d{2}-\d{2}/.test(texto)
-  ) {
-    const fecha =
-      new Date(texto);
-
-    if (!Number.isNaN(fecha.getTime())) {
-      return fecha.toLocaleDateString(
-        "es-MX",
-        {
-          day: "2-digit",
-          month: "long",
-          year: "numeric"
-        }
-      );
-    }
-  }
-
-  return texto;
-}
-
-/* =========================================
-   ACTUALIZAR EL DASHBOARD
-========================================= */
-
-function actualizarDatosPantalla(perfil) {
-  const esMiembroActivo =
-    perfil.tieneMembresia === true &&
-    perfil.estadoMembresia === "activa";
-
-  actualizarTexto(
-    "nombreBienvenida",
-    `Hola, ${perfil.nombre}`
-  );
-
-  actualizarTexto(
-    "nombreUsuarioTop",
-    perfil.nombre
-  );
-
-  actualizarTexto(
-    "avatarUsuario",
-    perfil.nombre
-      .trim()
-      .charAt(0)
-      .toUpperCase() || "U"
-  );
-
-  /*
-    DATOS PRINCIPALES DE MEMBRESÍA
-  */
-
-  actualizarTexto(
-    "numeroMembresiaPrincipal",
-    perfil.tieneMembresia
-      ? (
-          perfil.numeroMiembro ||
-          "PENDIENTE"
-        )
-      : "SIN MEMBRESÍA"
-  );
-
-  actualizarTexto(
-    "estadoMembresiaPrincipal",
-    obtenerTextoEstado(perfil)
-  );
-
-  actualizarTexto(
-    "vigenciaPrincipal",
-    perfil.tieneMembresia
-      ? (
-          perfil.vigencia ||
-          "Pendiente de asignar"
-        )
-      : "No aplica"
-  );
-
-  actualizarTexto(
-    "planPrincipal",
-    perfil.tieneMembresia
-      ? (
-          perfil.tipoMembresia ||
-          obtenerTipoClienteTexto(
-            perfil.tipoCliente
-          )
-        )
-      : "Público general"
-  );
-
-  /*
-    TARJETA DE INFORMACIÓN
-  */
-
-  actualizarTexto(
-    "membresiaInformacion",
-    perfil.tieneMembresia
-      ? (
-          perfil.tipoMembresia ||
-          "AS CLICK"
-        )
-      : "Sin membresía"
-  );
-
-  actualizarTexto(
-    "numeroMembresiaInformacion",
-    perfil.tieneMembresia
-      ? (
-          perfil.numeroMiembro ||
-          "PENDIENTE"
-        )
-      : "No aplica"
-  );
-
-  actualizarTexto(
-    "vigenciaInformacion",
-    perfil.tieneMembresia
-      ? (
-          perfil.vigencia ||
-          "Pendiente"
-        )
-      : "No aplica"
-  );
-
-  /*
-    BADGE SUPERIOR
-  */
-
-  const badge =
-    document.getElementById(
-      "badgeMembresia"
-    );
-
-  if (badge) {
-    if (esMiembroActivo) {
-      badge.textContent =
-        "✓ Membresía activa";
-    } else if (
-      perfil.tieneMembresia
-    ) {
-      badge.textContent =
-        "⚠ Membresía inactiva";
-    } else {
-      badge.textContent =
-        "Cliente sin membresía";
-    }
-  }
-
-  /*
-    DATOS DEL VEHÍCULO
-  */
-
-  actualizarVehiculoPantalla(
-    perfil
-  );
-
-  /*
-    ALERTAS
-  */
-
-  configurarAlertas(
-    perfil.puedeUsarAlertas
-  );
-
-  /*
-    INFORMACIÓN DE LA MEMBRESÍA
-  */
-
-  const tituloMembresia =
-    document.querySelector(
-      ".membershipInfo h2"
-    );
-
-  if (tituloMembresia) {
-    tituloMembresia.textContent =
-      perfil.tieneMembresia
-        ? "Información de tu membresía"
-        : "Información de tu cuenta";
-  }
-
-  /*
-    BENEFICIOS
-  */
-
-  const beneficiosTexto =
-    document.querySelector(
-      "#seccion-beneficios .placeholderPage p"
-    );
-
-  if (beneficiosTexto) {
-    beneficiosTexto.textContent =
-      esMiembroActivo
-        ? "Consulta los beneficios incluidos en tu membresía activa."
-        : "Puedes solicitar servicios con tarifa de público general. Las alertas de robo y montachoques son exclusivas para miembros activos.";
-  }
-}
-
-function actualizarTexto(id, texto) {
-  const elemento =
-    document.getElementById(id);
-
-  if (elemento) {
-    elemento.textContent = texto;
-  }
-}
-
-function obtenerTextoEstado(perfil) {
-  if (!perfil.tieneMembresia) {
-    return "PÚBLICO GENERAL";
-  }
-
-  const textos = {
-    activa: "ACTIVA",
-    pendiente: "PENDIENTE",
-    pendiente_activacion:
-      "PENDIENTE",
-    vencida: "VENCIDA",
-    cancelada: "CANCELADA",
-    asignada: "ACTIVA"
-  };
-
-  return (
-    textos[
-      perfil.estadoMembresia
-    ] ||
-    perfil.estadoMembresia
-      .replace(/_/g, " ")
-      .toUpperCase()
-  );
-}
-
-function obtenerTipoClienteTexto(tipo) {
-  if (
-    tipo === "servicio_publico"
-  ) {
-    return "Servicio público";
-  }
-
-  return "Particular";
-}
-
-/* =========================================
-   VEHÍCULO EN PANTALLA
-========================================= */
-
-function actualizarVehiculoPantalla(perfil) {
-  const nombreVehiculo =
-    [
-      perfil.marca,
-      perfil.subMarca
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-  const tituloVehiculo =
-    nombreVehiculo ||
-    "Vehículo sin registrar";
-
-  /*
-    TARJETA DEL INICIO
-  */
-
-  const vehicleBody =
-    document.querySelector(
-      ".vehicleBody"
-    );
-
-  if (vehicleBody) {
-    const titulo =
-      vehicleBody.querySelector("b");
-
-    const textos =
-      vehicleBody.querySelectorAll(
-        "span"
-      );
-
-    if (titulo) {
-      titulo.textContent =
-        tituloVehiculo;
-    }
-
-    if (textos[0]) {
-      textos[0].textContent =
-        `Placas: ${
-          perfil.placas ||
-          "Sin registrar"
-        }`;
-    }
-
-    if (textos[1]) {
-      textos[1].textContent =
-        `Color: ${
-          perfil.color ||
-          "Sin registrar"
-        }`;
-    }
-  }
-
-  /*
-    TARJETA DE LA SECCIÓN VEHÍCULOS
-  */
-
-  const vehicleFullCard =
-    document.querySelector(
-      ".vehicleFullCard"
-    );
-
-  if (vehicleFullCard) {
-    const titulo =
-      vehicleFullCard.querySelector(
-        "h3"
-      );
-
-    const parrafos =
-      vehicleFullCard.querySelectorAll(
-        "p"
-      );
-
-    const etiqueta =
-      vehicleFullCard.querySelector(
-        "span"
-      );
-
-    if (titulo) {
-      titulo.textContent =
-        tituloVehiculo;
-    }
-
-    if (parrafos[0]) {
-      parrafos[0].textContent =
-        `Placas: ${
-          perfil.placas ||
-          "Sin registrar"
-        }`;
-    }
-
-    if (parrafos[1]) {
-      parrafos[1].textContent =
-        `Color: ${
-          perfil.color ||
-          "Sin registrar"
-        }`;
-    }
-
-    if (etiqueta) {
-      etiqueta.textContent =
-        perfil.serie
-          ? `Serie: ${perfil.serie}`
-          : "Vehículo principal";
-    }
-  }
-}
-
-/* =========================================
-   ALERTAS SEGÚN MEMBRESÍA
-========================================= */
-
-function configurarAlertas(
-  puedeUsarlas
-) {
-  const seccionAlertas =
-    document.querySelector(
-      ".emergencySection"
-    );
-
-  if (!seccionAlertas) return;
-
-  /*
-    Los clientes sin membresía
-    no ven las alertas.
-  */
-
-  seccionAlertas.style.display =
-    puedeUsarlas
-      ? ""
-      : "none";
-}
-
-/* =========================================
-   CAMBIAR SECCIÓN
-========================================= */
-
-function cambiarSeccion(
-  seccion,
-  boton = null
-) {
-  seccionActual = seccion;
-
-  document
-    .querySelectorAll(
-      ".pageSection"
-    )
-    .forEach(section => {
-      section.classList.remove(
-        "active"
-      );
-    });
-
-  const seccionDestino =
-    document.getElementById(
-      `seccion-${seccion}`
-    );
-
-  if (seccionDestino) {
-    seccionDestino.classList.add(
-      "active"
-    );
-  }
-
-  document
-    .querySelectorAll(
-      ".navItem"
-    )
-    .forEach(item => {
-      item.classList.remove(
-        "active"
-      );
-
-      if (
-        item.dataset.section ===
-        seccion
-      ) {
-        item.classList.add(
-          "active"
-        );
-      }
-    });
-
-  document
-    .querySelectorAll(
-      ".mobileBottomNav button"
-    )
-    .forEach(item => {
-      item.classList.remove(
-        "active"
-      );
-    });
-
-  if (
-    boton &&
-    boton.closest(
-      ".mobileBottomNav"
-    )
-  ) {
-    boton.classList.add("active");
-  } else {
-    const mobileButton =
-      Array.from(
-        document.querySelectorAll(
-          ".mobileBottomNav button"
-        )
-      ).find(item =>
-        item
-          .getAttribute("onclick")
-          ?.includes(`'${seccion}'`)
-      );
-
-    mobileButton?.classList.add(
-      "active"
-    );
-  }
-
-  document
-    .querySelectorAll(
-      ".topNavigation button"
-    )
-    .forEach(item => {
-      item.classList.remove(
-        "active"
-      );
-    });
-
-  const topButton =
-    Array.from(
-      document.querySelectorAll(
-        ".topNavigation button"
-      )
-    ).find(item =>
-      item
-        .getAttribute("onclick")
-        ?.includes(`'${seccion}'`)
-    );
-
-  topButton?.classList.add(
-    "active"
-  );
-
-  cerrarMenuMovil();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-}
-
-/* =========================================
-   MENÚ MÓVIL
-========================================= */
-
-function abrirMenuMovil() {
-  document
-    .getElementById("sidebar")
-    ?.classList.add("mobileOpen");
-
-  document
-    .getElementById("menuOverlay")
-    ?.classList.add("active");
-}
-
-function cerrarMenuMovil() {
-  document
-    .getElementById("sidebar")
-    ?.classList.remove("mobileOpen");
-
-  document
-    .getElementById("menuOverlay")
-    ?.classList.remove("active");
-}
-
-/* =========================================
-   SOLICITAR SERVICIO POR WHATSAPP
-========================================= */
-
-async function solicitarServicio(
-  servicio
-) {
-  if (!usuarioActual) {
-    mostrarModal(
-      "⚠",
-      "Sesión no disponible",
-      "Inicia sesión nuevamente para solicitar el servicio."
-    );
-
-    return;
-  }
-
-  const tipoTarifa =
-    perfilActual.tieneMembresia &&
-    perfilActual.estadoMembresia ===
-      "activa"
-      ? "Tarifa preferencial de miembro"
-      : "Tarifa de público general";
-
-  /*
-    Abrimos una pestaña inmediatamente para evitar
-    que el navegador bloquee WhatsApp mientras
-    obtenemos la ubicación.
-  */
-
-  const ventanaWhatsApp =
-    window.open(
-      "",
-      "_blank"
-    );
-
-  if (ventanaWhatsApp) {
-    ventanaWhatsApp.document.write(
-      "<p style='font-family:Arial;padding:20px'>Preparando solicitud de AS CLICK...</p>"
-    );
-  }
-
-  const ubicacion =
-    await obtenerUbicacion();
-
-  const mensaje =
-    construirMensajeServicio(
-      servicio,
-      tipoTarifa,
-      ubicacion
-    );
-
-  const url =
-    `https://wa.me/${TELEFONO_CABINA}` +
-    `?text=${encodeURIComponent(mensaje)}`;
-
-  if (ventanaWhatsApp) {
-    ventanaWhatsApp.location.href =
-      url;
-  } else {
-    window.location.href = url;
-  }
-}
-
-function construirMensajeServicio(
-  servicio,
-  tipoTarifa,
-  ubicacion
-) {
-  const numeroMembresia =
-    perfilActual.tieneMembresia
-      ? (
-          perfilActual.numeroMiembro ||
-          "Pendiente"
-        )
-      : "Sin membresía";
-
-  const tipoCliente =
-    obtenerTipoClienteTexto(
-      perfilActual.tipoCliente
-    );
-
-  return [
-    `*SOLICITUD AS CLICK - ${servicio.toUpperCase()}*`,
-    "",
-    `Tipo de tarifa: ${tipoTarifa}`,
-    `Tipo de cliente: ${tipoCliente}`,
-    `Membresía: ${numeroMembresia}`,
-    `Estado: ${obtenerTextoEstado(perfilActual)}`,
-    "",
-    "*DATOS DEL CLIENTE*",
-    `Nombre: ${perfilActual.nombre || "No registrado"}`,
-    `Teléfono: ${perfilActual.telefono || "No registrado"}`,
-    `Correo: ${perfilActual.correo || "No registrado"}`,
-    "",
-    "*DATOS DEL VEHÍCULO*",
-    `Marca: ${perfilActual.marca || "No registrada"}`,
-    `Submarca: ${perfilActual.subMarca || "No registrada"}`,
-    `Color: ${perfilActual.color || "No registrado"}`,
-    `Placas: ${perfilActual.placas || "No registradas"}`,
-    `Serie / VIN: ${perfilActual.serie || "No registrada"}`,
-    "",
-    "*SERVICIO SOLICITADO*",
-    `Servicio: ${servicio}`,
-    `Ubicación: ${ubicacion}`,
-    "",
-    "Comentarios:",
-    ""
-  ].join("\n");
-}
-
-/* =========================================
-   OBTENER UBICACIÓN
-========================================= */
-
-function obtenerUbicacion() {
-  return new Promise(resolve => {
-    if (!navigator.geolocation) {
-      resolve(
-        "El cliente la compartirá por WhatsApp"
-      );
-
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      posicion => {
-        const latitud =
-          posicion.coords.latitude;
-
-        const longitud =
-          posicion.coords.longitude;
-
-        resolve(
-          `https://maps.google.com/?q=${latitud},${longitud}`
-        );
-      },
-
-      () => {
-        resolve(
-          "El cliente la compartirá por WhatsApp"
-        );
-      },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 8000,
-        maximumAge: 60000
-      }
-    );
-  });
-}
-
-/* =========================================
-   ALERTAS DE EMERGENCIA
-========================================= */
-
-async function activarAlerta(tipo) {
-  if (
-    !perfilActual.puedeUsarAlertas
-  ) {
-    mostrarModal(
-      "🔒",
-      "Función exclusiva para miembros",
-      "Las alertas de robo y montachoques están disponibles únicamente para miembros AS CLICK activos."
-    );
-
-    return;
-  }
-
-  const confirmar = confirm(
-    `¿Confirmas que deseas activar la alerta de ${tipo}? Esta función debe utilizarse únicamente en una emergencia real.`
-  );
-
-  if (!confirmar) return;
-
-  const ventanaWhatsApp =
-    window.open(
-      "",
-      "_blank"
-    );
-
-  if (ventanaWhatsApp) {
-    ventanaWhatsApp.document.write(
-      "<p style='font-family:Arial;padding:20px'>Preparando alerta de emergencia...</p>"
-    );
-  }
-
-  const ubicacion =
-    await obtenerUbicacion();
-
-  const mensaje = [
-    `*🚨 ALERTA AS CLICK - ${tipo.toUpperCase()}*`,
-    "",
-    "*MIEMBRO ACTIVO*",
-    `Membresía: ${perfilActual.numeroMiembro}`,
-    `Nombre: ${perfilActual.nombre}`,
-    `Teléfono: ${perfilActual.telefono || "No registrado"}`,
-    "",
-    "*VEHÍCULO*",
-    `Marca: ${perfilActual.marca || "No registrada"}`,
-    `Submarca: ${perfilActual.subMarca || "No registrada"}`,
-    `Color: ${perfilActual.color || "No registrado"}`,
-    `Placas: ${perfilActual.placas || "No registradas"}`,
-    `Serie: ${perfilActual.serie || "No registrada"}`,
-    "",
-    `Ubicación actual: ${ubicacion}`,
-    "",
-    "⚠ Esta alerta fue enviada desde el botón de emergencia de AS CLICK."
-  ].join("\n");
-
-  const url =
-    `https://wa.me/${TELEFONO_CABINA}` +
-    `?text=${encodeURIComponent(mensaje)}`;
-
-  if (ventanaWhatsApp) {
-    ventanaWhatsApp.location.href =
-      url;
-  } else {
-    window.location.href = url;
-  }
-}
-
-/* =========================================
-   WHATSAPP DEL ASESOR
-========================================= */
-
-function hablarAsesor() {
-  const mensaje = [
-    "Hola, necesito hablar con un asesor de AS CLICK.",
-    "",
-    `Nombre: ${perfilActual.nombre || ""}`,
-    `Teléfono: ${perfilActual.telefono || ""}`,
-    `Membresía: ${
-      perfilActual.tieneMembresia
-        ? perfilActual.numeroMiembro
-        : "Sin membresía"
-    }`
-  ].join("\n");
-
-  const url =
-    `https://wa.me/${TELEFONO_ASESOR}` +
-    `?text=${encodeURIComponent(mensaje)}`;
-
-  window.open(
-    url,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-/* =========================================
-   OTRAS FUNCIONES
-========================================= */
-
-function verDetalle(folio) {
-  mostrarModal(
-    "▣",
-    `Servicio ${folio}`,
-    "Aquí aparecerá el seguimiento completo, operador asignado, ubicación, estado y detalles del servicio."
-  );
-}
-
-function verMembresia() {
-  cambiarSeccion("beneficios");
-}
-
-function agregarVehiculo() {
-  mostrarModal(
-    "🚙",
-    "Vehículo principal",
-    "Por ahora los datos del vehículo se registran al crear la cuenta. Para cambiar un vehículo, comunícate con un asesor de AS CLICK."
-  );
-}
-
-function mostrarTerminos() {
-  mostrarModal(
-    "⚠",
-    "Términos de las alertas",
-    "Las alertas de robo y montachoques son exclusivas para miembros activos. Deben utilizarse únicamente en situaciones reales. El uso falso o irresponsable puede ocasionar sanciones o cancelación de la membresía."
-  );
-}
-
-function abrirNotificaciones() {
-  mostrarModal(
-    "🔔",
-    "Notificaciones",
-    "Aquí aparecerán las notificaciones relacionadas con tus solicitudes y servicios."
-  );
-}
-
-function abrirMenuUsuario() {
-  cambiarSeccion("perfil");
-}
-
-/* =========================================
-   CERRAR SESIÓN
-========================================= */
-
-async function cerrarSesion() {
-  const confirmar = confirm(
-    "¿Deseas cerrar tu sesión?"
-  );
-
-  if (!confirmar) return;
-
-  try {
-    await signOut(auth);
-
-    window.location.replace(
-      "./login.html"
-    );
-  } catch (error) {
-    console.error(
-      "Error al cerrar sesión:",
-      error
-    );
-
-    alert(
-      "No fue posible cerrar la sesión. Inténtalo nuevamente."
-    );
-  }
-}
-
-/* =========================================
-   MODAL
-========================================= */
-
-function mostrarModal(
-  icono,
-  titulo,
-  texto
-) {
-  const modalIcon =
-    document.getElementById(
-      "modalIcon"
-    );
-
-  const modalTitle =
-    document.getElementById(
-      "modalTitle"
-    );
-
-  const modalText =
-    document.getElementById(
-      "modalText"
-    );
-
-  const modalOverlay =
-    document.getElementById(
-      "modalOverlay"
-    );
-
-  if (modalIcon) {
-    modalIcon.textContent = icono;
-  }
-
-  if (modalTitle) {
-    modalTitle.textContent = titulo;
-  }
-
-  if (modalText) {
-    modalText.textContent = texto;
-  }
-
-  modalOverlay?.classList.add(
-    "active"
-  );
-}
-
-function cerrarModal(event = null) {
-  if (
-    event &&
-    event.target.id !==
-      "modalOverlay"
-  ) {
-    return;
-  }
-
-  document
-    .getElementById(
-      "modalOverlay"
-    )
-    ?.classList.remove("active");
-}
-
-/* =========================================
-   EVENTOS
-========================================= */
-
-document.addEventListener(
-  "keydown",
-  event => {
-    if (event.key === "Escape") {
-      cerrarMenuMovil();
-      cerrarModal();
-    }
-  }
-);
-
-window.addEventListener(
-  "resize",
-  () => {
-    if (
-      window.innerWidth > 760
-    ) {
-      cerrarMenuMovil();
-    }
-  }
-);
-
-/* =========================================
-   EXPONER FUNCIONES AL HTML
-========================================= */
-
-window.cambiarSeccion =
-  cambiarSeccion;
-
-window.abrirMenuMovil =
-  abrirMenuMovil;
-
-window.cerrarMenuMovil =
-  cerrarMenuMovil;
-
-window.solicitarServicio =
-  solicitarServicio;
-
-window.activarAlerta =
-  activarAlerta;
-
-window.hablarAsesor =
-  hablarAsesor;
-
-window.verDetalle =
-  verDetalle;
-
-window.verMembresia =
-  verMembresia;
-
-window.agregarVehiculo =
-  agregarVehiculo;
-
-window.mostrarTerminos =
-  mostrarTerminos;
-
-window.abrirNotificaciones =
-  abrirNotificaciones;
-
-window.abrirMenuUsuario =
-  abrirMenuUsuario;
-
-window.cerrarSesion =
-  cerrarSesion;
-
-window.cerrarModal =
-  cerrarModal;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>AS CLICK | Asistencia Vial</title>
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <meta name="theme-color" content="#052b5c" />
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- MENÚ LATERAL DE ESCRITORIO -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="brand">
+        <div class="brandLogo">
+          AS CLICK
+        </div>
+
+        <small>ASISTENCIA VIAL</small>
+      </div>
+
+      <nav class="sidebarNav">
+
+        <button
+          type="button"
+          class="navItem active"
+          data-section="inicio"
+          onclick="cambiarSeccion('inicio', this)"
+        >
+          <span>⌂</span>
+          Inicio
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="servicios"
+          onclick="cambiarSeccion('servicios', this)"
+        >
+          <span>⚒</span>
+          Mis servicios
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="vehiculos"
+          onclick="cambiarSeccion('vehiculos', this)"
+        >
+          <span>▣</span>
+          Vehículos
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="beneficios"
+          onclick="cambiarSeccion('beneficios', this)"
+        >
+          <span>％</span>
+          Beneficios
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="historial"
+          onclick="cambiarSeccion('historial', this)"
+        >
+          <span>◷</span>
+          Historial
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="perfil"
+          onclick="cambiarSeccion('perfil', this)"
+        >
+          <span>♙</span>
+          Perfil
+        </button>
+
+        <button
+          type="button"
+          class="navItem"
+          data-section="ayuda"
+          onclick="cambiarSeccion('ayuda', this)"
+        >
+          <span>?</span>
+          Ayuda
+        </button>
+
+        <button
+          type="button"
+          class="navItem logout"
+          onclick="cerrarSesion()"
+        >
+          <span>↪</span>
+          Cerrar sesión
+        </button>
+
+      </nav>
+
+      <div class="advisorCard">
+        <div class="advisorIcon">◖◗</div>
+
+        <p>¿Necesitas ayuda?</p>
+        <b>Hablar con un asesor</b>
+
+        <button
+          type="button"
+          onclick="hablarAsesor()"
+        >
+          Iniciar chat
+        </button>
+
+        <small>o llámanos</small>
+        <strong>55 1234 5678</strong>
+        <small>Atención 24/7</small>
+      </div>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="mainContent">
+
+      <!-- BARRA SUPERIOR -->
+      <header class="topbar">
+
+        <div class="mobileBrand">
+
+          <button
+            type="button"
+            class="menuButton"
+            onclick="abrirMenuMovil()"
+          >
+            ☰
+          </button>
+
+          <div>
+            <b>AS CLICK</b>
+            <small>ASISTENCIA VIAL</small>
+          </div>
+
+        </div>
+
+        <nav class="topNavigation">
+
+          <button
+            type="button"
+            class="active"
+            onclick="cambiarSeccion('inicio')"
+          >
+            ⌂ Inicio
+          </button>
+
+          <button
+            type="button"
+            onclick="cambiarSeccion('servicios')"
+          >
+            ⚒ Mis servicios
+          </button>
+
+          <button
+            type="button"
+            onclick="cambiarSeccion('beneficios')"
+          >
+            ▣ Beneficios
+          </button>
+
+          <button
+            type="button"
+            onclick="abrirNotificaciones()"
+          >
+            ♧ Notificaciones
+            <span class="notificationCounter">3</span>
+          </button>
+
+        </nav>
+
+        <div class="topActions">
+
+          <div class="membershipBadge">
+            ✓ Membresía activa
+          </div>
+
+          <button
+            type="button"
+            class="userButton"
+            onclick="abrirMenuUsuario()"
+          >
+            <span class="avatar">L</span>
+            <span>Leonardo</span>
+            <small>⌄</small>
+          </button>
+
+        </div>
+
+      </header>
+
+      <!-- SECCIÓN INICIO -->
+      <section
+        class="pageSection active"
+        id="seccion-inicio"
+      >
+
+        <!-- BIENVENIDA -->
+        <section class="welcomeCard">
+
+          <div class="welcomeUser">
+
+            <div class="largeAvatar">
+              👤
+            </div>
+
+            <div>
+              <h1>Hola, Leonardo</h1>
+
+              <p>
+                Membresía:
+                <b>ASC-000245</b>
+
+                <span class="activeStatus">
+                  ACTIVA
+                </span>
+              </p>
+
+              <p>
+                Vigencia:
+                <b>14 de julio de 2027</b>
+              </p>
+
+              <p>
+                Plan:
+                <b>AS CLICK Particular</b>
+              </p>
+            </div>
+
+          </div>
+
+          <div class="vehiclePreview">
+
+            <div class="vehicleHeader">
+              <span>Mi vehículo principal</span>
+
+              <button
+                type="button"
+                onclick="cambiarSeccion('vehiculos')"
+              >
+                Ver todos mis vehículos
+              </button>
+            </div>
+
+            <div class="vehicleBody">
+
+              <div class="vehicleImage">
+                🚙
+              </div>
+
+              <div>
+                <b>Chevrolet Tahoe 2021</b>
+                <span>Placas: ABC-123-A</span>
+                <span>Color: Negro</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- SERVICIOS -->
+        <section class="servicesSection">
+
+          <h2>¿Qué servicio necesitas?</h2>
+
+          <div class="serviceGrid">
+
+            <article class="serviceCard blue">
+
+              <div class="serviceIcon">👤</div>
+
+              <h3>Solicitar Ajustador</h3>
+
+              <p>
+                Atención en accidentes con ajustador profesional.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Ajustador')"
+              >
+                Solicitar ahora
+              </button>
+
+            </article>
+
+            <article class="serviceCard green">
+
+              <div class="serviceIcon">⚖</div>
+
+              <h3>Solicitar Abogado</h3>
+
+              <p>
+                Asesoría legal y defensa especializada.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Abogado')"
+              >
+                Solicitar ahora
+              </button>
+
+            </article>
+
+            <article class="serviceCard orange">
+
+              <div class="serviceIcon">🔧</div>
+
+              <h3>Auxilio Vial</h3>
+
+              <p>
+                Paso de corriente, cambio de llanta, gasolina y más.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Auxilio vial')"
+              >
+                Solicitar ahora
+              </button>
+
+            </article>
+
+            <article class="serviceCard purple">
+
+              <div class="serviceIcon">🚛</div>
+
+              <h3>Cotizar Grúa</h3>
+
+              <p>
+                Cotiza y solicita tu servicio de grúa al instante.
+              </p>
+
+              <button
+                type="button"
+                onclick="solicitarServicio('Grúa')"
+              >
+                Cotizar ahora
+              </button>
+
+            </article>
+
+          </div>
+
+        </section>
+
+        <!-- EMERGENCIAS -->
+        <section class="emergencySection">
+
+          <div class="sectionHeading emergencyHeading">
+            ⚠ ALERTAS DE EMERGENCIA
+          </div>
+
+          <div class="emergencyGrid">
+
+            <article class="emergencyCard">
+
+              <div class="emergencyIcon">
+                🚗
+              </div>
+
+              <div class="emergencyContent">
+
+                <h3>ALERTA MONTACHOQUES</h3>
+
+                <p>
+                  Envía tu ubicación a los miembros activos cercanos
+                  para recibir apoyo inmediato.
+                </p>
+
+                <button
+                  type="button"
+                  onclick="activarAlerta('Montachoques')"
+                >
+                  Activar alerta
+                </button>
+
+              </div>
+
+            </article>
+
+            <article class="emergencyCard">
+
+              <div class="emergencyIcon">
+                🥷
+              </div>
+
+              <div class="emergencyContent">
+
+                <h3>ALERTA ROBO</h3>
+
+                <p>
+                  Envía tu ubicación a los miembros activos cercanos
+                  y reporta el incidente.
+                </p>
+
+                <button
+                  type="button"
+                  onclick="activarAlerta('Robo')"
+                >
+                  Activar alerta
+                </button>
+
+              </div>
+
+            </article>
+
+            <article class="warningCard">
+
+              <div class="warningIcon">
+                ⚠
+              </div>
+
+              <div>
+                <h3>Importante</h3>
+
+                <p>
+                  El uso falso o irresponsable de estas alertas puede
+                  generar sanciones o cancelación de la membresía.
+                </p>
+
+                <button
+                  type="button"
+                  onclick="mostrarTerminos()"
+                >
+                  Ver términos y condiciones
+                </button>
+              </div>
+
+            </article>
+
+          </div>
+
+        </section>
+
+        <!-- PARTE INFERIOR -->
+        <section class="dashboardBottom">
+
+          <div class="recentServices">
+
+            <h2>Mis servicios recientes</h2>
+
+            <div class="tableWrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Folio</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+
+                <tbody id="recentServicesBody">
+
+                  <tr>
+                    <td>SRV-00125</td>
+                    <td>Ajustador</td>
+                    <td>12 jul 2026, 10:30 a.m.</td>
+
+                    <td>
+                      <span class="status process">
+                        En proceso
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="detailButton"
+                        onclick="verDetalle('SRV-00125')"
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>SRV-00124</td>
+                    <td>Auxilio vial</td>
+                    <td>10 jul 2026, 08:15 a.m.</td>
+
+                    <td>
+                      <span class="status finished">
+                        Terminado
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="detailButton"
+                        onclick="verDetalle('SRV-00124')"
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>SRV-00123</td>
+                    <td>Grúa</td>
+                    <td>08 jul 2026, 03:45 p.m.</td>
+
+                    <td>
+                      <span class="status finished">
+                        Terminado
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="detailButton"
+                        onclick="verDetalle('SRV-00123')"
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+          <aside class="membershipInfo">
+
+            <h2>Información de tu membresía</h2>
+
+            <div class="infoRow">
+              <span>▣</span>
+
+              <div>
+                <small>Membresía</small>
+                <b>AS CLICK Particular</b>
+              </div>
+            </div>
+
+            <div class="infoRow">
+              <span>▱</span>
+
+              <div>
+                <small>Número</small>
+                <b>ASC-000245</b>
+              </div>
+            </div>
+
+            <div class="infoRow">
+              <span>◷</span>
+
+              <div>
+                <small>Vigencia</small>
+                <b>14 de julio de 2027</b>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="verMembresia()"
+            >
+              Ver beneficios incluidos
+            </button>
+
+          </aside>
+
+        </section>
+
+      </section>
+
+      <!-- MIS SERVICIOS -->
+      <section
+        class="pageSection"
+        id="seccion-servicios"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">⚒</div>
+
+          <h2>Mis servicios</h2>
+
+          <p>
+            Aquí aparecerán todas las solicitudes de ajustador,
+            abogado, auxilio vial y grúa.
+          </p>
+
+          <button
+            type="button"
+            onclick="cambiarSeccion('inicio')"
+          >
+            Regresar al inicio
+          </button>
+        </div>
+
+      </section>
+
+      <!-- VEHÍCULOS -->
+      <section
+        class="pageSection"
+        id="seccion-vehiculos"
+      >
+
+        <div class="placeholderPage">
+
+          <div class="placeholderIcon">🚙</div>
+
+          <h2>Mis vehículos</h2>
+
+          <div class="vehicleFullCard">
+
+            <div class="vehicleFullImage">🚙</div>
+
+            <div>
+              <h3>Chevrolet Tahoe 2021</h3>
+              <p>Placas: ABC-123-A</p>
+              <p>Color: Negro</p>
+              <span>Vehículo principal</span>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            onclick="agregarVehiculo()"
+          >
+            + Agregar vehículo
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- BENEFICIOS -->
+      <section
+        class="pageSection"
+        id="seccion-beneficios"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">★</div>
+          <h2>Beneficios</h2>
+          <p>Consulta los beneficios incluidos en tu membresía.</p>
+        </div>
+
+      </section>
+
+      <!-- HISTORIAL -->
+      <section
+        class="pageSection"
+        id="seccion-historial"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">◷</div>
+          <h2>Historial</h2>
+          <p>Historial completo de servicios y solicitudes.</p>
+        </div>
+
+      </section>
+
+      <!-- PERFIL -->
+      <section
+        class="pageSection"
+        id="seccion-perfil"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">👤</div>
+          <h2>Mi perfil</h2>
+          <p>Administra tus datos personales y de contacto.</p>
+        </div>
+
+      </section>
+
+      <!-- AYUDA -->
+      <section
+        class="pageSection"
+        id="seccion-ayuda"
+      >
+
+        <div class="placeholderPage">
+          <div class="placeholderIcon">◖◗</div>
+          <h2>Ayuda</h2>
+          <p>Habla con uno de nuestros asesores.</p>
+
+          <button
+            type="button"
+            onclick="hablarAsesor()"
+          >
+            Hablar con un asesor
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- MENÚ INFERIOR MÓVIL -->
+    <nav class="mobileBottomNav">
+
+      <button
+        type="button"
+        class="active"
+        onclick="cambiarSeccion('inicio', this)"
+      >
+        <span>⌂</span>
+        Inicio
+      </button>
+
+      <button
+        type="button"
+        onclick="cambiarSeccion('servicios', this)"
+      >
+        <span>⚒</span>
+        Mis servicios
+      </button>
+
+      <button
+        type="button"
+        onclick="cambiarSeccion('beneficios', this)"
+      >
+        <span>▣</span>
+        Beneficios
+      </button>
+
+      <button
+        type="button"
+        onclick="cambiarSeccion('perfil', this)"
+      >
+        <span>♙</span>
+        Perfil
+      </button>
+
+    </nav>
+
+    <!-- FONDO MENÚ MÓVIL -->
+    <div
+      class="menuOverlay"
+      id="menuOverlay"
+      onclick="cerrarMenuMovil()"
+    ></div>
+
+    <!-- MODAL -->
+    <div
+      class="modalOverlay"
+      id="modalOverlay"
+      onclick="cerrarModal(event)"
+    >
+
+      <div class="modal" id="modal">
+
+        <button
+          type="button"
+          class="modalClose"
+          onclick="cerrarModal()"
+        >
+          ✕
+        </button>
+
+        <div
+          class="modalIcon"
+          id="modalIcon"
+        >
+          ✓
+        </div>
+
+        <h2 id="modalTitle">
+          Solicitud enviada
+        </h2>
+
+        <p id="modalText">
+          Tu solicitud fue registrada correctamente.
+        </p>
+
+        <button
+          type="button"
+          class="modalMainButton"
+          onclick="cerrarModal()"
+        >
+          Entendido
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
