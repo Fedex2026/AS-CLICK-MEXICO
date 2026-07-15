@@ -645,6 +645,66 @@ input {
 }
 
 /* =========================================
+   CREAR CUENTA
+========================================= */
+
+.registerBlock {
+  margin-top: 18px;
+  padding: 17px 15px;
+  border: 1px solid #d9e4ef;
+  border-radius: 12px;
+  background: #f8fbfe;
+  text-align: center;
+}
+
+.registerBlock > p {
+  color: #66788c;
+  font-size: 11px;
+}
+
+.registerButton {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 1px solid #1265d8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1265d8;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.45px;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.registerButton:hover {
+  border-color: #084ca8;
+  background: #1265d8;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(18, 101, 216, 0.2);
+}
+
+.registerButton:active {
+  transform: scale(0.985);
+}
+
+.registerBlock small {
+  display: block;
+  margin-top: 9px;
+  color: #8a99a9;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+/* =========================================
    AVISO DE ACCESO
 ========================================= */
 
@@ -989,6 +1049,14 @@ input {
 
   .loginFooter {
     flex-wrap: wrap;
+  }
+
+  .registerBlock {
+    padding: 15px 12px;
+  }
+
+  .registerButton {
+    min-height: 42px;
   }
 }
 
