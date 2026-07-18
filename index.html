@@ -957,19 +957,132 @@
         id="seccion-historial"
       >
 
-        <div class="placeholderPage">
+        <div class="historyPage">
 
-          <div class="placeholderIcon">
-            ◷
+          <div class="sectionTitleRow">
+
+            <div>
+              <span class="sectionEyebrow">AS CLICK</span>
+              <h1>Historial de servicios</h1>
+              <p>
+                Consulta todas tus solicitudes, revisa su estado y abre el detalle de cada servicio.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="primaryActionButton"
+              onclick="cambiarSeccion('inicio')"
+            >
+              + Solicitar servicio
+            </button>
+
           </div>
 
-          <h2>
-            Historial
-          </h2>
+          <div class="historyStats">
 
-          <p>
-            Historial completo de servicios y solicitudes.
-          </p>
+            <article class="historyStatCard">
+              <span>Servicios totales</span>
+              <strong id="historialTotal">0</strong>
+              <small>Solicitudes registradas</small>
+            </article>
+
+            <article class="historyStatCard">
+              <span>En proceso</span>
+              <strong id="historialProceso">0</strong>
+              <small>Servicios activos</small>
+            </article>
+
+            <article class="historyStatCard">
+              <span>Terminados</span>
+              <strong id="historialTerminados">0</strong>
+              <small>Servicios completados</small>
+            </article>
+
+            <article class="historyStatCard">
+              <span>Cancelados</span>
+              <strong id="historialCancelados">0</strong>
+              <small>Solicitudes canceladas</small>
+            </article>
+
+          </div>
+
+          <div class="historyFilters">
+
+            <label class="historySearch">
+              <span>⌕</span>
+              <input
+                type="search"
+                id="buscadorHistorial"
+                placeholder="Buscar por folio, servicio, vehículo o placas"
+                oninput="filtrarHistorial()"
+              />
+            </label>
+
+            <select
+              id="filtroEstadoHistorial"
+              onchange="filtrarHistorial()"
+              aria-label="Filtrar historial por estado"
+            >
+              <option value="todos">Todos los estados</option>
+              <option value="solicitado">Solicitado</option>
+              <option value="asignado">Asignado</option>
+              <option value="en_camino">En camino</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="finalizado">Finalizado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+
+            <select
+              id="filtroTipoHistorial"
+              onchange="filtrarHistorial()"
+              aria-label="Filtrar historial por tipo de servicio"
+            >
+              <option value="todos">Todos los servicios</option>
+              <option value="ajustador">Ajustador</option>
+              <option value="abogado">Abogado</option>
+              <option value="auxilio vial">Auxilio vial</option>
+              <option value="grúa">Grúa</option>
+            </select>
+
+          </div>
+
+          <div class="historyTableCard">
+
+            <div class="tableWrapper">
+
+              <table class="historyTable">
+
+                <thead>
+                  <tr>
+                    <th>Folio</th>
+                    <th>Servicio</th>
+                    <th>Vehículo</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+
+                <tbody id="historialServiciosBody">
+
+                  <tr class="emptyHistoryRow">
+                    <td colspan="6">
+                      <div class="emptyHistory">
+                        <span>◷</span>
+                        <b>Aún no hay servicios en tu historial</b>
+                        <p>Cuando solicites un servicio aparecerá aquí.</p>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -981,19 +1094,195 @@
         id="seccion-perfil"
       >
 
-        <div class="placeholderPage">
+        <div class="profilePage">
 
-          <div class="placeholderIcon">
-            👤
+          <div class="sectionTitleRow">
+
+            <div>
+              <span class="sectionEyebrow">MI CUENTA</span>
+              <h1>Mi perfil</h1>
+              <p>Consulta tus datos personales, membresía y vehículo principal.</p>
+            </div>
+
+            <button
+              type="button"
+              class="secondaryActionButton"
+              onclick="hablarAsesor()"
+            >
+              Hablar con un asesor
+            </button>
+
           </div>
 
-          <h2>
-            Mi perfil
-          </h2>
+          <div class="profileLayout">
 
-          <p>
-            Administra tus datos personales y de contacto.
-          </p>
+            <aside class="profileSummaryCard">
+
+              <div class="profileAvatarLarge" id="perfilAvatar">
+                U
+              </div>
+
+              <h2 id="perfilNombreResumen">Usuario</h2>
+              <p id="perfilCorreoResumen">Correo no registrado</p>
+
+              <span class="profileMembershipStatus" id="perfilEstadoMembresia">
+                Cliente registrado
+              </span>
+
+              <div class="profileSummaryInfo">
+
+                <div>
+                  <small>Número de membresía</small>
+                  <b id="perfilNumeroMembresia">No aplica</b>
+                </div>
+
+                <div>
+                  <small>Vigencia</small>
+                  <b id="perfilVigencia">No aplica</b>
+                </div>
+
+                <div>
+                  <small>Tipo de tarifa</small>
+                  <b id="perfilTarifa">Público general</b>
+                </div>
+
+              </div>
+
+              <button
+                type="button"
+                class="profileBenefitsButton"
+                onclick="cambiarSeccion('beneficios')"
+              >
+                Ver beneficios
+              </button>
+
+            </aside>
+
+            <div class="profileContent">
+
+              <article class="profileInfoCard">
+
+                <div class="profileCardHeader">
+                  <div>
+                    <span>👤</span>
+                    <div>
+                      <h2>Datos personales</h2>
+                      <p>Información registrada en tu cuenta.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="profileDataGrid">
+
+                  <div class="profileDataItem">
+                    <small>Nombre completo</small>
+                    <b id="perfilNombre">No registrado</b>
+                  </div>
+
+                  <div class="profileDataItem">
+                    <small>Teléfono</small>
+                    <b id="perfilTelefono">No registrado</b>
+                  </div>
+
+                  <div class="profileDataItem">
+                    <small>Correo electrónico</small>
+                    <b id="perfilCorreo">No registrado</b>
+                  </div>
+
+                  <div class="profileDataItem">
+                    <small>Tipo de cliente</small>
+                    <b id="perfilTipoCliente">Particular</b>
+                  </div>
+
+                </div>
+
+                <button
+                  type="button"
+                  class="outlineActionButton"
+                  onclick="hablarAsesor()"
+                >
+                  Solicitar actualización de datos
+                </button>
+
+              </article>
+
+              <article class="profileInfoCard">
+
+                <div class="profileCardHeader">
+                  <div>
+                    <span>🚙</span>
+                    <div>
+                      <h2>Vehículo principal</h2>
+                      <p>Vehículo seleccionado para tus solicitudes.</p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onclick="cambiarSeccion('vehiculos')"
+                  >
+                    Ver vehículos
+                  </button>
+                </div>
+
+                <div class="profileVehicleCard">
+
+                  <div class="profileVehicleIcon">🚙</div>
+
+                  <div>
+                    <h3 id="perfilVehiculoNombre">Vehículo sin registrar</h3>
+                    <p id="perfilVehiculoPlacas">Placas: Sin registrar</p>
+                    <p id="perfilVehiculoColor">Color: Sin registrar</p>
+                    <small id="perfilVehiculoSerie">Serie: Sin registrar</small>
+                  </div>
+
+                </div>
+
+              </article>
+
+              <article class="profileInfoCard profileSecurityCard">
+
+                <div class="profileCardHeader">
+                  <div>
+                    <span>🔒</span>
+                    <div>
+                      <h2>Seguridad y acceso</h2>
+                      <p>Opciones relacionadas con tu cuenta.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="profileActions">
+
+                  <button
+                    type="button"
+                    onclick="mostrarModal('🔒', 'Cambiar contraseña', 'Para cambiar tu contraseña comunícate con un asesor o utiliza la opción de recuperación desde la pantalla de inicio de sesión.')"
+                  >
+                    Cambiar contraseña
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="hablarAsesor()"
+                  >
+                    Soporte de cuenta
+                  </button>
+
+                  <button
+                    type="button"
+                    class="dangerActionButton"
+                    onclick="cerrarSesion()"
+                  >
+                    Cerrar sesión
+                  </button>
+
+                </div>
+
+              </article>
+
+            </div>
+
+          </div>
 
         </div>
 
