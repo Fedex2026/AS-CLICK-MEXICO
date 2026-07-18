@@ -2279,5 +2279,3 @@ window.cerrarSesion =
 window.cerrarModal =
 
   cerrarModal;
-
-
