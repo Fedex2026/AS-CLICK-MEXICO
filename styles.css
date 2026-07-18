@@ -1226,3 +1226,86 @@ th {
     text-align: center;
   }
 }
+
+
+/* =========================
+   BENEFICIOS
+========================= */
+
+.beneficiosContainer{
+    max-width:1200px;
+    margin:auto;
+    padding:40px;
+}
+
+.beneficiosTexto{
+    color:#666;
+    margin-bottom:35px;
+    text-align:center;
+}
+
+.beneficiosContainer h1{
+    text-align:center;
+    color:#0b2c5f;
+    margin-bottom:10px;
+}
+
+.beneficiosGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    gap:30px;
+}
+
+.beneficioCard{
+    background:#fff;
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.cliente{
+    border-top:6px solid #28a745;
+}
+
+.miembro{
+    border-top:6px solid #0b5ed7;
+}
+
+.beneficioCard h2{
+    margin-bottom:20px;
+}
+
+.beneficioCard ul{
+    list-style:none;
+    padding:0;
+}
+
+.beneficioCard li{
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+}
+
+.beneficioInfo{
+    margin-top:40px;
+    background:#0b5ed7;
+    color:#fff;
+    padding:35px;
+    border-radius:20px;
+    text-align:center;
+}
+
+.beneficioInfo h2{
+    margin-bottom:15px;
+}
+
+.beneficioInfo button{
+    margin-top:20px;
+    background:#fff;
+    color:#0b5ed7;
+    border:none;
+    padding:15px 35px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
