@@ -10,7 +10,10 @@ import {
 
 import {
   doc,
-  getDoc
+  getDoc,
+  addDoc,
+  collection,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 /* =========================================
@@ -380,11 +383,360 @@ function cerrarMenuMovil() {
    SERVICIOS
 ========================================= */
 
-function solicitarServicio(servicio) {
+async function solicitarServicio(servicio) {
+  if (!usuarioActual) {
+    mostrarModal(
+      "⚠",
+      "Sesión no disponible",
+      "Inicia sesión nuevamente para solicitar asistencia."
+    );
+
+    return;
+  }
+
+  const confirmar = confirm(
+    `¿Deseas solicitar el servicio de ${servicio}? Se pedirá permiso para compartir tu ubicación con cabina.`
+  );
+
+  if (!confirmar) return;
+
   mostrarModal(
     iconoServicio(servicio),
-    `Solicitar ${servicio}`,
-    `Tu solicitud de ${servicio.toLowerCase()} está lista para ser enviada. En la siguiente etapa conectaremos este botón con Firestore y el panel de cabina.`
+    "Obteniendo ubicación",
+    "Permite el acceso a tu ubicación para enviar la solicitud a cabina."
+  );
+
+  try {
+    const ubicacion =
+      await obtenerUbicacionActual();
+
+    const perfilRef = doc(
+      db,
+      "usuarios",
+      usuarioActual.uid
+    );
+
+    const perfilSnap =
+      await getDoc(perfilRef);
+
+    if (!perfilSnap.exists()) {
+      throw new Error(
+        "No encontramos tu perfil de usuario."
+      );
+    }
+
+    const perfil =
+      perfilSnap.data();
+
+    const tipoServicio =
+      normalizarTipoServicio(servicio);
+
+    const solicitud = {
+      uidCliente:
+        usuarioActual.uid,
+
+      cliente: {
+        nombre:
+          perfil.nombre ||
+          usuarioActual.displayName ||
+          "Cliente",
+
+        telefono:
+          perfil.telefono || "",
+
+        correo:
+          perfil.correo ||
+          usuarioActual.email ||
+          "",
+
+        tipoCliente:
+          perfil.tipoCliente ||
+          "particular"
+      },
+
+      membresia: {
+        tieneMembresia:
+          perfil.tieneMembresia === true,
+
+        numeroMiembro:
+          perfil.numeroMiembro || "",
+
+        estadoMembresia:
+          perfil.estadoMembresia ||
+          "sin_membresia",
+
+        tipoMembresia:
+          perfil.tipoMembresia || "",
+
+        tarifa:
+          perfil.tarifa ||
+          (
+            perfil.tieneMembresia
+              ? "preferencial"
+              : "publico_general"
+          )
+      },
+
+      vehiculo: {
+        marca:
+          perfil.marca ||
+          perfil.vehiculoPrincipal?.marca ||
+          "",
+
+        subMarca:
+          perfil.subMarca ||
+          perfil.vehiculoPrincipal?.subMarca ||
+          "",
+
+        color:
+          perfil.color ||
+          perfil.vehiculoPrincipal?.color ||
+          "",
+
+        placas:
+          perfil.placas ||
+          perfil.vehiculoPrincipal?.placas ||
+          "",
+
+        serie:
+          perfil.serie ||
+          perfil.vehiculoPrincipal?.serie ||
+          ""
+      },
+
+      servicio: {
+        tipo:
+          tipoServicio,
+
+        nombre:
+          servicio
+      },
+
+      ubicacion: {
+        latitud:
+          ubicacion.latitud,
+
+        longitud:
+          ubicacion.longitud,
+
+        precision:
+          ubicacion.precision,
+
+        enlaceGoogleMaps:
+          `https://www.google.com/maps?q=${ubicacion.latitud},${ubicacion.longitud}`
+      },
+
+      /*
+        El folio queda vacío porque se generará
+        desde la página de toma de reportes.
+      */
+
+      folioOficial: "",
+
+      estado:
+        "pendiente_cabina",
+
+      asignacion: {
+        uidProveedor: "",
+        nombreProveedor: "",
+        telefonoProveedor: "",
+        fotoProveedor: "",
+        tiempoEstimadoMinutos: null
+      },
+
+      creadoEn:
+        serverTimestamp(),
+
+      actualizadoEn:
+        serverTimestamp()
+    };
+
+    const solicitudRef =
+      await addDoc(
+        collection(
+          db,
+          "solicitudes"
+        ),
+        solicitud
+      );
+
+    console.log(
+      "Solicitud creada:",
+      solicitudRef.id
+    );
+
+    mostrarModal(
+      "✓",
+      "Solicitud enviada a cabina",
+      `Recibimos tu solicitud de ${servicio}. Cabina revisará la información y generará el folio oficial.`
+    );
+  } catch (error) {
+    console.error(
+      "Error al solicitar servicio:",
+      error
+    );
+
+    mostrarModal(
+      "⚠",
+      "No fue posible enviar la solicitud",
+      obtenerMensajeSolicitud(error)
+    );
+  }
+}
+
+/* =========================================
+   TIPO DE SERVICIO
+========================================= */
+
+function normalizarTipoServicio(servicio) {
+  const tipos = {
+    Ajustador:
+      "ajustador",
+
+    Abogado:
+      "abogado",
+
+    "Auxilio vial":
+      "auxilio_vial",
+
+    Grúa:
+      "grua"
+  };
+
+  return tipos[servicio] || "otro";
+}
+
+/* =========================================
+   UBICACIÓN GPS
+========================================= */
+
+function obtenerUbicacionActual() {
+  return new Promise(
+    (resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(
+          crearErrorSolicitud(
+            "gps/no-disponible",
+            "Este dispositivo no permite obtener la ubicación."
+          )
+        );
+
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        posicion => {
+          resolve({
+            latitud:
+              posicion.coords.latitude,
+
+            longitud:
+              posicion.coords.longitude,
+
+            precision:
+              posicion.coords.accuracy
+          });
+        },
+
+        error => {
+          if (
+            error.code ===
+            error.PERMISSION_DENIED
+          ) {
+            reject(
+              crearErrorSolicitud(
+                "gps/permiso-denegado",
+                "Debes permitir el acceso a tu ubicación para solicitar el servicio."
+              )
+            );
+
+            return;
+          }
+
+          if (
+            error.code ===
+            error.POSITION_UNAVAILABLE
+          ) {
+            reject(
+              crearErrorSolicitud(
+                "gps/no-disponible",
+                "No fue posible determinar tu ubicación."
+              )
+            );
+
+            return;
+          }
+
+          if (
+            error.code ===
+            error.TIMEOUT
+          ) {
+            reject(
+              crearErrorSolicitud(
+                "gps/tiempo-agotado",
+                "La ubicación tardó demasiado. Inténtalo nuevamente."
+              )
+            );
+
+            return;
+          }
+
+          reject(
+            crearErrorSolicitud(
+              "gps/error",
+              "No fue posible obtener tu ubicación."
+            )
+          );
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 30000
+        }
+      );
+    }
+  );
+}
+
+function crearErrorSolicitud(
+  codigo,
+  mensaje
+) {
+  const error =
+    new Error(mensaje);
+
+  error.code =
+    codigo;
+
+  return error;
+}
+
+function obtenerMensajeSolicitud(error) {
+  const mensajes = {
+    "gps/permiso-denegado":
+      "Debes permitir la ubicación para enviar la solicitud a cabina.",
+
+    "gps/no-disponible":
+      "No fue posible obtener tu ubicación. Activa el GPS e inténtalo nuevamente.",
+
+    "gps/tiempo-agotado":
+      "La ubicación tardó demasiado. Acércate a una ventana o activa la ubicación precisa.",
+
+    "permission-denied":
+      "Firestore bloqueó la solicitud. Revisa las reglas de seguridad.",
+
+    "firestore/permission-denied":
+      "Firestore bloqueó la solicitud. Revisa las reglas de seguridad.",
+
+    "unavailable":
+      "El servicio está temporalmente fuera de línea."
+  };
+
+  return (
+    mensajes[error?.code] ||
+    error?.message ||
+    "Ocurrió un problema al enviar la solicitud."
   );
 }
 
