@@ -1,106 +1,15 @@
-import {
-
- 
-
-  auth,
-
- 
-
-  db
-
- 
-
-} from "./firebase-config.js";
-
- 
-
- 
-
- 
-
-import {
-
- 
-
-  onAuthStateChanged,
-
- 
-
-  signOut
-
- 
-
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
- 
-
- 
-
- 
-
-import {
-
- 
-
-  doc,
-
- 
-
-  getDoc
-
- 
-
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
- 
-
- 
-
- 
-
-/* =========================================
-
- 
-
-   CONFIGURACIÓN
-
- 
-
-========================================= */
-
- 
-
- 
-
- 
-
 /*
 
  
-
-  Cambia estos dos números por los reales.
-
- 
-
- 
-
- 
+ Cambia estos dos números por los reales.
 
   Formato:
 
- 
-
-  52 + lada + número
-
- 
+ 52 + lada + número
 
   Sin espacios, guiones ni signo +
 
- 
-
-*/
-
- 
+ */
 
  
 
@@ -108,25 +17,15 @@ import {
 
 const TELEFONO_CABINA = "525563577842";
 
- 
-
 const TELEFONO_EMERGENCIAS = "525585373051";
-
- 
 
 const TELEFONO_ASESOR = TELEFONO_CABINA;
 
  
 
- 
+ /* =========================================
 
- 
-
-/* =========================================
-
- 
-
-   VARIABLES
+  VARIABLES
 
  
 
@@ -143,6 +42,10 @@ let seccionActual = "inicio";
  
 
 let usuarioActual = null;
+
+ 
+
+let historialServicios = [];
 
  
 
@@ -254,107 +157,113 @@ let perfilActual = {
 
  
 
-onAuthStateChanged(auth, async user => {
+ 
+
+let auth = null;
+
+let db = null;
+
+let firebaseSignOut = null;
+
+let firestoreDoc = null;
+
+let firestoreGetDoc = null;
 
  
 
-  if (!user) {
-
- 
-
-    window.location.replace("./login.html");
-
- 
-
-    return;
-
- 
-
-  }
-
- 
-
- 
-
- 
-
-  usuarioActual = user;
-
- 
-
- 
-
- 
+async function iniciarFirebase() {
 
   try {
 
- 
+    const firebaseConfigModule = await import("./firebase-config.js");
 
-    await cargarDatosUsuario(user);
+    const authModule = await import(
 
- 
+      "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
 
-  } catch (error) {
+    );
 
- 
+    const firestoreModule = await import(
 
-    console.error(
-
- 
-
-      "Error al cargar los datos del usuario:",
-
- 
-
-      error
-
- 
+      "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
 
     );
 
  
 
- 
+    auth = firebaseConfigModule.auth;
+
+    db = firebaseConfigModule.db;
+
+    firebaseSignOut = authModule.signOut;
+
+    firestoreDoc = firestoreModule.doc;
+
+    firestoreGetDoc = firestoreModule.getDoc;
 
  
 
-    cargarDatosBasicos(user);
+    authModule.onAuthStateChanged(auth, async user => {
+
+      if (!user) {
+
+        window.location.replace("./login.html");
+
+        return;
+
+      }
 
  
 
+      usuarioActual = user;
+
  
+
+      try {
+
+        await cargarDatosUsuario(user);
+
+      } catch (error) {
+
+        console.error("Error al cargar los datos del usuario:", error);
+
+        cargarDatosBasicos(user);
+
+ 
+
+        mostrarModal(
+
+          "⚠",
+
+          "No fue posible cargar tu perfil",
+
+          "Tu sesión está activa, pero no pudimos cargar todos tus datos. Revisa tu conexión e inténtalo nuevamente."
+
+        );
+
+      }
+
+    });
+
+  } catch (error) {
+
+    console.error("No fue posible iniciar Firebase:", error);
 
  
 
     mostrarModal(
 
- 
-
       "⚠",
 
- 
+      "Problema de conexión",
 
-      "No fue posible cargar tu perfil",
-
- 
-
-      "Tu sesión está activa, pero no pudimos cargar todos tus datos. Revisa tu conexión e inténtalo nuevamente."
-
- 
+      "La interfaz está disponible, pero Firebase no pudo iniciar. Revisa la conexión o la configuración."
 
     );
 
- 
-
   }
 
- 
-
-});
-
- 
-
- 
+}
 
  
 
@@ -378,7 +287,7 @@ async function cargarDatosUsuario(user) {
 
  
 
-  const referenciaUsuario = doc(
+  const referenciaUsuario = firestoreDoc(
 
  
 
@@ -406,7 +315,7 @@ async function cargarDatosUsuario(user) {
 
  
 
-    await getDoc(referenciaUsuario);
+    await firestoreGetDoc(referenciaUsuario);
 
  
 
@@ -1974,6 +1883,134 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+   PERFIL
+
+ 
+
+========================================= */
+
+ 
+
+function actualizarPerfilPantalla(perfil) {
+
+  const inicial =
+
+    perfil.nombre?.trim().charAt(0).toUpperCase() || "U";
+
+ 
+
+  const nombreVehiculo =
+
+    [perfil.marca, perfil.subMarca]
+
+      .filter(Boolean)
+
+      .join(" ") || "Vehículo sin registrar";
+
+ 
+
+  actualizarTexto("perfilAvatar", inicial);
+
+  actualizarTexto("perfilNombreResumen", perfil.nombre || "Usuario");
+
+  actualizarTexto("perfilCorreoResumen", perfil.correo || "Correo no registrado");
+
+  actualizarTexto(
+
+    "perfilEstadoMembresia",
+
+    perfil.tieneMembresia
+
+      ? `Membresía ${obtenerTextoEstado(perfil).toLowerCase()}`
+
+      : "Cliente registrado"
+
+  );
+
+  actualizarTexto(
+
+    "perfilNumeroMembresia",
+
+    perfil.tieneMembresia
+
+      ? perfil.numeroMiembro || "Pendiente"
+
+      : "No aplica"
+
+  );
+
+  actualizarTexto(
+
+    "perfilVigencia",
+
+    perfil.tieneMembresia
+
+      ? perfil.vigencia || "Pendiente"
+
+      : "No aplica"
+
+  );
+
+  actualizarTexto(
+
+    "perfilTarifa",
+
+    perfil.tieneMembresia && perfil.estadoMembresia === "activa"
+
+      ? "Preferencial"
+
+      : "Público general"
+
+  );
+
+  actualizarTexto("perfilNombre", perfil.nombre || "No registrado");
+
+  actualizarTexto("perfilTelefono", perfil.telefono || "No registrado");
+
+  actualizarTexto("perfilCorreo", perfil.correo || "No registrado");
+
+  actualizarTexto(
+
+    "perfilTipoCliente",
+
+    obtenerTipoClienteTexto(perfil.tipoCliente)
+
+  );
+
+  actualizarTexto("perfilVehiculoNombre", nombreVehiculo);
+
+  actualizarTexto(
+
+    "perfilVehiculoPlacas",
+
+    `Placas: ${perfil.placas || "Sin registrar"}`
+
+  );
+
+  actualizarTexto(
+
+    "perfilVehiculoColor",
+
+    `Color: ${perfil.color || "Sin registrar"}`
+
+  );
+
+  actualizarTexto(
+
+    "perfilVehiculoSerie",
+
+    `Serie: ${perfil.serie || "Sin registrar"}`
+
+  );
+
+}
+
+ 
+
+/* =========================================
+
+ 
+
    VEHÍCULO
 
  
@@ -2499,6 +2536,14 @@ function cambiarSeccion(
  
 
   seccionActual = seccion;
+
+ 
+
+  if (seccion === "historial") {
+
+    cargarHistorialServicios();
+
+  }
 
  
 
@@ -3030,6 +3075,18 @@ async function solicitarServicio(servicio) {
 
  
 
+  await guardarSolicitudServicio(
+
+    servicio,
+
+    tipoTarifa,
+
+    ubicacion
+
+  );
+
+ 
+
   const mensaje =
 
  
@@ -3263,6 +3320,550 @@ function construirMensajeServicio(
  
 
  
+
+ 
+
+/* =========================================
+
+ 
+
+   HISTORIAL DE SERVICIOS
+
+ 
+
+========================================= */
+
+ 
+
+async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion) {
+
+  if (!usuarioActual) return;
+
+ 
+
+  try {
+
+    await addDoc(collection(db, "servicios"), {
+
+      usuarioId: usuarioActual.uid,
+
+      uid: usuarioActual.uid,
+
+      folio: generarFolioServicio(),
+
+      servicio,
+
+      estado: "solicitado",
+
+      tipoTarifa,
+
+      ubicacion,
+
+      cliente: {
+
+        nombre: perfilActual.nombre || "",
+
+        telefono: perfilActual.telefono || "",
+
+        correo: perfilActual.correo || ""
+
+      },
+
+      vehiculo: {
+
+        marca: perfilActual.marca || "",
+
+        subMarca: perfilActual.subMarca || "",
+
+        color: perfilActual.color || "",
+
+        placas: perfilActual.placas || "",
+
+        serie: perfilActual.serie || ""
+
+      },
+
+      creadoEn: serverTimestamp(),
+
+      fechaCreacion: new Date().toISOString()
+
+    });
+
+ 
+
+    await cargarHistorialServicios();
+
+  } catch (error) {
+
+    console.error("No fue posible guardar la solicitud:", error);
+
+  }
+
+}
+
+ 
+
+function generarFolioServicio() {
+
+  const fecha = new Date();
+
+  const anio = fecha.getFullYear().toString().slice(-2);
+
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+
+  const dia = String(fecha.getDate()).padStart(2, "0");
+
+  const aleatorio = Math.floor(1000 + Math.random() * 9000);
+
+  return `ASC-${anio}${mes}${dia}-${aleatorio}`;
+
+}
+
+ 
+
+async function cargarHistorialServicios() {
+
+  if (!usuarioActual) return;
+
+ 
+
+  try {
+
+    const consulta = query(
+
+      collection(db, "servicios"),
+
+      where("usuarioId", "==", usuarioActual.uid)
+
+    );
+
+ 
+
+    const resultado = await getDocs(consulta);
+
+ 
+
+    historialServicios = resultado.docs
+
+      .map(documento => ({
+
+        id: documento.id,
+
+        ...documento.data()
+
+      }))
+
+      .sort((a, b) => obtenerMilisegundos(b) - obtenerMilisegundos(a));
+
+ 
+
+    actualizarResumenHistorial();
+
+    renderizarHistorial(historialServicios);
+
+  } catch (error) {
+
+    console.error("Error al cargar el historial:", error);
+
+    renderizarHistorial([]);
+
+  }
+
+}
+
+ 
+
+function obtenerMilisegundos(servicio) {
+
+  const fecha = servicio.creadoEn || servicio.fechaCreacion || servicio.fecha || "";
+
+ 
+
+  if (fecha && typeof fecha.toDate === "function") {
+
+    return fecha.toDate().getTime();
+
+  }
+
+ 
+
+  const valor = new Date(fecha).getTime();
+
+  return Number.isNaN(valor) ? 0 : valor;
+
+}
+
+ 
+
+function actualizarResumenHistorial() {
+
+  const estadosProceso = [
+
+    "solicitado",
+
+    "asignado",
+
+    "en_camino",
+
+    "en_proceso",
+
+    "aceptado",
+
+    "arribo"
+
+  ];
+
+ 
+
+  actualizarTexto("historialTotal", String(historialServicios.length));
+
+  actualizarTexto(
+
+    "historialProceso",
+
+    String(historialServicios.filter(item =>
+
+      estadosProceso.includes(normalizarEstado(item.estado))
+
+    ).length)
+
+  );
+
+  actualizarTexto(
+
+    "historialTerminados",
+
+    String(historialServicios.filter(item =>
+
+      ["finalizado", "terminado", "completado"].includes(
+
+        normalizarEstado(item.estado)
+
+      )
+
+    ).length)
+
+  );
+
+  actualizarTexto(
+
+    "historialCancelados",
+
+    String(historialServicios.filter(item =>
+
+      ["cancelado", "cancelada"].includes(normalizarEstado(item.estado))
+
+    ).length)
+
+  );
+
+}
+
+ 
+
+function filtrarHistorial() {
+
+  const busqueda =
+
+    document.getElementById("buscadorHistorial")
+
+      ?.value.trim().toLowerCase() || "";
+
+ 
+
+  const estado =
+
+    document.getElementById("filtroEstadoHistorial")?.value || "todos";
+
+ 
+
+  const tipo =
+
+    document.getElementById("filtroTipoHistorial")?.value || "todos";
+
+ 
+
+  const filtrados = historialServicios.filter(item => {
+
+    const vehiculo = item.vehiculo || {};
+
+    const texto = [
+
+      item.folio,
+
+      item.servicio,
+
+      item.tipoServicio,
+
+      vehiculo.marca,
+
+      vehiculo.subMarca,
+
+      vehiculo.placas,
+
+      item.marca,
+
+      item.subMarca,
+
+      item.placas
+
+    ]
+
+      .filter(Boolean)
+
+      .join(" ")
+
+      .toLowerCase();
+
+ 
+
+    const estadoItem = normalizarEstado(item.estado || "solicitado");
+
+    const tipoItem = String(item.servicio || item.tipoServicio || "")
+
+      .trim()
+
+      .toLowerCase();
+
+ 
+
+    return (
+
+      (!busqueda || texto.includes(busqueda)) &&
+
+      (estado === "todos" || estadoItem === estado) &&
+
+      (tipo === "todos" || tipoItem === tipo)
+
+    );
+
+  });
+
+ 
+
+  renderizarHistorial(filtrados);
+
+}
+
+ 
+
+function renderizarHistorial(servicios) {
+
+  const cuerpo = document.getElementById("historialServiciosBody");
+
+  if (!cuerpo) return;
+
+ 
+
+  if (!servicios.length) {
+
+    cuerpo.innerHTML = `
+
+      <tr class="emptyHistoryRow">
+
+        <td colspan="6">
+
+          <div class="emptyHistory">
+
+            <span>◷</span>
+
+            <b>No hay servicios para mostrar</b>
+
+            <p>Las solicitudes que coincidan con tus filtros aparecerán aquí.</p>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+ 
+
+  cuerpo.innerHTML = servicios.map(item => {
+
+    const vehiculo = item.vehiculo || {};
+
+    const servicio = item.servicio || item.tipoServicio || "Servicio";
+
+    const estado = normalizarEstado(item.estado || "solicitado");
+
+    const nombreVehiculo = [
+
+      vehiculo.marca || item.marca,
+
+      vehiculo.subMarca || item.subMarca
+
+    ].filter(Boolean).join(" ") || "Vehículo no registrado";
+
+    const placas = vehiculo.placas || item.placas || "Sin placas";
+
+ 
+
+    return `
+
+      <tr>
+
+        <td><b>${escaparHtml(item.folio || item.id.slice(0, 8).toUpperCase())}</b></td>
+
+        <td>${escaparHtml(servicio)}</td>
+
+        <td>${escaparHtml(nombreVehiculo)}<br><small>${escaparHtml(placas)}</small></td>
+
+        <td>${escaparHtml(formatearFechaServicio(item))}</td>
+
+        <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
+
+        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+
+      </tr>
+
+    `;
+
+  }).join("");
+
+}
+
+ 
+
+function formatearFechaServicio(item) {
+
+  const valor = item.creadoEn || item.fechaCreacion || item.fecha || "";
+
+  let fecha;
+
+ 
+
+  if (valor && typeof valor.toDate === "function") {
+
+    fecha = valor.toDate();
+
+  } else {
+
+    fecha = new Date(valor);
+
+  }
+
+ 
+
+  if (!fecha || Number.isNaN(fecha.getTime())) return "Sin fecha";
+
+ 
+
+  return fecha.toLocaleDateString("es-MX", {
+
+    day: "2-digit",
+
+    month: "short",
+
+    year: "numeric",
+
+    hour: "2-digit",
+
+    minute: "2-digit"
+
+  });
+
+}
+
+ 
+
+function obtenerEtiquetaEstado(estado) {
+
+  const etiquetas = {
+
+    solicitado: "Solicitado",
+
+    asignado: "Asignado",
+
+    aceptado: "Aceptado",
+
+    en_camino: "En camino",
+
+    arribo: "En sitio",
+
+    en_proceso: "En proceso",
+
+    finalizado: "Finalizado",
+
+    terminado: "Finalizado",
+
+    completado: "Finalizado",
+
+    cancelado: "Cancelado",
+
+    cancelada: "Cancelado"
+
+  };
+
+ 
+
+  return etiquetas[estado] || estado.replace(/_/g, " ");
+
+}
+
+ 
+
+function obtenerClaseEstado(estado) {
+
+  if (["finalizado", "terminado", "completado"].includes(estado)) {
+
+    return "finished";
+
+  }
+
+ 
+
+  if (["cancelado", "cancelada"].includes(estado)) {
+
+    return "cancelled";
+
+  }
+
+ 
+
+  return "process";
+
+}
+
+ 
+
+function escaparHtml(valor) {
+
+  return String(valor ?? "")
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
+
+ 
+
+function escaparAtributo(valor) {
+
+  return String(valor ?? "")
+
+    .replaceAll("\\", "\\\\")
+
+    .replaceAll("'", "\\'")
+
+    .replaceAll("\n", " ")
+
+    .replaceAll("\r", " ");
+
+}
 
  
 
@@ -3994,7 +4595,7 @@ async function cerrarSesion() {
 
  
 
-    await signOut(auth);
+    await firebaseSignOut(auth);
 
  
 
@@ -4559,3 +5160,21 @@ window.cerrarModal =
  
 
   cerrarModal;
+
+ 
+
+window.filtrarHistorial =
+
+ 
+
+  filtrarHistorial;
+
+ 
+
+window.mostrarModal = mostrarModal;
+
+ 
+
+ 
+
+iniciarFirebase();
