@@ -34,6 +34,156 @@
 
   <meta name="theme-color" content="#052b5c" />
 
+ 
+
+  <style>
+
+    .vehiclesPage{padding:28px;max-width:1280px;margin:0 auto}.vehiclesList{display:grid;gap:16px;margin-top:20px}.savedVehicleCard{display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:center;background:#fff;border:1px solid #dce5f0;border-radius:12px;padding:18px;box-shadow:0 4px 16px rgba(5,43,92,.05)}.savedVehicleCard.principal{border-color:#1f6fe5;box-shadow:0 0 0 2px rgba(31,111,229,.08)}.savedVehicleIcon{width:68px;height:68px;border-radius:12px;background:#edf4fc;display:grid;place-items:center;font-size:34px}.savedVehicleData h3{margin:0 0 6px;color:#092b52}.savedVehicleData p,.savedVehicleData small{display:block;margin:3px 0;color:#62758c}.savedVehicleActions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}.savedVehicleActions button{border:1px solid #1f6fe5;background:#fff;color:#135fca;border-radius:7px;padding:9px 12px;font-weight:700;cursor:pointer}.savedVehicleActions .deleteVehicleButton{border-color:#efb1b6;color:#c82431}.principalVehicleBadge{background:#e8f8ef;color:#087a3e;border-radius:999px;padding:7px 11px;font-weight:700;font-size:12px}.vehiclesEmptyState{text-align:center;background:#fff;border:1px dashed #b9c8d9;border-radius:12px;padding:50px;color:#62758c}.vehiclesEmptyState span{display:block;font-size:42px;margin-bottom:10px}
+
+    .customOverlay{position:fixed;inset:0;background:rgba(6,25,48,.68);display:none;align-items:center;justify-content:center;z-index:3000;padding:18px}.customOverlay.active{display:flex}.customPanel{width:min(620px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(0,0,0,.3);position:relative}.customPanelHeader{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #e2e9f1}.customPanelHeader h2{margin:0;color:#092b52}.customClose{border:0;background:transparent;font-size:24px;color:#64778d;cursor:pointer}.notificationToolbar{display:flex;justify-content:flex-end;padding:12px 22px;border-bottom:1px solid #edf1f6}.notificationToolbar button{border:0;background:transparent;color:#1265d6;font-weight:700;cursor:pointer}.notificationToolbar button:disabled{opacity:.4;cursor:default}.notificationsList{padding:8px 14px 18px}.notificationItem{display:grid;grid-template-columns:48px 1fr;gap:10px;padding:12px 8px;border-bottom:1px solid #edf1f6}.notificationItem.unread{background:#f5f9ff;border-radius:10px}.notificationTypeIcon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#e7f0fd;font-size:20px}.notificationContent{border:0;background:transparent;text-align:left;cursor:pointer;padding:0;color:inherit}.notificationContent>div{display:flex;align-items:center;gap:8px}.notificationContent p{margin:5px 0;color:#536980;line-height:1.4}.notificationContent small{color:#8797a9}.unreadDot{width:8px;height:8px;border-radius:50%;background:#e9273f}.notificationsEmpty{text-align:center;padding:52px 20px;color:#62758c}.notificationsEmpty span{display:block;font-size:44px;margin-bottom:10px}
+
+    .vehicleForm{padding:20px 22px}.vehicleFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.vehicleForm label{display:flex;flex-direction:column;gap:6px;color:#536980;font-size:13px}.vehicleForm input{border:1px solid #cbd7e5;border-radius:8px;padding:12px;font:inherit}.vehicleForm .fullWidth{grid-column:1/-1}.vehiclePrincipalCheck{flex-direction:row!important;align-items:center;gap:9px!important;margin-top:4px}.vehiclePrincipalCheck input{width:auto}.vehicleFormError{min-height:20px;color:#c82431;margin:10px 0}.vehicleFormActions{display:flex;justify-content:flex-end;gap:10px}.vehicleFormActions button{border-radius:8px;padding:11px 18px;font-weight:700;cursor:pointer}.vehicleCancelButton{background:#fff;border:1px solid #cbd7e5}.vehicleSaveButton{background:#1f6fe5;color:#fff;border:1px solid #1f6fe5}
+
+    @media(max-width:700px){.vehiclesPage{padding:18px}.savedVehicleCard{grid-template-columns:60px 1fr}.savedVehicleActions{grid-column:1/-1;align-items:stretch}.vehicleFormGrid{grid-template-columns:1fr}.vehicleForm .fullWidth{grid-column:auto}}
+
+  
+
+ 
+
+    /* SELECTOR DE AUXILIO VIAL */
+
+    .auxilioOptions {
+
+      display: grid;
+
+      gap: 12px;
+
+      margin: 8px 0 18px;
+
+    }
+
+ 
+
+    .auxilioOption {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 14px;
+
+      border: 1px solid #d8e2ef;
+
+      border-radius: 12px;
+
+      cursor: pointer;
+
+      background: #fff;
+
+    }
+
+ 
+
+    .auxilioOption:hover {
+
+      border-color: #1f6fde;
+
+      background: #f6f9ff;
+
+    }
+
+ 
+
+    .auxilioOption input {
+
+      width: 18px;
+
+      height: 18px;
+
+    }
+
+ 
+
+    .auxilioOption span {
+
+      font-size: 22px;
+
+    }
+
+ 
+
+    .auxilioOption b {
+
+      color: #102a4c;
+
+    }
+
+ 
+
+    .fuelNotice {
+
+      display: none;
+
+      padding: 14px;
+
+      margin-bottom: 16px;
+
+      border: 1px solid #f0c36c;
+
+      border-radius: 10px;
+
+      background: #fff8e7;
+
+      color: #674a00;
+
+      line-height: 1.5;
+
+    }
+
+ 
+
+    .fuelNotice.visible {
+
+      display: block;
+
+    }
+
+ 
+
+    .fuelAcceptance {
+
+      display: flex;
+
+      align-items: flex-start;
+
+      gap: 9px;
+
+      margin-top: 10px;
+
+      font-weight: 600;
+
+    }
+
+ 
+
+    .auxilioFormError {
+
+      min-height: 20px;
+
+      color: #c62828;
+
+      font-size: 13px;
+
+      margin: 0 0 8px;
+
+    }
+
+ 
+
+  </style>
+
 </head>
 
  
@@ -438,7 +588,7 @@
 
  
 
-            <span class="notificationCounter" id="notificationCounter" style="display:none">0</span>
+            <span class="notificationCounter" id="notificationCounter" hidden>0</span>
 
           </button>
 
@@ -460,7 +610,7 @@
 
           >
 
-            ✓ Membresía activa
+            Cargando cuenta...
 
           </div>
 
@@ -494,7 +644,7 @@
 
             <span id="nombreUsuarioTop">
 
-              Leonardo
+              Usuario
 
             </span>
 
@@ -556,7 +706,7 @@
 
               <h1 id="nombreBienvenida">
 
-                Hola, Leonardo
+                Cargando perfil...
 
               </h1>
 
@@ -570,7 +720,7 @@
 
                 <b id="numeroMembresiaPrincipal">
 
-                  ASC-000245
+                  SIN MEMBRESÍA
 
                 </b>
 
@@ -600,7 +750,7 @@
 
                 <b id="vigenciaPrincipal">
 
-                  14 de julio de 2027
+                  No aplica
 
                 </b>
 
@@ -616,7 +766,7 @@
 
                 <b id="planPrincipal">
 
-                  AS CLICK Particular
+                  Público general
 
                 </b>
 
@@ -686,7 +836,7 @@
 
                 <b>
 
-                  Chevrolet Tahoe 2021
+                  Vehículo sin registrar
 
                 </b>
 
@@ -694,7 +844,7 @@
 
                 <span>
 
-                  Placas: ABC-123-A
+                  Placas: Sin registrar
 
                 </span>
 
@@ -702,7 +852,7 @@
 
                 <span>
 
-                  Color: Negro
+                  Color: Sin registrar
 
                 </span>
 
@@ -1196,223 +1346,11 @@
 
                 <tbody id="recentServicesBody">
 
- 
-
                   <tr>
 
- 
-
-                    <td>
-
-                      SRV-00125
-
-                    </td>
-
- 
-
-                    <td>
-
-                      Ajustador
-
-                    </td>
-
- 
-
-                    <td>
-
-                      12 jul 2026, 10:30 a.m.
-
-                    </td>
-
- 
-
-                    <td>
-
- 
-
-                      <span class="status process">
-
-                        En proceso
-
-                      </span>
-
- 
-
-                    </td>
-
- 
-
-                    <td>
-
- 
-
-                      <button
-
-                        type="button"
-
-                        class="detailButton"
-
-                        onclick="verDetalle('SRV-00125')"
-
-                      >
-
-                        Ver detalle
-
-                      </button>
-
- 
-
-                    </td>
-
- 
+                    <td colspan="5" style="text-align:center;">Cargando servicios...</td>
 
                   </tr>
-
- 
-
-                  <tr>
-
- 
-
-                    <td>
-
-                      SRV-00124
-
-                    </td>
-
- 
-
-                    <td>
-
-                      Auxilio vial
-
-                    </td>
-
- 
-
-                    <td>
-
-                      10 jul 2026, 08:15 a.m.
-
-                    </td>
-
- 
-
-                    <td>
-
- 
-
-                      <span class="status finished">
-
-                        Terminado
-
-                      </span>
-
- 
-
-                    </td>
-
- 
-
-                    <td>
-
- 
-
-                      <button
-
-                        type="button"
-
-                        class="detailButton"
-
-                        onclick="verDetalle('SRV-00124')"
-
-                      >
-
-                        Ver detalle
-
-                      </button>
-
- 
-
-                    </td>
-
- 
-
-                  </tr>
-
- 
-
-                  <tr>
-
- 
-
-                    <td>
-
-                      SRV-00123
-
-                    </td>
-
- 
-
-                    <td>
-
-                      Grúa
-
-                    </td>
-
- 
-
-                    <td>
-
-                      08 jul 2026, 03:45 p.m.
-
-                    </td>
-
- 
-
-                    <td>
-
- 
-
-                      <span class="status finished">
-
-                        Terminado
-
-                      </span>
-
- 
-
-                    </td>
-
- 
-
-                    <td>
-
- 
-
-                      <button
-
-                        type="button"
-
-                        class="detailButton"
-
-                        onclick="verDetalle('SRV-00123')"
-
-                      >
-
-                        Ver detalle
-
-                      </button>
-
- 
-
-                    </td>
-
- 
-
-                  </tr>
-
- 
 
                 </tbody>
 
@@ -1470,7 +1408,7 @@
 
                 <b id="membresiaInformacion">
 
-                  AS CLICK Particular
+                  Público general
 
                 </b>
 
@@ -1510,7 +1448,7 @@
 
                 <b id="numeroMembresiaInformacion">
 
-                  ASC-000245
+                  SIN MEMBRESÍA
 
                 </b>
 
@@ -1550,7 +1488,7 @@
 
                 <b id="vigenciaInformacion">
 
-                  14 de julio de 2027
+                  No aplica
 
                 </b>
 
@@ -1656,109 +1594,43 @@
 
       <!-- VEHÍCULOS -->
 
-      <section
+      <section class="pageSection" id="seccion-vehiculos">
 
-        class="pageSection"
+        <div class="vehiclesPage">
 
-        id="seccion-vehiculos"
-
-      >
-
- 
-
-        <div class="placeholderPage">
-
- 
-
-          <div class="placeholderIcon">
-
-            🚙
-
-          </div>
-
- 
-
-          <h2>
-
-            Mis vehículos
-
-          </h2>
-
- 
-
-          <div class="vehicleFullCard">
-
- 
-
-            <div class="vehicleFullImage">
-
-              🚙
-
-            </div>
-
- 
+          <div class="sectionTitleRow">
 
             <div>
 
- 
+              <span class="sectionEyebrow">MI CUENTA</span>
 
-              <h3>
+              <h1>Mis vehículos</h1>
 
-                Chevrolet Tahoe 2021
-
-              </h3>
-
- 
-
-              <p>
-
-                Placas: ABC-123-A
-
-              </p>
-
- 
-
-              <p>
-
-                Color: Negro
-
-              </p>
-
- 
-
-              <span>
-
-                Vehículo principal
-
-              </span>
-
- 
+              <p>Administra los vehículos registrados y selecciona el principal para tus solicitudes.</p>
 
             </div>
 
- 
+            <button type="button" class="primaryActionButton" onclick="agregarVehiculo()">
+
+              + Agregar vehículo
+
+            </button>
 
           </div>
 
- 
+          <div class="vehiclesList" id="vehiclesList">
 
-          <button
+            <div class="vehiclesEmptyState">
 
-            type="button"
+              <span>🚙</span>
 
-            onclick="agregarVehiculo()"
+              <b>Cargando vehículos...</b>
 
-          >
+            </div>
 
-            + Agregar vehículo
-
-          </button>
-
- 
+          </div>
 
         </div>
-
- 
 
       </section>
 
@@ -2751,6 +2623,194 @@
       onclick="cerrarMenuMovil()"
 
     ></div>
+
+ 
+
+ 
+
+    <!-- PANEL DE NOTIFICACIONES -->
+
+    <div class="customOverlay" id="notificationsOverlay" aria-hidden="true" onclick="cerrarNotificaciones(event)">
+
+      <section class="customPanel" role="dialog" aria-modal="true" aria-labelledby="notificationsTitle">
+
+        <header class="customPanelHeader">
+
+          <h2 id="notificationsTitle">🔔 Notificaciones</h2>
+
+          <button type="button" class="customClose" onclick="cerrarNotificaciones()" aria-label="Cerrar">✕</button>
+
+        </header>
+
+        <div class="notificationToolbar">
+
+          <button type="button" id="markAllNotificationsButton" onclick="marcarTodasNotificacionesLeidas()">Marcar todas como leídas</button>
+
+        </div>
+
+        <div class="notificationsList" id="notificationsList">
+
+          <div class="notificationsEmpty"><span>🔔</span><b>Cargando notificaciones...</b></div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+ 
+
+    <!-- FORMULARIO PARA AGREGAR VEHÍCULO -->
+
+    <div class="customOverlay" id="vehicleModalOverlay" aria-hidden="true" onclick="cerrarModalVehiculo(event)">
+
+      <section class="customPanel" role="dialog" aria-modal="true" aria-labelledby="vehicleModalTitle">
+
+        <header class="customPanelHeader">
+
+          <h2 id="vehicleModalTitle">🚙 Agregar vehículo</h2>
+
+          <button type="button" class="customClose" onclick="cerrarModalVehiculo()" aria-label="Cerrar">✕</button>
+
+        </header>
+
+        <form class="vehicleForm" id="vehicleForm" onsubmit="guardarNuevoVehiculo(event)">
+
+          <div class="vehicleFormGrid">
+
+            <label>Marca<input id="nuevoVehiculoMarca" maxlength="40" required placeholder="Ej. Chevrolet"></label>
+
+            <label>Submarca / modelo<input id="nuevoVehiculoSubMarca" maxlength="50" required placeholder="Ej. Tahoe 2021"></label>
+
+            <label>Color<input id="nuevoVehiculoColor" maxlength="30" required placeholder="Ej. Negro"></label>
+
+            <label>Placas<input id="nuevoVehiculoPlacas" maxlength="12" required placeholder="ABC-123-A"></label>
+
+            <label class="fullWidth">Número de serie / VIN<input id="nuevoVehiculoSerie" maxlength="17" required placeholder="Número de serie"></label>
+
+            <label class="vehiclePrincipalCheck fullWidth"><input type="checkbox" id="nuevoVehiculoPrincipal"> Usar como vehículo principal</label>
+
+          </div>
+
+          <p class="vehicleFormError" id="vehicleFormError"></p>
+
+          <div class="vehicleFormActions">
+
+            <button type="button" class="vehicleCancelButton" onclick="cerrarModalVehiculo()">Cancelar</button>
+
+            <button type="submit" class="vehicleSaveButton" id="guardarVehiculoButton">Guardar vehículo</button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    </div>
+
+ 
+
+ 
+
+ 
+
+    <!-- SELECTOR DE AUXILIO VIAL -->
+
+    <div class="customOverlay" id="auxilioModalOverlay" aria-hidden="true" onclick="cerrarAuxilioVial(event)">
+
+      <section class="customPanel" role="dialog" aria-modal="true" aria-labelledby="auxilioModalTitle">
+
+        <header class="customPanelHeader">
+
+          <h2 id="auxilioModalTitle">🔧 Auxilio vial</h2>
+
+          <button type="button" class="customClose" onclick="cerrarAuxilioVial()" aria-label="Cerrar">✕</button>
+
+        </header>
+
+ 
+
+        <form id="auxilioForm" onsubmit="confirmarAuxilioVial(event)">
+
+          <p>Selecciona el tipo de auxilio que necesitas:</p>
+
+ 
+
+          <div class="auxilioOptions">
+
+            <label class="auxilioOption">
+
+              <input type="radio" name="tipoAuxilio" value="Paso de corriente" onchange="actualizarAvisoCombustible()">
+
+              <span>🔋</span>
+
+              <b>Paso de corriente</b>
+
+            </label>
+
+ 
+
+            <label class="auxilioOption">
+
+              <input type="radio" name="tipoAuxilio" value="Cambio de llanta" onchange="actualizarAvisoCombustible()">
+
+              <span>🛞</span>
+
+              <b>Cambio de llanta</b>
+
+            </label>
+
+ 
+
+            <label class="auxilioOption">
+
+              <input type="radio" name="tipoAuxilio" value="Surtir gasolina" onchange="actualizarAvisoCombustible()">
+
+              <span>⛽</span>
+
+              <b>Surtir gasolina</b>
+
+            </label>
+
+          </div>
+
+ 
+
+          <div class="fuelNotice" id="fuelNotice">
+
+            <b>⚠️ Aviso importante</b>
+
+            <p>El costo del combustible corre por cuenta del cliente. AS CLICK únicamente proporciona el servicio para llevar el combustible hasta tu ubicación.</p>
+
+            <label class="fuelAcceptance">
+
+              <input type="checkbox" id="aceptaCostoCombustible">
+
+              <span>He leído y acepto que el costo del combustible será cubierto por mí.</span>
+
+            </label>
+
+          </div>
+
+ 
+
+          <p class="auxilioFormError" id="auxilioFormError"></p>
+
+ 
+
+          <div class="vehicleFormActions">
+
+            <button type="button" class="vehicleCancelButton" onclick="cerrarAuxilioVial()">Cancelar</button>
+
+            <button type="submit" class="vehicleSaveButton">Solicitar servicio</button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    </div>
 
  
 
