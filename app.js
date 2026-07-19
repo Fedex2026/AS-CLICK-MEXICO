@@ -1,13 +1,24 @@
 /*
 
  
+
+ 
+
  Cambia estos dos números por los reales.
+
+ 
 
   Formato:
 
+ 
+
  52 + lada + número
 
+ 
+
   Sin espacios, guiones ni signo +
+
+ 
 
  */
 
@@ -15,21 +26,49 @@
 
  
 
+ 
+
+ 
+
+ 
+
 const TELEFONO_CABINA = "525563577842";
 
+ 
+
 const TELEFONO_EMERGENCIAS = "525585373051";
+
+ 
 
 const TELEFONO_ASESOR = TELEFONO_CABINA;
 
  
 
+ 
+
+ 
+
  /* =========================================
+
+ 
 
   VARIABLES
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -41,7 +80,15 @@ let seccionActual = "inicio";
 
  
 
+ 
+
+ 
+
 let usuarioActual = null;
+
+ 
+
+ 
 
  
 
@@ -53,7 +100,19 @@ let historialServicios = [];
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 let perfilActual = {
+
+ 
+
+ 
 
  
 
@@ -61,11 +120,23 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   telefono: "",
 
  
 
+ 
+
+ 
+
   correo: "",
+
+ 
+
+ 
 
  
 
@@ -77,7 +148,19 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   tieneMembresia: false,
+
+ 
+
+ 
 
  
 
@@ -85,11 +168,23 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   estadoMembresia: "sin_membresia",
 
  
 
+ 
+
+ 
+
   tipoMembresia: "",
+
+ 
+
+ 
 
  
 
@@ -101,7 +196,19 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   tarifa: "publico_general",
+
+ 
+
+ 
 
  
 
@@ -113,7 +220,19 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   marca: "",
+
+ 
+
+ 
 
  
 
@@ -121,7 +240,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   color: "",
+
+ 
+
+ 
 
  
 
@@ -129,7 +256,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   serie: ""
+
+ 
+
+ 
 
  
 
@@ -141,7 +276,19 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -149,7 +296,21 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -160,79 +321,178 @@ let perfilActual = {
  
 
 let auth = null;
+
 let db = null;
+
 let firebaseSignOut = null;
+
 let firestoreDoc = null;
+
 let firestoreGetDoc = null;
+
 let firestoreSetDoc = null;
+
 let firestoreCollection = null;
+
 let firestoreQuery = null;
+
 let firestoreWhere = null;
+
 let firestoreGetDocs = null;
+
 let firestoreAddDoc = null;
+
 let firestoreServerTimestamp = null;
 
+let firestoreOnSnapshot = null;
+
+let firestoreUpdateDoc = null;
+
+let firestoreDeleteDoc = null;
+
+let firestoreUnsubscribeNotificaciones = null;
+
+let notificacionesActuales = [];
+
+let vehiculosActuales = [];
+
+ 
+
 async function iniciarFirebase() {
+
   try {
+
     const firebaseConfigModule = await import("./firebase-config.js");
+
     const authModule = await import(
+
       "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
+
     );
+
     const firestoreModule = await import(
+
       "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
+
     );
+
+ 
 
     auth = firebaseConfigModule.auth;
+
     db = firebaseConfigModule.db;
+
     firebaseSignOut = authModule.signOut;
+
     firestoreDoc = firestoreModule.doc;
+
     firestoreGetDoc = firestoreModule.getDoc;
+
     firestoreSetDoc = firestoreModule.setDoc;
+
     firestoreCollection = firestoreModule.collection;
+
     firestoreQuery = firestoreModule.query;
+
     firestoreWhere = firestoreModule.where;
+
     firestoreGetDocs = firestoreModule.getDocs;
+
     firestoreAddDoc = firestoreModule.addDoc;
+
     firestoreServerTimestamp = firestoreModule.serverTimestamp;
 
+    firestoreOnSnapshot = firestoreModule.onSnapshot;
+
+    firestoreUpdateDoc = firestoreModule.updateDoc;
+
+    firestoreDeleteDoc = firestoreModule.deleteDoc;
+
+ 
+
     authModule.onAuthStateChanged(auth, async user => {
+
       if (!user) {
+
         window.location.replace("./login.html");
+
         return;
+
       }
+
+ 
 
       usuarioActual = user;
 
+ 
+
       try {
+
         await cargarDatosUsuario(user);
+
         await cargarHistorialServicios();
+
+        escucharNotificaciones(user.uid);
+
+        await cargarVehiculos();
+
       } catch (error) {
+
         console.error("Error al cargar los datos del usuario:", error);
+
         cargarDatosBasicos(user);
 
+ 
+
         mostrarModal(
+
           "⚠",
+
           "No fue posible cargar tu perfil",
+
           "Tu sesión está activa, pero no pudimos cargar todos tus datos. Revisa tu conexión e inténtalo nuevamente."
+
         );
+
       }
+
     });
+
   } catch (error) {
+
     console.error("No fue posible iniciar Firebase:", error);
 
+ 
+
     mostrarModal(
+
       "⚠",
+
       "Problema de conexión",
+
       "La interfaz está disponible, pero Firebase no pudo iniciar. Revisa la conexión o la configuración."
+
     );
+
   }
+
 }
+
+ 
 
 /* =========================================
 
  
 
+ 
+
+ 
+
    CARGAR PERFIL DESDE FIRESTORE
+
+ 
+
+ 
 
  
 
@@ -244,257 +504,519 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 async function cargarDatosUsuario(user) {
+
   const referenciaUsuario = firestoreDoc(db, "usuarios", user.uid);
+
   const documentoUsuario = await firestoreGetDoc(referenciaUsuario);
+
   const datosUsuario = documentoUsuario.exists()
+
     ? documentoUsuario.data()
+
     : {};
 
+ 
+
   const membresia = await buscarMembresiaVinculada(user, datosUsuario);
+
   const datosCombinados = combinarUsuarioYMembresia(
+
     user,
+
     datosUsuario,
+
     membresia
+
   );
+
+ 
 
   perfilActual = construirPerfilDashboard(user, datosCombinados);
 
+ 
+
   // Mantiene usuarios/{uid} como fuente principal del Dashboard.
+
   // Esto también convierte automáticamente a miembro a un cliente que
+
   // adquirió una membresía después de haber creado su cuenta.
+
   await firestoreSetDoc(
+
     referenciaUsuario,
+
     {
+
       ...datosCombinados,
+
       uid: user.uid,
+
       correo: datosCombinados.correo || user.email || "",
+
       nombre:
+
         datosCombinados.nombre ||
+
         user.displayName ||
+
         obtenerNombreCorreo(user.email) ||
+
         "Usuario",
+
       actualizadoEn: firestoreServerTimestamp()
+
     },
+
     { merge: true }
+
   );
 
+ 
+
   actualizarDatosPantalla(perfilActual);
+
 }
 
+ 
+
 async function buscarMembresiaVinculada(user, datosUsuario) {
+
   const numero =
+
     datosUsuario.numeroMiembro ||
+
     datosUsuario.numeroMembresia ||
+
     datosUsuario.numeroSocio ||
+
     "";
 
+ 
+
   if (numero) {
+
     const directa = await firestoreGetDoc(
+
       firestoreDoc(db, "membresias", numero)
+
     );
+
+ 
 
     if (directa.exists()) {
+
       return {
+
         id: directa.id,
+
         ...directa.data()
+
       };
+
     }
+
   }
 
+ 
+
   const criterios = [
+
     ["uidUsuario", user.uid],
+
     ["correo", String(user.email || "").trim().toLowerCase()]
+
   ];
 
+ 
+
   for (const [campo, valor] of criterios) {
+
     if (!valor) continue;
 
+ 
+
     const consulta = firestoreQuery(
+
       firestoreCollection(db, "membresias"),
+
       firestoreWhere(campo, "==", valor)
+
     );
+
+ 
 
     const resultado = await firestoreGetDocs(consulta);
 
+ 
+
     if (!resultado.empty) {
+
       const documento = resultado.docs[0];
+
       return {
+
         id: documento.id,
+
         ...documento.data()
+
       };
+
     }
+
   }
 
+ 
+
   return null;
+
 }
 
+ 
+
 function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
+
   const datosMembresia = membresia || {};
+
   const numeroMiembro =
+
     usuario.numeroMiembro ||
+
     usuario.numeroMembresia ||
+
     usuario.numeroSocio ||
+
     datosMembresia.numeroMembresia ||
+
     datosMembresia.numeroMiembro ||
+
     datosMembresia.id ||
+
     "";
 
+ 
+
   const estadoMembresia = normalizarEstado(
+
     datosMembresia.estadoMembresia ||
+
     usuario.estadoMembresia ||
+
     datosMembresia.estado ||
+
     usuario.estado ||
+
     (numeroMiembro ? "activa" : "sin_membresia")
+
   );
 
+ 
+
   const tieneMembresia = Boolean(numeroMiembro) &&
+
     !["cancelada", "vencida", "sin_membresia"].includes(estadoMembresia);
+
+ 
 
   const vehiculoUsuario = usuario.vehiculoPrincipal || {};
 
+ 
+
   return {
+
     ...usuario,
+
     nombre:
+
       usuario.nombre ||
+
       datosMembresia.nombreRegistro ||
+
       user.displayName ||
+
       obtenerNombreCorreo(user.email) ||
+
       "Usuario",
+
     telefono:
+
       usuario.telefono ||
+
       datosMembresia.telefonoRegistro ||
+
       "",
+
     correo:
+
       usuario.correo ||
+
       datosMembresia.correo ||
+
       user.email ||
+
       "",
+
     tipoCliente:
+
       usuario.tipoCliente ||
+
       datosMembresia.tipoCliente ||
+
       "particular",
+
     tieneMembresia,
+
     numeroMiembro: tieneMembresia ? numeroMiembro : "",
+
     estadoMembresia: tieneMembresia ? estadoMembresia : "sin_membresia",
+
     tipoMembresia:
+
       datosMembresia.tipoMembresia ||
+
       datosMembresia.plan ||
+
       usuario.tipoMembresia ||
+
       (tieneMembresia ? usuario.tipoCliente || "particular" : ""),
+
     vigencia:
+
       datosMembresia.vigencia ||
+
       datosMembresia.finVigencia ||
+
       usuario.vigencia ||
+
       usuario.finVigencia ||
+
       "",
+
     tarifa: tieneMembresia ? "preferencial" : "publico_general",
+
     puedeUsarAlertas: tieneMembresia,
+
     marca:
+
       usuario.marca ||
+
       vehiculoUsuario.marca ||
+
       datosMembresia.marcaRegistro ||
+
       "",
+
     subMarca:
+
       usuario.subMarca ||
+
       usuario.submarca ||
+
       vehiculoUsuario.subMarca ||
+
       vehiculoUsuario.submarca ||
+
       datosMembresia.subMarcaRegistro ||
+
       "",
+
     color:
+
       usuario.color ||
+
       vehiculoUsuario.color ||
+
       datosMembresia.colorRegistro ||
+
       "",
+
     placas:
+
       usuario.placas ||
+
       vehiculoUsuario.placas ||
+
       datosMembresia.placasRegistro ||
+
       "",
+
     serie:
+
       usuario.serie ||
+
       vehiculoUsuario.serie ||
+
       datosMembresia.serieRegistro ||
+
       "",
+
     vehiculoPrincipal: {
+
       marca:
+
         usuario.marca ||
+
         vehiculoUsuario.marca ||
+
         datosMembresia.marcaRegistro ||
+
         "",
+
       subMarca:
+
         usuario.subMarca ||
+
         usuario.submarca ||
+
         vehiculoUsuario.subMarca ||
+
         vehiculoUsuario.submarca ||
+
         datosMembresia.subMarcaRegistro ||
+
         "",
+
       color:
+
         usuario.color ||
+
         vehiculoUsuario.color ||
+
         datosMembresia.colorRegistro ||
+
         "",
+
       placas:
+
         usuario.placas ||
+
         vehiculoUsuario.placas ||
+
         datosMembresia.placasRegistro ||
+
         "",
+
       serie:
+
         usuario.serie ||
+
         vehiculoUsuario.serie ||
+
         datosMembresia.serieRegistro ||
+
         ""
+
     }
+
   };
+
 }
+
+ 
 
 function construirPerfilDashboard(user, datos) {
+
   const vehiculo = datos.vehiculoPrincipal || {};
 
+ 
+
   return {
+
     nombre:
+
       datos.nombre ||
+
       user.displayName ||
+
       obtenerNombreCorreo(user.email) ||
+
       "Usuario",
+
     telefono: datos.telefono || "",
+
     correo: datos.correo || user.email || "",
+
     tipoCliente: datos.tipoCliente || "particular",
+
     tieneMembresia: datos.tieneMembresia === true,
+
     numeroMiembro:
+
       datos.numeroMiembro ||
+
       datos.numeroSocio ||
+
       datos.numeroMembresia ||
+
       "",
+
     estadoMembresia: normalizarEstado(
+
       datos.estadoMembresia ||
+
       (datos.tieneMembresia ? "activa" : "sin_membresia")
+
     ),
+
     tipoMembresia: datos.tipoMembresia || datos.plan || "",
+
     vigencia: formatearVigencia(
+
       datos.vigencia || datos.finVigencia || ""
+
     ),
+
     tarifa:
+
       datos.tarifa ||
+
       (datos.tieneMembresia ? "preferencial" : "publico_general"),
+
     puedeUsarAlertas:
+
       datos.tieneMembresia === true &&
+
       normalizarEstado(datos.estadoMembresia || "activa") === "activa",
+
     marca: datos.marca || vehiculo.marca || "",
+
     subMarca:
+
       datos.subMarca ||
+
       datos.submarca ||
+
       vehiculo.subMarca ||
+
       vehiculo.submarca ||
+
       "",
+
     color: datos.color || vehiculo.color || "",
+
     placas: datos.placas || vehiculo.placas || "",
+
     serie: datos.serie || vehiculo.serie || ""
+
   };
+
 }
 
+ 
+
 function cargarDatosBasicos(user) {
+
+ 
+
+ 
 
  
 
@@ -502,7 +1024,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     nombre:
+
+ 
+
+ 
 
  
 
@@ -510,11 +1040,27 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
       obtenerNombreCorreo(user.email) ||
 
  
 
+ 
+
+ 
+
       "Usuario",
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -526,7 +1072,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     correo: user.email || "",
+
+ 
+
+ 
 
  
 
@@ -538,7 +1092,19 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     tieneMembresia: false,
+
+ 
+
+ 
 
  
 
@@ -546,11 +1112,23 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     estadoMembresia: "sin_membresia",
 
  
 
+ 
+
+ 
+
     tipoMembresia: "",
+
+ 
+
+ 
 
  
 
@@ -562,7 +1140,19 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     tarifa: "publico_general",
+
+ 
+
+ 
 
  
 
@@ -574,7 +1164,19 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     marca: "",
+
+ 
+
+ 
 
  
 
@@ -582,7 +1184,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     color: "",
+
+ 
+
+ 
 
  
 
@@ -590,7 +1200,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     serie: ""
+
+ 
+
+ 
 
  
 
@@ -602,7 +1220,19 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarDatosPantalla(perfilActual);
+
+ 
+
+ 
 
  
 
@@ -614,11 +1244,31 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
   if (!correo) return "";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -634,7 +1284,19 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   return nombre
+
+ 
+
+ 
 
  
 
@@ -642,7 +1304,15 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
     .replace(/\b\w/g, letra =>
+
+ 
+
+ 
 
  
 
@@ -650,11 +1320,27 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -663,26 +1349,50 @@ function obtenerNombreCorreo(correo) {
  
 
 function normalizarEstado(estado) {
+
   const valor = String(estado || "")
+
     .trim()
+
     .toLowerCase()
+
     .replace(/\s+/g, "_");
 
+ 
+
   const equivalencias = {
+
     activo: "activa",
+
     active: "activa",
+
     asignada: "activa",
+
     asignado: "activa",
+
     disponible: "activa",
+
     vigente: "activa",
+
     cancelado: "cancelada",
+
     vencido: "vencida"
+
   };
 
+ 
+
   return equivalencias[valor] || valor;
+
 }
 
+ 
+
 function formatearVigencia(valor) {
+
+ 
+
+ 
 
  
 
@@ -694,7 +1404,19 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -702,7 +1424,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     typeof valor.toDate === "function"
+
+ 
+
+ 
 
  
 
@@ -710,7 +1440,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     return valor
+
+ 
+
+ 
 
  
 
@@ -718,7 +1456,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
       .toLocaleDateString(
+
+ 
+
+ 
 
  
 
@@ -726,7 +1472,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         {
+
+ 
+
+ 
 
  
 
@@ -734,7 +1488,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
           month: "long",
+
+ 
+
+ 
 
  
 
@@ -742,7 +1504,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -750,7 +1520,19 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -766,7 +1548,23 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (!texto) return "";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -778,7 +1576,19 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     const fecha = new Date(texto);
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -790,7 +1600,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
       return fecha.toLocaleDateString(
+
+ 
+
+ 
 
  
 
@@ -798,7 +1616,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         {
+
+ 
+
+ 
 
  
 
@@ -806,7 +1632,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
           month: "long",
+
+ 
+
+ 
 
  
 
@@ -814,7 +1648,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -822,11 +1664,27 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -838,7 +1696,19 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -850,11 +1720,27 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
    ACTUALIZAR PANTALLA
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -866,11 +1752,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const esMiembroActivo =
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia === true &&
+
+ 
+
+ 
 
  
 
@@ -882,7 +1780,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -890,7 +1800,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     `Hola, ${perfil.nombre}`
+
+ 
+
+ 
 
  
 
@@ -902,7 +1820,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -910,7 +1840,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.nombre
+
+ 
+
+ 
 
  
 
@@ -922,7 +1860,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -930,7 +1880,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.nombre
+
+ 
+
+ 
 
  
 
@@ -938,7 +1896,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       .charAt(0)
+
+ 
+
+ 
 
  
 
@@ -946,6 +1912,10 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
@@ -954,7 +1924,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -962,7 +1944,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -970,7 +1960,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -978,7 +1976,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -986,6 +1992,10 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
@@ -994,7 +2004,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1002,7 +2024,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     obtenerTextoEstado(perfil)
+
+ 
+
+ 
 
  
 
@@ -1014,7 +2044,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1022,7 +2064,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -1030,7 +2080,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.vigencia ||
+
+ 
+
+ 
 
  
 
@@ -1038,11 +2096,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
 
  
 
+ 
+
+ 
+
       : "No aplica"
+
+ 
+
+ 
 
  
 
@@ -1054,7 +2124,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1062,7 +2144,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -1070,7 +2160,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.tipoMembresia ||
+
+ 
+
+ 
 
  
 
@@ -1078,7 +2176,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
             perfil.tipoCliente
+
+ 
+
+ 
 
  
 
@@ -1086,7 +2192,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1094,6 +2208,10 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
@@ -1102,7 +2220,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1110,11 +2240,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
 
  
 
+ 
+
+ 
+
       ? (
+
+ 
+
+ 
 
  
 
@@ -1122,11 +2264,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           "AS CLICK"
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1134,6 +2288,10 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
@@ -1142,7 +2300,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1150,7 +2320,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -1158,7 +2336,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -1166,7 +2352,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1174,7 +2368,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1186,7 +2392,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     "vigenciaInformacion",
+
+ 
+
+ 
 
  
 
@@ -1194,7 +2408,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       ? (
+
+ 
+
+ 
 
  
 
@@ -1202,7 +2424,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           "Pendiente"
+
+ 
+
+ 
 
  
 
@@ -1210,11 +2440,27 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "No aplica"
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1226,7 +2472,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -1234,7 +2488,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1246,11 +2512,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     if (esMiembroActivo) {
 
  
 
+ 
+
+ 
+
       badge.textContent =
+
+ 
+
+ 
 
  
 
@@ -1258,11 +2536,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     } else if (perfil.tieneMembresia) {
 
  
 
+ 
+
+ 
+
       badge.textContent =
+
+ 
+
+ 
 
  
 
@@ -1270,7 +2560,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     } else {
+
+ 
+
+ 
 
  
 
@@ -1278,7 +2576,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         "Cliente sin membresía";
+
+ 
+
+ 
 
  
 
@@ -1286,7 +2592,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1298,7 +2616,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -1306,7 +2632,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1318,7 +2656,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     estadoPrincipal.classList.toggle(
+
+ 
+
+ 
 
  
 
@@ -1326,7 +2672,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       !esMiembroActivo
+
+ 
+
+ 
 
  
 
@@ -1334,7 +2688,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1346,9 +2712,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarPerfilPantalla(perfil);
 
+ 
+
   configurarAlertas(
+
+ 
+
+ 
 
  
 
@@ -1356,7 +2732,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1368,7 +2756,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -1376,7 +2772,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1388,7 +2796,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     tituloMembresia.textContent =
+
+ 
+
+ 
 
  
 
@@ -1396,7 +2812,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         ? "Información de tu membresía"
+
+ 
+
+ 
 
  
 
@@ -1404,7 +2828,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1416,7 +2852,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -1424,7 +2868,19 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1436,7 +2892,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     beneficiosTexto.textContent =
+
+ 
+
+ 
 
  
 
@@ -1444,7 +2908,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         ? "Consulta los beneficios incluidos en tu membresía activa."
+
+ 
+
+ 
 
  
 
@@ -1452,11 +2924,27 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1468,7 +2956,15 @@ function actualizarTexto(id, texto) {
 
  
 
+ 
+
+ 
+
   const elemento =
+
+ 
+
+ 
 
  
 
@@ -1480,7 +2976,19 @@ function actualizarTexto(id, texto) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (elemento) {
+
+ 
+
+ 
 
  
 
@@ -1488,11 +2996,27 @@ function actualizarTexto(id, texto) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1504,7 +3028,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
   if (!perfil.tieneMembresia) {
+
+ 
+
+ 
 
  
 
@@ -1512,7 +3044,19 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1524,7 +3068,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     activa: "ACTIVA",
+
+ 
+
+ 
 
  
 
@@ -1532,7 +3084,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     disponible: "ACTIVA",
+
+ 
+
+ 
 
  
 
@@ -1540,7 +3100,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     pendiente_activacion: "PENDIENTE",
+
+ 
+
+ 
 
  
 
@@ -1548,7 +3116,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     cancelada: "CANCELADA"
+
+ 
+
+ 
 
  
 
@@ -1560,7 +3136,19 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   return (
+
+ 
+
+ 
 
  
 
@@ -1568,7 +3156,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.estadoMembresia
+
+ 
+
+ 
 
  
 
@@ -1576,7 +3172,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
       .toUpperCase()
+
+ 
+
+ 
 
  
 
@@ -1584,7 +3188,19 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1596,7 +3212,15 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
   return tipo === "servicio_publico"
+
+ 
+
+ 
 
  
 
@@ -1604,7 +3228,15 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
     : "Particular";
+
+ 
+
+ 
 
  
 
@@ -1616,7 +3248,19 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -1624,123 +3268,247 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
 function actualizarPerfilPantalla(perfil) {
 
+ 
+
   const inicial =
+
+ 
 
     perfil.nombre?.trim().charAt(0).toUpperCase() || "U";
 
  
 
+ 
+
+ 
+
   const nombreVehiculo =
+
+ 
 
     [perfil.marca, perfil.subMarca]
 
+ 
+
       .filter(Boolean)
+
+ 
 
       .join(" ") || "Vehículo sin registrar";
 
  
 
+ 
+
+ 
+
   actualizarTexto("perfilAvatar", inicial);
+
+ 
 
   actualizarTexto("perfilNombreResumen", perfil.nombre || "Usuario");
 
+ 
+
   actualizarTexto("perfilCorreoResumen", perfil.correo || "Correo no registrado");
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilEstadoMembresia",
 
+ 
+
     perfil.tieneMembresia
+
+ 
 
       ? `Membresía ${obtenerTextoEstado(perfil).toLowerCase()}`
 
+ 
+
       : "Cliente registrado"
+
+ 
 
   );
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilNumeroMembresia",
 
+ 
+
     perfil.tieneMembresia
+
+ 
 
       ? perfil.numeroMiembro || "Pendiente"
 
+ 
+
       : "No aplica"
+
+ 
 
   );
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilVigencia",
 
+ 
+
     perfil.tieneMembresia
+
+ 
 
       ? perfil.vigencia || "Pendiente"
 
+ 
+
       : "No aplica"
+
+ 
 
   );
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilTarifa",
 
+ 
+
     perfil.tieneMembresia && perfil.estadoMembresia === "activa"
+
+ 
 
       ? "Preferencial"
 
+ 
+
       : "Público general"
 
+ 
+
   );
+
+ 
 
   actualizarTexto("perfilNombre", perfil.nombre || "No registrado");
 
+ 
+
   actualizarTexto("perfilTelefono", perfil.telefono || "No registrado");
+
+ 
 
   actualizarTexto("perfilCorreo", perfil.correo || "No registrado");
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilTipoCliente",
 
+ 
+
     obtenerTipoClienteTexto(perfil.tipoCliente)
 
+ 
+
   );
+
+ 
 
   actualizarTexto("perfilVehiculoNombre", nombreVehiculo);
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilVehiculoPlacas",
 
+ 
+
     `Placas: ${perfil.placas || "Sin registrar"}`
+
+ 
 
   );
 
+ 
+
   actualizarTexto(
+
+ 
 
     "perfilVehiculoColor",
 
+ 
+
     `Color: ${perfil.color || "Sin registrar"}`
 
+ 
+
   );
+
+ 
 
   actualizarTexto(
 
+ 
+
     "perfilVehiculoSerie",
+
+ 
 
     `Serie: ${perfil.serie || "Sin registrar"}`
 
+ 
+
   );
 
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1748,11 +3516,27 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
    VEHÍCULO
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1764,7 +3548,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const nombreVehiculo =
+
+ 
+
+ 
 
  
 
@@ -1772,7 +3564,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       perfil.marca,
+
+ 
+
+ 
 
  
 
@@ -1780,11 +3580,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     ]
 
  
 
+ 
+
+ 
+
       .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -1796,11 +3608,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const tituloVehiculo =
 
  
 
+ 
+
+ 
+
     nombreVehiculo ||
+
+ 
+
+ 
 
  
 
@@ -1812,7 +3640,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const vehicleBody =
+
+ 
+
+ 
 
  
 
@@ -1820,11 +3660,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       ".vehicleBody"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1836,7 +3692,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     const titulo =
+
+ 
+
+ 
 
  
 
@@ -1848,7 +3712,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     const textos =
+
+ 
+
+ 
 
  
 
@@ -1856,7 +3732,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         "span"
+
+ 
+
+ 
 
  
 
@@ -1868,7 +3752,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (titulo) {
+
+ 
+
+ 
 
  
 
@@ -1876,11 +3772,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         tituloVehiculo;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1892,7 +3804,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       textos[0].textContent =
+
+ 
+
+ 
 
  
 
@@ -1900,7 +3820,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.placas ||
+
+ 
+
+ 
 
  
 
@@ -1908,11 +3836,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1924,7 +3868,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       textos[1].textContent =
+
+ 
+
+ 
 
  
 
@@ -1932,7 +3884,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.color ||
+
+ 
+
+ 
 
  
 
@@ -1940,7 +3900,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
+
+ 
+
+ 
 
  
 
@@ -1948,7 +3916,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1960,7 +3940,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -1968,7 +3956,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1980,7 +3980,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     const titulo =
+
+ 
+
+ 
 
  
 
@@ -1988,11 +3996,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         "h3"
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2004,7 +4028,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       vehicleFullCard.querySelectorAll(
+
+ 
+
+ 
 
  
 
@@ -2012,7 +4044,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2024,11 +4068,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       vehicleFullCard.querySelector(
 
  
 
+ 
+
+ 
+
         "span"
+
+ 
+
+ 
 
  
 
@@ -2040,7 +4096,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (titulo) {
+
+ 
+
+ 
 
  
 
@@ -2048,11 +4116,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         tituloVehiculo;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2064,7 +4148,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       parrafos[0].textContent =
+
+ 
+
+ 
 
  
 
@@ -2072,7 +4164,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.placas ||
+
+ 
+
+ 
 
  
 
@@ -2080,11 +4180,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2096,7 +4212,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       parrafos[1].textContent =
+
+ 
+
+ 
 
  
 
@@ -2104,7 +4228,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.color ||
+
+ 
+
+ 
 
  
 
@@ -2112,11 +4244,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2128,7 +4276,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       etiqueta.textContent =
+
+ 
+
+ 
 
  
 
@@ -2136,7 +4292,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           ? `Serie: ${perfil.serie}`
+
+ 
+
+ 
 
  
 
@@ -2144,11 +4308,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2160,11 +4336,27 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
 
  
 
+ 
+
+ 
+
    ALERTAS
+
+ 
+
+ 
 
  
 
@@ -2176,7 +4368,19 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function configurarAlertas(
+
+ 
+
+ 
 
  
 
@@ -2184,7 +4388,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
 ) {
+
+ 
+
+ 
 
  
 
@@ -2192,7 +4404,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2200,7 +4420,19 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2216,7 +4448,19 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   seccionAlertas.style.display =
+
+ 
+
+ 
 
  
 
@@ -2224,11 +4468,23 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
       ? ""
 
  
 
+ 
+
+ 
+
       : "none";
+
+ 
+
+ 
 
  
 
@@ -2240,11 +4496,27 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
 
  
 
+ 
+
+ 
+
    CAMBIAR SECCIÓN
+
+ 
+
+ 
 
  
 
@@ -2256,7 +4528,19 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function cambiarSeccion(
+
+ 
+
+ 
 
  
 
@@ -2264,7 +4548,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   boton = null
+
+ 
+
+ 
 
  
 
@@ -2272,15 +4564,35 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   seccionActual = seccion;
+
+ 
+
+ 
 
  
 
   if (seccion === "historial") {
 
+ 
+
     cargarHistorialServicios();
 
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2292,7 +4604,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .querySelectorAll(".pageSection")
+
+ 
+
+ 
 
  
 
@@ -2300,11 +4620,27 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       section.classList.remove("active");
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2316,7 +4652,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -2324,7 +4668,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2336,7 +4692,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     seccionDestino.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -2348,7 +4712,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -2356,11 +4732,27 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .forEach(item => {
 
  
 
+ 
+
+ 
+
       item.classList.remove("active");
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2372,7 +4764,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         item.dataset.section === seccion
+
+ 
+
+ 
 
  
 
@@ -2380,7 +4780,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         item.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -2388,7 +4796,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2400,7 +4820,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .querySelectorAll(
+
+ 
+
+ 
 
  
 
@@ -2408,7 +4836,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     )
+
+ 
+
+ 
 
  
 
@@ -2416,11 +4852,27 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       item.classList.remove("active");
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2432,7 +4884,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     boton &&
+
+ 
+
+ 
 
  
 
@@ -2440,7 +4900,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -2448,7 +4916,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   } else {
+
+ 
+
+ 
 
  
 
@@ -2456,7 +4932,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       Array.from(
+
+ 
+
+ 
 
  
 
@@ -2464,7 +4948,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
           ".mobileBottomNav button"
+
+ 
+
+ 
 
  
 
@@ -2472,7 +4964,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       ).find(item =>
+
+ 
+
+ 
 
  
 
@@ -2480,11 +4980,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
           .getAttribute("onclick")
 
  
 
+ 
+
+ 
+
           ?.includes(`'${seccion}'`)
+
+ 
+
+ 
 
  
 
@@ -2496,7 +5008,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     mobileButton?.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -2508,7 +5032,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -2516,7 +5052,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       ".topNavigation button"
+
+ 
+
+ 
 
  
 
@@ -2524,11 +5068,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .forEach(item => {
 
  
 
+ 
+
+ 
+
       item.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -2540,7 +5096,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const topButton =
+
+ 
+
+ 
 
  
 
@@ -2548,7 +5116,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       document.querySelectorAll(
+
+ 
+
+ 
 
  
 
@@ -2556,7 +5132,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       )
+
+ 
+
+ 
 
  
 
@@ -2564,7 +5148,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       item
+
+ 
+
+ 
 
  
 
@@ -2572,11 +5164,27 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         ?.includes(`'${seccion}'`)
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2592,7 +5200,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   cerrarMenuMovil();
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2604,7 +5228,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     top: 0,
+
+ 
+
+ 
 
  
 
@@ -2612,7 +5244,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -2624,7 +5264,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -2632,7 +5284,19 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2644,11 +5308,23 @@ function abrirMenuMovil() {
 
  
 
+ 
+
+ 
+
   document
 
  
 
+ 
+
+ 
+
     .getElementById("sidebar")
+
+ 
+
+ 
 
  
 
@@ -2660,7 +5336,19 @@ function abrirMenuMovil() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -2668,11 +5356,27 @@ function abrirMenuMovil() {
 
  
 
+ 
+
+ 
+
     ?.classList.add("active");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2684,11 +5388,23 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
   document
 
  
 
+ 
+
+ 
+
     .getElementById("sidebar")
+
+ 
+
+ 
 
  
 
@@ -2700,7 +5416,19 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -2708,7 +5436,15 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
     ?.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -2720,11 +5456,27 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
 
  
 
+ 
+
+ 
+
    SOLICITAR SERVICIO
+
+ 
+
+ 
 
  
 
@@ -2736,7 +5488,19 @@ function cerrarMenuMovil() {
 
  
 
-async function solicitarServicio(servicio) {
+ 
+
+ 
+
+ 
+
+ 
+
+async function solicitarServicio(servicio, detalleServicio = {}) {
+
+ 
+
+ 
 
  
 
@@ -2744,7 +5508,15 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
     mostrarModal(
+
+ 
+
+ 
 
  
 
@@ -2752,7 +5524,15 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
       "Sesión no disponible",
+
+ 
+
+ 
 
  
 
@@ -2760,7 +5540,15 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2768,7 +5556,19 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2780,7 +5580,15 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
     perfilActual.tieneMembresia &&
+
+ 
+
+ 
 
  
 
@@ -2788,7 +5596,15 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
       ? "Tarifa preferencial de miembro"
+
+ 
+
+ 
 
  
 
@@ -2800,7 +5616,19 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const ubicacion =
+
+ 
+
+ 
 
  
 
@@ -2812,15 +5640,35 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   await guardarSolicitudServicio(
+
+ 
 
     servicio,
 
+ 
+
     tipoTarifa,
+
+ 
 
     ubicacion
 
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2828,7 +5676,15 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
     construirMensajeServicio(
+
+ 
+
+ 
 
  
 
@@ -2836,11 +5692,23 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
       tipoTarifa,
 
  
 
+ 
+
+ 
+
       ubicacion
+
+ 
+
+ 
 
  
 
@@ -2852,11 +5720,27 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const url =
 
  
 
+ 
+
+ 
+
     `https://wa.me/${TELEFONO_CABINA}` +
+
+ 
+
+ 
 
  
 
@@ -2868,7 +5752,19 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   window.open(
+
+ 
+
+ 
 
  
 
@@ -2876,11 +5772,859 @@ async function solicitarServicio(servicio) {
 
  
 
+ 
+
+ 
+
     "_blank",
 
  
 
+ 
+
+ 
+
     "noopener,noreferrer"
+
+ 
+
+ 
+
+ 
+
+  );
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+function construirMensajeServicio(
+
+ 
+
+ 
+
+ 
+
+  servicio,
+
+ 
+
+ 
+
+ 
+
+  tipoTarifa,
+
+ 
+
+ 
+
+ 
+
+  ubicacion
+
+ 
+
+ 
+
+ 
+
+) {
+
+ 
+
+ 
+
+ 
+
+  const numeroMembresia =
+
+ 
+
+ 
+
+ 
+
+    perfilActual.tieneMembresia
+
+ 
+
+ 
+
+ 
+
+      ? (
+
+ 
+
+ 
+
+ 
+
+          perfilActual.numeroMiembro ||
+
+ 
+
+ 
+
+ 
+
+          "Pendiente"
+
+ 
+
+ 
+
+ 
+
+        )
+
+ 
+
+ 
+
+ 
+
+      : "Sin membresía";
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  return [
+
+ 
+
+ 
+
+ 
+
+    `*SOLICITUD AS CLICK - ${servicio.toUpperCase()}*`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    `Tipo de tarifa: ${tipoTarifa}`,
+
+ 
+
+ 
+
+ 
+
+    `Tipo de cliente: ${obtenerTipoClienteTexto(perfilActual.tipoCliente)}`,
+
+ 
+
+ 
+
+ 
+
+    `Membresía: ${numeroMembresia}`,
+
+ 
+
+ 
+
+ 
+
+    `Estado: ${obtenerTextoEstado(perfilActual)}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "*DATOS DEL CLIENTE*",
+
+ 
+
+ 
+
+ 
+
+    `Nombre: ${perfilActual.nombre || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    `Teléfono: ${perfilActual.telefono || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    `Correo: ${perfilActual.correo || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "*DATOS DEL VEHÍCULO*",
+
+ 
+
+ 
+
+ 
+
+    `Marca: ${perfilActual.marca || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    `Submarca: ${perfilActual.subMarca || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    `Color: ${perfilActual.color || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    `Placas: ${perfilActual.placas || "No registradas"}`,
+
+ 
+
+ 
+
+ 
+
+    `Serie / VIN: ${perfilActual.serie || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "*SERVICIO SOLICITADO*",
+
+ 
+
+ 
+
+ 
+
+    `Servicio: ${servicio}`,
+
+ 
+
+ 
+
+ 
+
+    `Ubicación: ${ubicacion}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "Comentarios:"
+
+ 
+
+ 
+
+ 
+
+  ].join("\n");
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+/* =========================================
+
+ 
+
+ 
+
+ 
+
+   HISTORIAL DE SERVICIOS
+
+ 
+
+ 
+
+ 
+
+========================================= */
+
+ 
+
+ 
+
+ 
+
+async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalleServicio = {}) {
+
+ 
+
+  if (!usuarioActual) return;
+
+ 
+
+ 
+
+ 
+
+  try {
+
+ 
+
+    await firestoreAddDoc(firestoreCollection(db, "servicios"), {
+
+ 
+
+      usuarioId: usuarioActual.uid,
+
+ 
+
+      uid: usuarioActual.uid,
+
+ 
+
+      folio: generarFolioServicio(),
+
+ 
+
+      servicio,
+
+ 
+
+      tipoAuxilio: detalleServicio.tipoAuxilio || "",
+
+ 
+
+      combustiblePorCuentaCliente:
+
+        detalleServicio.tipoAuxilio === "Surtir gasolina",
+
+ 
+
+      estado: "solicitado",
+
+ 
+
+      tipoTarifa,
+
+ 
+
+      ubicacion,
+
+ 
+
+      cliente: {
+
+ 
+
+        nombre: perfilActual.nombre || "",
+
+ 
+
+        telefono: perfilActual.telefono || "",
+
+ 
+
+        correo: perfilActual.correo || ""
+
+ 
+
+      },
+
+ 
+
+      vehiculo: {
+
+ 
+
+        marca: perfilActual.marca || "",
+
+ 
+
+        subMarca: perfilActual.subMarca || "",
+
+ 
+
+        color: perfilActual.color || "",
+
+ 
+
+        placas: perfilActual.placas || "",
+
+ 
+
+        serie: perfilActual.serie || ""
+
+ 
+
+      },
+
+ 
+
+      creadoEn: firestoreServerTimestamp(),
+
+ 
+
+      fechaCreacion: new Date().toISOString()
+
+ 
+
+    });
+
+ 
+
+ 
+
+ 
+
+    await cargarHistorialServicios();
+
+    await crearNotificacionLocal({
+
+      titulo: "Solicitud recibida",
+
+      mensaje: `Tu solicitud de ${servicio} fue registrada correctamente.`,
+
+      tipo: "servicio"
+
+    });
+
+ 
+
+  } catch (error) {
+
+ 
+
+    console.error("No fue posible guardar la solicitud:", error);
+
+ 
+
+  }
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function generarFolioServicio() {
+
+ 
+
+  const fecha = new Date();
+
+ 
+
+  const anio = fecha.getFullYear().toString().slice(-2);
+
+ 
+
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+
+ 
+
+  const dia = String(fecha.getDate()).padStart(2, "0");
+
+ 
+
+  const aleatorio = Math.floor(1000 + Math.random() * 9000);
+
+ 
+
+  return `ASC-${anio}${mes}${dia}-${aleatorio}`;
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+async function cargarHistorialServicios() {
+
+ 
+
+  if (!usuarioActual) return;
+
+ 
+
+ 
+
+ 
+
+  try {
+
+ 
+
+    const consulta = firestoreQuery(
+
+ 
+
+      firestoreCollection(db, "servicios"),
+
+ 
+
+      firestoreWhere("usuarioId", "==", usuarioActual.uid)
+
+ 
+
+    );
+
+ 
+
+ 
+
+ 
+
+    const resultado = await firestoreGetDocs(consulta);
+
+ 
+
+ 
+
+ 
+
+    historialServicios = resultado.docs
+
+ 
+
+      .map(documento => ({
+
+ 
+
+        id: documento.id,
+
+ 
+
+        ...documento.data()
+
+ 
+
+      }))
+
+ 
+
+      .sort((a, b) => obtenerMilisegundos(b) - obtenerMilisegundos(a));
+
+ 
+
+ 
+
+ 
+
+    actualizarResumenHistorial();
+
+ 
+
+    renderizarHistorial(historialServicios);
+
+ 
+
+  } catch (error) {
+
+ 
+
+    console.error("Error al cargar el historial:", error);
+
+ 
+
+    renderizarHistorial([]);
+
+ 
+
+  }
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function obtenerMilisegundos(servicio) {
+
+ 
+
+  const fecha = servicio.creadoEn || servicio.fechaCreacion || servicio.fecha || "";
+
+ 
+
+ 
+
+ 
+
+  if (fecha && typeof fecha.toDate === "function") {
+
+ 
+
+    return fecha.toDate().getTime();
+
+ 
+
+  }
+
+ 
+
+ 
+
+ 
+
+  const valor = new Date(fecha).getTime();
+
+ 
+
+  return Number.isNaN(valor) ? 0 : valor;
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function actualizarResumenHistorial() {
+
+ 
+
+  const estadosProceso = [
+
+ 
+
+    "solicitado",
+
+ 
+
+    "asignado",
+
+ 
+
+    "en_camino",
+
+ 
+
+    "en_proceso",
+
+ 
+
+    "aceptado",
+
+ 
+
+    "arribo"
+
+ 
+
+  ];
+
+ 
+
+ 
+
+ 
+
+  actualizarTexto("historialTotal", String(historialServicios.length));
+
+ 
+
+  actualizarTexto(
+
+ 
+
+    "historialProceso",
+
+ 
+
+    String(historialServicios.filter(item =>
+
+ 
+
+      estadosProceso.includes(normalizarEstado(item.estado))
+
+ 
+
+    ).length)
+
+ 
+
+  );
+
+ 
+
+  actualizarTexto(
+
+ 
+
+    "historialTerminados",
+
+ 
+
+    String(historialServicios.filter(item =>
+
+ 
+
+      ["finalizado", "terminado", "completado"].includes(
+
+ 
+
+        normalizarEstado(item.estado)
+
+ 
+
+      )
+
+ 
+
+    ).length)
+
+ 
+
+  );
+
+ 
+
+  actualizarTexto(
+
+ 
+
+    "historialCancelados",
+
+ 
+
+    String(historialServicios.filter(item =>
+
+ 
+
+      ["cancelado", "cancelada"].includes(normalizarEstado(item.estado))
+
+ 
+
+    ).length)
 
  
 
@@ -2896,51 +6640,19 @@ async function solicitarServicio(servicio) {
 
  
 
-function construirMensajeServicio(
+function filtrarHistorial() {
 
  
 
-  servicio,
+  const busqueda =
 
  
 
-  tipoTarifa,
+    document.getElementById("buscadorHistorial")
 
  
 
-  ubicacion
-
- 
-
-) {
-
- 
-
-  const numeroMembresia =
-
- 
-
-    perfilActual.tieneMembresia
-
- 
-
-      ? (
-
- 
-
-          perfilActual.numeroMiembro ||
-
- 
-
-          "Pendiente"
-
- 
-
-        )
-
- 
-
-      : "Sin membresía";
+      ?.value.trim().toLowerCase() || "";
 
  
 
@@ -2948,107 +6660,587 @@ function construirMensajeServicio(
 
  
 
-  return [
+  const estado =
 
  
 
-    `*SOLICITUD AS CLICK - ${servicio.toUpperCase()}*`,
+    document.getElementById("filtroEstadoHistorial")?.value || "todos";
 
  
 
-    "",
+ 
 
  
 
-    `Tipo de tarifa: ${tipoTarifa}`,
+  const tipo =
 
  
 
-    `Tipo de cliente: ${obtenerTipoClienteTexto(perfilActual.tipoCliente)}`,
+    document.getElementById("filtroTipoHistorial")?.value || "todos";
 
  
 
-    `Membresía: ${numeroMembresia}`,
+ 
 
  
 
-    `Estado: ${obtenerTextoEstado(perfilActual)}`,
+  const filtrados = historialServicios.filter(item => {
 
  
 
-    "",
+    const vehiculo = item.vehiculo || {};
 
  
 
-    "*DATOS DEL CLIENTE*",
+    const texto = [
 
  
 
-    `Nombre: ${perfilActual.nombre || "No registrado"}`,
+      item.folio,
 
  
 
-    `Teléfono: ${perfilActual.telefono || "No registrado"}`,
+      item.servicio,
 
  
 
-    `Correo: ${perfilActual.correo || "No registrado"}`,
+      item.tipoServicio,
 
  
 
-    "",
+      vehiculo.marca,
 
  
 
-    "*DATOS DEL VEHÍCULO*",
+      vehiculo.subMarca,
 
  
 
-    `Marca: ${perfilActual.marca || "No registrada"}`,
+      vehiculo.placas,
 
  
 
-    `Submarca: ${perfilActual.subMarca || "No registrada"}`,
+      item.marca,
 
  
 
-    `Color: ${perfilActual.color || "No registrado"}`,
+      item.subMarca,
 
  
 
-    `Placas: ${perfilActual.placas || "No registradas"}`,
+      item.placas
 
  
 
-    `Serie / VIN: ${perfilActual.serie || "No registrada"}`,
+    ]
 
  
 
-    "",
+      .filter(Boolean)
 
  
 
-    "*SERVICIO SOLICITADO*",
+      .join(" ")
 
  
 
-    `Servicio: ${servicio}`,
+      .toLowerCase();
 
  
 
-    `Ubicación: ${ubicacion}`,
+ 
 
  
 
-    "",
+    const estadoItem = normalizarEstado(item.estado || "solicitado");
 
  
 
-    "Comentarios:"
+    const tipoItem = String(item.servicio || item.tipoServicio || "")
 
  
 
-  ].join("\n");
+      .trim()
+
+ 
+
+      .toLowerCase();
+
+ 
+
+ 
+
+ 
+
+    return (
+
+ 
+
+      (!busqueda || texto.includes(busqueda)) &&
+
+ 
+
+      (estado === "todos" || estadoItem === estado) &&
+
+ 
+
+      (tipo === "todos" || tipoItem === tipo)
+
+ 
+
+    );
+
+ 
+
+  });
+
+ 
+
+ 
+
+ 
+
+  renderizarHistorial(filtrados);
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function renderizarHistorial(servicios) {
+
+ 
+
+  const cuerpo = document.getElementById("historialServiciosBody");
+
+ 
+
+  if (!cuerpo) return;
+
+ 
+
+ 
+
+ 
+
+  if (!servicios.length) {
+
+ 
+
+    cuerpo.innerHTML = `
+
+ 
+
+      <tr class="emptyHistoryRow">
+
+ 
+
+        <td colspan="6">
+
+ 
+
+          <div class="emptyHistory">
+
+ 
+
+            <span>◷</span>
+
+ 
+
+            <b>No hay servicios para mostrar</b>
+
+ 
+
+            <p>Las solicitudes que coincidan con tus filtros aparecerán aquí.</p>
+
+ 
+
+          </div>
+
+ 
+
+        </td>
+
+ 
+
+      </tr>
+
+ 
+
+    `;
+
+ 
+
+    return;
+
+ 
+
+  }
+
+ 
+
+ 
+
+ 
+
+  cuerpo.innerHTML = servicios.map(item => {
+
+ 
+
+    const vehiculo = item.vehiculo || {};
+
+ 
+
+    const servicio = item.servicio || item.tipoServicio || "Servicio";
+
+ 
+
+    const estado = normalizarEstado(item.estado || "solicitado");
+
+ 
+
+    const nombreVehiculo = [
+
+ 
+
+      vehiculo.marca || item.marca,
+
+ 
+
+      vehiculo.subMarca || item.subMarca
+
+ 
+
+    ].filter(Boolean).join(" ") || "Vehículo no registrado";
+
+ 
+
+    const placas = vehiculo.placas || item.placas || "Sin placas";
+
+ 
+
+ 
+
+ 
+
+    return `
+
+ 
+
+      <tr>
+
+ 
+
+        <td><b>${escaparHtml(item.folio || item.id.slice(0, 8).toUpperCase())}</b></td>
+
+ 
+
+        <td>${escaparHtml(servicio)}</td>
+
+ 
+
+        <td>${escaparHtml(nombreVehiculo)}<br><small>${escaparHtml(placas)}</small></td>
+
+ 
+
+        <td>${escaparHtml(formatearFechaServicio(item))}</td>
+
+ 
+
+        <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
+
+ 
+
+        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+
+ 
+
+      </tr>
+
+ 
+
+    `;
+
+ 
+
+  }).join("");
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function formatearFechaServicio(item) {
+
+ 
+
+  const valor = item.creadoEn || item.fechaCreacion || item.fecha || "";
+
+ 
+
+  let fecha;
+
+ 
+
+ 
+
+ 
+
+  if (valor && typeof valor.toDate === "function") {
+
+ 
+
+    fecha = valor.toDate();
+
+ 
+
+  } else {
+
+ 
+
+    fecha = new Date(valor);
+
+ 
+
+  }
+
+ 
+
+ 
+
+ 
+
+  if (!fecha || Number.isNaN(fecha.getTime())) return "Sin fecha";
+
+ 
+
+ 
+
+ 
+
+  return fecha.toLocaleDateString("es-MX", {
+
+ 
+
+    day: "2-digit",
+
+ 
+
+    month: "short",
+
+ 
+
+    year: "numeric",
+
+ 
+
+    hour: "2-digit",
+
+ 
+
+    minute: "2-digit"
+
+ 
+
+  });
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function obtenerEtiquetaEstado(estado) {
+
+ 
+
+  const etiquetas = {
+
+ 
+
+    solicitado: "Solicitado",
+
+ 
+
+    asignado: "Asignado",
+
+ 
+
+    aceptado: "Aceptado",
+
+ 
+
+    en_camino: "En camino",
+
+ 
+
+    arribo: "En sitio",
+
+ 
+
+    en_proceso: "En proceso",
+
+ 
+
+    finalizado: "Finalizado",
+
+ 
+
+    terminado: "Finalizado",
+
+ 
+
+    completado: "Finalizado",
+
+ 
+
+    cancelado: "Cancelado",
+
+ 
+
+    cancelada: "Cancelado"
+
+ 
+
+  };
+
+ 
+
+ 
+
+ 
+
+  return etiquetas[estado] || estado.replace(/_/g, " ");
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function obtenerClaseEstado(estado) {
+
+ 
+
+  if (["finalizado", "terminado", "completado"].includes(estado)) {
+
+ 
+
+    return "finished";
+
+ 
+
+  }
+
+ 
+
+ 
+
+ 
+
+  if (["cancelado", "cancelada"].includes(estado)) {
+
+ 
+
+    return "cancelled";
+
+ 
+
+  }
+
+ 
+
+ 
+
+ 
+
+  return "process";
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function escaparHtml(valor) {
+
+ 
+
+  return String(valor ?? "")
+
+ 
+
+    .replaceAll("&", "&amp;")
+
+ 
+
+    .replaceAll("<", "&lt;")
+
+ 
+
+    .replaceAll(">", "&gt;")
+
+ 
+
+    .replaceAll('"', "&quot;")
+
+ 
+
+    .replaceAll("'", "&#039;");
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function escaparAtributo(valor) {
+
+ 
+
+  return String(valor ?? "")
+
+ 
+
+    .replaceAll("\\", "\\\\")
+
+ 
+
+    .replaceAll("'", "\\'")
+
+ 
+
+    .replaceAll("\n", " ")
+
+ 
+
+    .replaceAll("\r", " ");
 
  
 
@@ -3064,7 +7256,15 @@ function construirMensajeServicio(
 
  
 
-   HISTORIAL DE SERVICIOS
+ 
+
+ 
+
+   UBICACIÓN
+
+ 
+
+ 
 
  
 
@@ -3072,347 +7272,1429 @@ function construirMensajeServicio(
 
  
 
-async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion) {
-
-  if (!usuarioActual) return;
+ 
 
  
 
-  try {
+ 
 
-    await firestoreAddDoc(firestoreCollection(db, "servicios"), {
+ 
 
-      usuarioId: usuarioActual.uid,
+ 
 
-      uid: usuarioActual.uid,
+ 
 
-      folio: generarFolioServicio(),
+function obtenerUbicacion() {
 
-      servicio,
+ 
 
-      estado: "solicitado",
+ 
 
-      tipoTarifa,
+ 
 
-      ubicacion,
+  return new Promise(resolve => {
 
-      cliente: {
+ 
 
-        nombre: perfilActual.nombre || "",
+ 
 
-        telefono: perfilActual.telefono || "",
+ 
 
-        correo: perfilActual.correo || ""
+    if (!navigator.geolocation) {
+
+ 
+
+ 
+
+ 
+
+      resolve(
+
+ 
+
+ 
+
+ 
+
+        "El cliente la compartirá por WhatsApp"
+
+ 
+
+ 
+
+ 
+
+      );
+
+ 
+
+ 
+
+ 
+
+      return;
+
+ 
+
+ 
+
+ 
+
+    }
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+    navigator.geolocation.getCurrentPosition(
+
+ 
+
+ 
+
+ 
+
+      posicion => {
+
+ 
+
+ 
+
+ 
+
+        const latitud =
+
+ 
+
+ 
+
+ 
+
+          posicion.coords.latitude;
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+        const longitud =
+
+ 
+
+ 
+
+ 
+
+          posicion.coords.longitude;
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+        resolve(
+
+ 
+
+ 
+
+ 
+
+          `https://maps.google.com/?q=${latitud},${longitud}`
+
+ 
+
+ 
+
+ 
+
+        );
+
+ 
+
+ 
+
+ 
 
       },
 
-      vehiculo: {
+ 
 
-        marca: perfilActual.marca || "",
+ 
 
-        subMarca: perfilActual.subMarca || "",
+ 
 
-        color: perfilActual.color || "",
+ 
 
-        placas: perfilActual.placas || "",
+ 
 
-        serie: perfilActual.serie || ""
+ 
+
+ 
+
+      () => {
+
+ 
+
+ 
+
+ 
+
+        resolve(
+
+ 
+
+ 
+
+ 
+
+          "El cliente la compartirá por WhatsApp"
+
+ 
+
+ 
+
+ 
+
+        );
+
+ 
+
+ 
+
+ 
 
       },
 
-      creadoEn: firestoreServerTimestamp(),
-
-      fechaCreacion: new Date().toISOString()
-
-    });
+ 
 
  
 
-    await cargarHistorialServicios();
-
-  } catch (error) {
-
-    console.error("No fue posible guardar la solicitud:", error);
-
-  }
-
-}
+ 
 
  
 
-function generarFolioServicio() {
-
-  const fecha = new Date();
-
-  const anio = fecha.getFullYear().toString().slice(-2);
-
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-
-  const dia = String(fecha.getDate()).padStart(2, "0");
-
-  const aleatorio = Math.floor(1000 + Math.random() * 9000);
-
-  return `ASC-${anio}${mes}${dia}-${aleatorio}`;
-
-}
+ 
 
  
 
-async function cargarHistorialServicios() {
+ 
 
-  if (!usuarioActual) return;
+      {
 
  
 
-  try {
+ 
 
-    const consulta = firestoreQuery(
+ 
 
-      firestoreCollection(db, "servicios"),
+        enableHighAccuracy: true,
 
-      firestoreWhere("usuarioId", "==", usuarioActual.uid)
+ 
+
+ 
+
+ 
+
+        timeout: 8000,
+
+ 
+
+ 
+
+ 
+
+        maximumAge: 60000
+
+ 
+
+ 
+
+ 
+
+      }
+
+ 
+
+ 
+
+ 
 
     );
 
  
 
-    const resultado = await firestoreGetDocs(consulta);
-
  
 
-    historialServicios = resultado.docs
-
-      .map(documento => ({
-
-        id: documento.id,
-
-        ...documento.data()
-
-      }))
-
-      .sort((a, b) => obtenerMilisegundos(b) - obtenerMilisegundos(a));
-
  
-
-    actualizarResumenHistorial();
-
-    renderizarHistorial(historialServicios);
-
-  } catch (error) {
-
-    console.error("Error al cargar el historial:", error);
-
-    renderizarHistorial([]);
-
-  }
-
-}
-
- 
-
-function obtenerMilisegundos(servicio) {
-
-  const fecha = servicio.creadoEn || servicio.fechaCreacion || servicio.fecha || "";
-
- 
-
-  if (fecha && typeof fecha.toDate === "function") {
-
-    return fecha.toDate().getTime();
-
-  }
-
- 
-
-  const valor = new Date(fecha).getTime();
-
-  return Number.isNaN(valor) ? 0 : valor;
-
-}
-
- 
-
-function actualizarResumenHistorial() {
-
-  const estadosProceso = [
-
-    "solicitado",
-
-    "asignado",
-
-    "en_camino",
-
-    "en_proceso",
-
-    "aceptado",
-
-    "arribo"
-
-  ];
-
- 
-
-  actualizarTexto("historialTotal", String(historialServicios.length));
-
-  actualizarTexto(
-
-    "historialProceso",
-
-    String(historialServicios.filter(item =>
-
-      estadosProceso.includes(normalizarEstado(item.estado))
-
-    ).length)
-
-  );
-
-  actualizarTexto(
-
-    "historialTerminados",
-
-    String(historialServicios.filter(item =>
-
-      ["finalizado", "terminado", "completado"].includes(
-
-        normalizarEstado(item.estado)
-
-      )
-
-    ).length)
-
-  );
-
-  actualizarTexto(
-
-    "historialCancelados",
-
-    String(historialServicios.filter(item =>
-
-      ["cancelado", "cancelada"].includes(normalizarEstado(item.estado))
-
-    ).length)
-
-  );
-
-}
-
- 
-
-function filtrarHistorial() {
-
-  const busqueda =
-
-    document.getElementById("buscadorHistorial")
-
-      ?.value.trim().toLowerCase() || "";
-
- 
-
-  const estado =
-
-    document.getElementById("filtroEstadoHistorial")?.value || "todos";
-
- 
-
-  const tipo =
-
-    document.getElementById("filtroTipoHistorial")?.value || "todos";
-
- 
-
-  const filtrados = historialServicios.filter(item => {
-
-    const vehiculo = item.vehiculo || {};
-
-    const texto = [
-
-      item.folio,
-
-      item.servicio,
-
-      item.tipoServicio,
-
-      vehiculo.marca,
-
-      vehiculo.subMarca,
-
-      vehiculo.placas,
-
-      item.marca,
-
-      item.subMarca,
-
-      item.placas
-
-    ]
-
-      .filter(Boolean)
-
-      .join(" ")
-
-      .toLowerCase();
-
- 
-
-    const estadoItem = normalizarEstado(item.estado || "solicitado");
-
-    const tipoItem = String(item.servicio || item.tipoServicio || "")
-
-      .trim()
-
-      .toLowerCase();
-
- 
-
-    return (
-
-      (!busqueda || texto.includes(busqueda)) &&
-
-      (estado === "todos" || estadoItem === estado) &&
-
-      (tipo === "todos" || tipoItem === tipo)
-
-    );
 
   });
 
  
 
-  renderizarHistorial(filtrados);
+ 
+
+ 
 
 }
 
  
 
-function renderizarHistorial(servicios) {
-
-  const cuerpo = document.getElementById("historialServiciosBody");
-
-  if (!cuerpo) return;
+ 
 
  
 
-  if (!servicios.length) {
+ 
 
-    cuerpo.innerHTML = `
+ 
 
-      <tr class="emptyHistoryRow">
+ 
 
-        <td colspan="6">
+ 
 
-          <div class="emptyHistory">
+/* =========================================
 
-            <span>◷</span>
+ 
 
-            <b>No hay servicios para mostrar</b>
+ 
 
-            <p>Las solicitudes que coincidan con tus filtros aparecerán aquí.</p>
+ 
 
-          </div>
+   ALERTAS DE EMERGENCIA
 
-        </td>
+ 
 
-      </tr>
+ 
+
+ 
+
+========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+async function activarAlerta(tipo) {
+
+ 
+
+ 
+
+ 
+
+  if (!perfilActual.puedeUsarAlertas) {
+
+ 
+
+ 
+
+ 
+
+    mostrarModal(
+
+ 
+
+ 
+
+ 
+
+      "🔒",
+
+ 
+
+ 
+
+ 
+
+      "Función exclusiva para miembros",
+
+ 
+
+ 
+
+ 
+
+      "Las alertas de robo y montachoques están disponibles únicamente para miembros AS CLICK activos."
+
+ 
+
+ 
+
+ 
+
+    );
+
+ 
+
+ 
+
+ 
+
+    return;
+
+ 
+
+ 
+
+ 
+
+  }
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  const confirmar = confirm(
+
+ 
+
+ 
+
+ 
+
+    `¿Confirmas que deseas activar la alerta de ${tipo}? Esta función debe utilizarse únicamente en una emergencia real.`
+
+ 
+
+ 
+
+ 
+
+  );
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  if (!confirmar) return;
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  const ubicacion =
+
+ 
+
+ 
+
+ 
+
+    await obtenerUbicacion();
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  const mensaje = [
+
+ 
+
+ 
+
+ 
+
+    `*🚨 ALERTA AS CLICK - ${tipo.toUpperCase()}*`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "*MIEMBRO ACTIVO*",
+
+ 
+
+ 
+
+ 
+
+    `Membresía: ${perfilActual.numeroMiembro || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    `Nombre: ${perfilActual.nombre || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    `Teléfono: ${perfilActual.telefono || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "*VEHÍCULO*",
+
+ 
+
+ 
+
+ 
+
+    `Marca: ${perfilActual.marca || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    `Submarca: ${perfilActual.subMarca || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    `Color: ${perfilActual.color || "No registrado"}`,
+
+ 
+
+ 
+
+ 
+
+    `Placas: ${perfilActual.placas || "No registradas"}`,
+
+ 
+
+ 
+
+ 
+
+    `Serie: ${perfilActual.serie || "No registrada"}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    `Ubicación actual: ${ubicacion}`,
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    "⚠ Esta alerta fue enviada desde el botón de emergencia de AS CLICK."
+
+ 
+
+ 
+
+ 
+
+  ].join("\n");
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  const url =
+
+ 
+
+ 
+
+ 
+
+    `https://wa.me/${TELEFONO_EMERGENCIAS}` +
+
+ 
+
+ 
+
+ 
+
+    `?text=${encodeURIComponent(mensaje)}`;
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  window.open(
+
+ 
+
+ 
+
+ 
+
+    url,
+
+ 
+
+ 
+
+ 
+
+    "_blank",
+
+ 
+
+ 
+
+ 
+
+    "noopener,noreferrer"
+
+ 
+
+ 
+
+ 
+
+  );
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+/* =========================================
+
+ 
+
+ 
+
+ 
+
+   WHATSAPP ASESOR
+
+ 
+
+ 
+
+ 
+
+========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+function hablarAsesor() {
+
+ 
+
+ 
+
+ 
+
+  const mensaje = [
+
+ 
+
+ 
+
+ 
+
+    "Hola, necesito hablar con un asesor de AS CLICK.",
+
+ 
+
+ 
+
+ 
+
+    "",
+
+ 
+
+ 
+
+ 
+
+    `Nombre: ${perfilActual.nombre || ""}`,
+
+ 
+
+ 
+
+ 
+
+    `Teléfono: ${perfilActual.telefono || ""}`,
+
+ 
+
+ 
+
+ 
+
+    `Membresía: ${
+
+ 
+
+ 
+
+ 
+
+      perfilActual.tieneMembresia
+
+ 
+
+ 
+
+ 
+
+        ? (
+
+ 
+
+ 
+
+ 
+
+            perfilActual.numeroMiembro ||
+
+ 
+
+ 
+
+ 
+
+            "Pendiente"
+
+ 
+
+ 
+
+ 
+
+          )
+
+ 
+
+ 
+
+ 
+
+        : "Sin membresía"
+
+ 
+
+ 
+
+ 
+
+    }`
+
+ 
+
+ 
+
+ 
+
+  ].join("\n");
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  const url =
+
+ 
+
+ 
+
+ 
+
+    `https://wa.me/${TELEFONO_ASESOR}` +
+
+ 
+
+ 
+
+ 
+
+    `?text=${encodeURIComponent(mensaje)}`;
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  window.open(
+
+ 
+
+ 
+
+ 
+
+    url,
+
+ 
+
+ 
+
+ 
+
+    "_blank",
+
+ 
+
+ 
+
+ 
+
+    "noopener,noreferrer"
+
+ 
+
+ 
+
+ 
+
+  );
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+/* =========================================
+
+ 
+
+ 
+
+ 
+
+   OTRAS FUNCIONES
+
+ 
+
+ 
+
+ 
+
+========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+function verDetalle(folio) {
+
+ 
+
+ 
+
+ 
+
+  mostrarModal(
+
+ 
+
+ 
+
+ 
+
+    "▣",
+
+ 
+
+ 
+
+ 
+
+    `Servicio ${folio}`,
+
+ 
+
+ 
+
+ 
+
+    "Aquí aparecerá el seguimiento completo, operador asignado, ubicación, estado y detalles del servicio."
+
+ 
+
+ 
+
+ 
+
+  );
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+function verMembresia() {
+
+ 
+
+ 
+
+ 
+
+  cambiarSeccion("beneficios");
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+function agregarVehiculo() {
+
+  abrirModalVehiculo();
+
+}
+
+ 
+
+function abrirModalVehiculo() {
+
+  const modal = document.getElementById("vehicleModalOverlay");
+
+  const form = document.getElementById("vehicleForm");
+
+  const error = document.getElementById("vehicleFormError");
+
+ 
+
+  form?.reset();
+
+  if (error) error.textContent = "";
+
+  modal?.classList.add("active");
+
+  modal?.setAttribute("aria-hidden", "false");
+
+  document.body.style.overflow = "hidden";
+
+}
+
+ 
+
+function cerrarModalVehiculo(event = null) {
+
+  if (event && event.target.id !== "vehicleModalOverlay") return;
+
+  const modal = document.getElementById("vehicleModalOverlay");
+
+  modal?.classList.remove("active");
+
+  modal?.setAttribute("aria-hidden", "true");
+
+  document.body.style.overflow = "";
+
+}
+
+ 
+
+async function guardarNuevoVehiculo(event) {
+
+  event.preventDefault();
+
+ 
+
+  if (!usuarioActual) return;
+
+ 
+
+  const marca = document.getElementById("nuevoVehiculoMarca")?.value.trim() || "";
+
+  const subMarca = document.getElementById("nuevoVehiculoSubMarca")?.value.trim() || "";
+
+  const color = document.getElementById("nuevoVehiculoColor")?.value.trim() || "";
+
+  const placas = (document.getElementById("nuevoVehiculoPlacas")?.value || "")
+
+    .trim().toUpperCase();
+
+  const serie = (document.getElementById("nuevoVehiculoSerie")?.value || "")
+
+    .trim().toUpperCase().replace(/\s/g, "");
+
+  const hacerloPrincipal =
+
+    document.getElementById("nuevoVehiculoPrincipal")?.checked === true ||
+
+    vehiculosActuales.length === 0;
+
+  const error = document.getElementById("vehicleFormError");
+
+  const boton = document.getElementById("guardarVehiculoButton");
+
+ 
+
+  if (!marca || !subMarca || !color || !placas || !serie) {
+
+    if (error) error.textContent = "Completa todos los datos del vehículo.";
+
+    return;
+
+  }
+
+ 
+
+  if (placas.length < 4 || serie.length < 5) {
+
+    if (error) error.textContent = "Revisa las placas y el número de serie.";
+
+    return;
+
+  }
+
+ 
+
+  try {
+
+    if (boton) {
+
+      boton.disabled = true;
+
+      boton.textContent = "Guardando...";
+
+    }
+
+ 
+
+    const vehiculo = {
+
+      marca,
+
+      subMarca,
+
+      color,
+
+      placas,
+
+      serie,
+
+      esPrincipal: hacerloPrincipal,
+
+      activo: true,
+
+      creadoEn: firestoreServerTimestamp(),
+
+      actualizadoEn: firestoreServerTimestamp()
+
+    };
+
+ 
+
+    if (hacerloPrincipal) {
+
+      await quitarPrincipalActual();
+
+    }
+
+ 
+
+    await firestoreAddDoc(
+
+      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos"),
+
+      vehiculo
+
+    );
+
+ 
+
+    if (hacerloPrincipal) {
+
+      await actualizarVehiculoPrincipalUsuario(vehiculo);
+
+    }
+
+ 
+
+    await crearNotificacionLocal({
+
+      titulo: "Vehículo agregado",
+
+      mensaje: `${marca} ${subMarca} fue agregado correctamente a tu cuenta.`,
+
+      tipo: "vehiculo"
+
+    });
+
+ 
+
+    cerrarModalVehiculo();
+
+    await cargarVehiculos();
+
+    mostrarModal("✓", "Vehículo agregado", "El vehículo se guardó correctamente en tu cuenta.");
+
+  } catch (errorGuardar) {
+
+    console.error("No fue posible guardar el vehículo:", errorGuardar);
+
+    if (error) {
+
+      error.textContent = "No fue posible guardar el vehículo. Revisa tus permisos de Firestore.";
+
+    }
+
+  } finally {
+
+    if (boton) {
+
+      boton.disabled = false;
+
+      boton.textContent = "Guardar vehículo";
+
+    }
+
+  }
+
+}
+
+ 
+
+async function cargarVehiculos() {
+
+  if (!usuarioActual) return;
+
+ 
+
+  try {
+
+    const resultado = await firestoreGetDocs(
+
+      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos")
+
+    );
+
+ 
+
+    vehiculosActuales = resultado.docs.map(documento => ({
+
+      id: documento.id,
+
+      ...documento.data()
+
+    }));
+
+ 
+
+    const existePrincipalEnLista = vehiculosActuales.some(item => item.esPrincipal === true);
+
+ 
+
+    if (!vehiculosActuales.length && perfilActual.marca) {
+
+      vehiculosActuales.push({
+
+        id: "principal-perfil",
+
+        marca: perfilActual.marca,
+
+        subMarca: perfilActual.subMarca,
+
+        color: perfilActual.color,
+
+        placas: perfilActual.placas,
+
+        serie: perfilActual.serie,
+
+        esPrincipal: true,
+
+        soloLectura: true
+
+      });
+
+    } else if (!existePrincipalEnLista && vehiculosActuales.length) {
+
+      vehiculosActuales[0].esPrincipal = true;
+
+    }
+
+ 
+
+    vehiculosActuales.sort((a, b) => Number(b.esPrincipal) - Number(a.esPrincipal));
+
+    renderizarVehiculos();
+
+  } catch (error) {
+
+    console.error("No fue posible cargar los vehículos:", error);
+
+    renderizarVehiculos();
+
+  }
+
+}
+
+ 
+
+function renderizarVehiculos() {
+
+  const contenedor = document.getElementById("vehiclesList");
+
+  if (!contenedor) return;
+
+ 
+
+  if (!vehiculosActuales.length) {
+
+    contenedor.innerHTML = `
+
+      <div class="vehiclesEmptyState">
+
+        <span>🚙</span>
+
+        <b>No tienes vehículos registrados</b>
+
+        <p>Agrega tu primer vehículo para utilizarlo en tus solicitudes.</p>
+
+      </div>
 
     `;
 
@@ -3422,77 +8704,507 @@ function renderizarHistorial(servicios) {
 
  
 
-  cuerpo.innerHTML = servicios.map(item => {
+  contenedor.innerHTML = vehiculosActuales.map(vehiculo => `
 
-    const vehiculo = item.vehiculo || {};
+    <article class="savedVehicleCard ${vehiculo.esPrincipal ? "principal" : ""}">
 
-    const servicio = item.servicio || item.tipoServicio || "Servicio";
+      <div class="savedVehicleIcon">🚙</div>
 
-    const estado = normalizarEstado(item.estado || "solicitado");
+      <div class="savedVehicleData">
 
-    const nombreVehiculo = [
+        <h3>${escaparHtml([vehiculo.marca, vehiculo.subMarca].filter(Boolean).join(" "))}</h3>
 
-      vehiculo.marca || item.marca,
+        <p>Placas: ${escaparHtml(vehiculo.placas || "Sin registrar")}</p>
 
-      vehiculo.subMarca || item.subMarca
+        <p>Color: ${escaparHtml(vehiculo.color || "Sin registrar")}</p>
 
-    ].filter(Boolean).join(" ") || "Vehículo no registrado";
+        <small>Serie: ${escaparHtml(vehiculo.serie || "Sin registrar")}</small>
 
-    const placas = vehiculo.placas || item.placas || "Sin placas";
+      </div>
 
- 
+      <div class="savedVehicleActions">
 
-    return `
+        ${vehiculo.esPrincipal
 
-      <tr>
+          ? '<span class="principalVehicleBadge">Vehículo principal</span>'
 
-        <td><b>${escaparHtml(item.folio || item.id.slice(0, 8).toUpperCase())}</b></td>
+          : `<button type="button" onclick="hacerVehiculoPrincipal('${escaparAtributo(vehiculo.id)}')">Hacer principal</button>`}
 
-        <td>${escaparHtml(servicio)}</td>
+        ${vehiculo.soloLectura
 
-        <td>${escaparHtml(nombreVehiculo)}<br><small>${escaparHtml(placas)}</small></td>
+          ? ""
 
-        <td>${escaparHtml(formatearFechaServicio(item))}</td>
+          : `<button type="button" class="deleteVehicleButton" onclick="eliminarVehiculo('${escaparAtributo(vehiculo.id)}')">Eliminar</button>`}
 
-        <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
+      </div>
 
-        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+    </article>
 
-      </tr>
-
-    `;
-
-  }).join("");
+  `).join("");
 
 }
 
  
 
-function formatearFechaServicio(item) {
+async function quitarPrincipalActual() {
 
-  const valor = item.creadoEn || item.fechaCreacion || item.fecha || "";
+  const principales = vehiculosActuales.filter(
 
-  let fecha;
+    item => item.esPrincipal === true && !item.soloLectura
+
+  );
 
  
 
-  if (valor && typeof valor.toDate === "function") {
+  await Promise.all(principales.map(item =>
 
-    fecha = valor.toDate();
+    firestoreUpdateDoc(
 
-  } else {
+      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", item.id),
 
-    fecha = new Date(valor);
+      { esPrincipal: false, actualizadoEn: firestoreServerTimestamp() }
+
+    )
+
+  ));
+
+}
+
+ 
+
+async function hacerVehiculoPrincipal(idVehiculo) {
+
+  const vehiculo = vehiculosActuales.find(item => item.id === idVehiculo);
+
+  if (!vehiculo || !usuarioActual) return;
+
+ 
+
+  try {
+
+    await quitarPrincipalActual();
+
+    await firestoreUpdateDoc(
+
+      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", idVehiculo),
+
+      { esPrincipal: true, actualizadoEn: firestoreServerTimestamp() }
+
+    );
+
+    await actualizarVehiculoPrincipalUsuario(vehiculo);
+
+    await cargarDatosUsuario(usuarioActual);
+
+    await cargarVehiculos();
+
+    mostrarModal("✓", "Vehículo principal actualizado", "Este vehículo se utilizará en tus próximas solicitudes.");
+
+  } catch (error) {
+
+    console.error("No fue posible cambiar el vehículo principal:", error);
+
+    mostrarModal("⚠", "No fue posible actualizar", "Revisa tus permisos de Firestore e inténtalo nuevamente.");
+
+  }
+
+}
+
+ 
+
+async function actualizarVehiculoPrincipalUsuario(vehiculo) {
+
+  const datos = {
+
+    marca: vehiculo.marca || "",
+
+    subMarca: vehiculo.subMarca || "",
+
+    color: vehiculo.color || "",
+
+    placas: vehiculo.placas || "",
+
+    serie: vehiculo.serie || "",
+
+    vehiculoPrincipal: {
+
+      marca: vehiculo.marca || "",
+
+      subMarca: vehiculo.subMarca || "",
+
+      color: vehiculo.color || "",
+
+      placas: vehiculo.placas || "",
+
+      serie: vehiculo.serie || ""
+
+    },
+
+    actualizadoEn: firestoreServerTimestamp()
+
+  };
+
+ 
+
+  await firestoreSetDoc(
+
+    firestoreDoc(db, "usuarios", usuarioActual.uid),
+
+    datos,
+
+    { merge: true }
+
+  );
+
+ 
+
+  perfilActual = {
+
+    ...perfilActual,
+
+    marca: datos.marca,
+
+    subMarca: datos.subMarca,
+
+    color: datos.color,
+
+    placas: datos.placas,
+
+    serie: datos.serie
+
+  };
+
+  actualizarDatosPantalla(perfilActual);
+
+}
+
+ 
+
+async function eliminarVehiculo(idVehiculo) {
+
+  const vehiculo = vehiculosActuales.find(item => item.id === idVehiculo);
+
+  if (!vehiculo || !usuarioActual) return;
+
+ 
+
+  if (vehiculo.esPrincipal) {
+
+    mostrarModal("⚠", "No puedes eliminarlo", "Primero selecciona otro vehículo como principal.");
+
+    return;
 
   }
 
  
 
-  if (!fecha || Number.isNaN(fecha.getTime())) return "Sin fecha";
+  if (!confirm(`¿Deseas eliminar ${vehiculo.marca} ${vehiculo.subMarca}?`)) return;
 
  
 
-  return fecha.toLocaleDateString("es-MX", {
+  try {
+
+    await firestoreDeleteDoc(
+
+      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", idVehiculo)
+
+    );
+
+    await cargarVehiculos();
+
+  } catch (error) {
+
+    console.error("No fue posible eliminar el vehículo:", error);
+
+    mostrarModal("⚠", "No fue posible eliminar", "Revisa tus permisos de Firestore e inténtalo nuevamente.");
+
+  }
+
+}
+
+ 
+
+function mostrarTerminos() {
+
+ 
+
+ 
+
+ 
+
+  mostrarModal(
+
+ 
+
+ 
+
+ 
+
+    "⚠",
+
+ 
+
+ 
+
+ 
+
+    "Términos de las alertas",
+
+ 
+
+ 
+
+ 
+
+    "Las alertas de robo y montachoques son exclusivas para miembros activos. Deben utilizarse únicamente en situaciones reales. El uso falso o irresponsable puede ocasionar sanciones o cancelación de la membresía."
+
+ 
+
+ 
+
+ 
+
+  );
+
+ 
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+function escucharNotificaciones(uidUsuario) {
+
+  if (!firestoreOnSnapshot || !uidUsuario) return;
+
+ 
+
+  if (typeof firestoreUnsubscribeNotificaciones === "function") {
+
+    firestoreUnsubscribeNotificaciones();
+
+  }
+
+ 
+
+  const consulta = firestoreQuery(
+
+    firestoreCollection(db, "notificaciones"),
+
+    firestoreWhere("uidUsuario", "==", uidUsuario)
+
+  );
+
+ 
+
+  firestoreUnsubscribeNotificaciones = firestoreOnSnapshot(
+
+    consulta,
+
+    resultado => {
+
+      notificacionesActuales = resultado.docs
+
+        .map(documento => ({ id: documento.id, ...documento.data() }))
+
+        .sort((a, b) => obtenerFechaNotificacion(b) - obtenerFechaNotificacion(a));
+
+ 
+
+      actualizarContadorNotificaciones();
+
+      renderizarNotificaciones();
+
+    },
+
+    error => {
+
+      console.error("No fue posible escuchar las notificaciones:", error);
+
+    }
+
+  );
+
+}
+
+ 
+
+function obtenerFechaNotificacion(item) {
+
+  const valor = item.fechaCreacion || item.creadoEn || item.fecha || "";
+
+  if (valor && typeof valor.toDate === "function") return valor.toDate().getTime();
+
+  const fecha = new Date(valor).getTime();
+
+  return Number.isNaN(fecha) ? 0 : fecha;
+
+}
+
+ 
+
+function actualizarContadorNotificaciones() {
+
+  const contador = document.getElementById("notificationCounter");
+
+  if (!contador) return;
+
+ 
+
+  const noLeidas = notificacionesActuales.filter(item => item.leida !== true).length;
+
+  contador.textContent = noLeidas > 99 ? "99+" : String(noLeidas);
+
+  contador.hidden = noLeidas === 0;
+
+}
+
+ 
+
+function abrirNotificaciones() {
+
+  const overlay = document.getElementById("notificationsOverlay");
+
+  overlay?.classList.add("active");
+
+  overlay?.setAttribute("aria-hidden", "false");
+
+  document.body.style.overflow = "hidden";
+
+  renderizarNotificaciones();
+
+}
+
+ 
+
+function cerrarNotificaciones(event = null) {
+
+  if (event && event.target.id !== "notificationsOverlay") return;
+
+  const overlay = document.getElementById("notificationsOverlay");
+
+  overlay?.classList.remove("active");
+
+  overlay?.setAttribute("aria-hidden", "true");
+
+  document.body.style.overflow = "";
+
+}
+
+ 
+
+function renderizarNotificaciones() {
+
+  const lista = document.getElementById("notificationsList");
+
+  const botonTodas = document.getElementById("markAllNotificationsButton");
+
+  if (!lista) return;
+
+ 
+
+  const hayNoLeidas = notificacionesActuales.some(item => item.leida !== true);
+
+  if (botonTodas) botonTodas.disabled = !hayNoLeidas;
+
+ 
+
+  if (!notificacionesActuales.length) {
+
+    lista.innerHTML = `
+
+      <div class="notificationsEmpty">
+
+        <span>🔔</span>
+
+        <b>No tienes notificaciones</b>
+
+        <p>Los avisos de tus servicios y membresía aparecerán aquí.</p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+ 
+
+  lista.innerHTML = notificacionesActuales.map(item => `
+
+    <article class="notificationItem ${item.leida === true ? "read" : "unread"}">
+
+      <div class="notificationTypeIcon">${obtenerIconoNotificacion(item.tipo)}</div>
+
+      <button type="button" class="notificationContent" onclick="marcarNotificacionLeida('${escaparAtributo(item.id)}')">
+
+        <div>
+
+          <b>${escaparHtml(item.titulo || "Notificación AS CLICK")}</b>
+
+          ${item.leida === true ? "" : '<span class="unreadDot"></span>'}
+
+        </div>
+
+        <p>${escaparHtml(item.mensaje || "Tienes una nueva actualización.")}</p>
+
+        <small>${escaparHtml(formatearFechaNotificacion(item))}</small>
+
+      </button>
+
+    </article>
+
+  `).join("");
+
+}
+
+ 
+
+function obtenerIconoNotificacion(tipo) {
+
+  const iconos = {
+
+    servicio: "🚛",
+
+    membresia: "⭐",
+
+    emergencia: "🚨",
+
+    vehiculo: "🚙",
+
+    promocion: "🎁"
+
+  };
+
+  return iconos[normalizarEstado(tipo)] || "🔔";
+
+}
+
+ 
+
+function formatearFechaNotificacion(item) {
+
+  const milisegundos = obtenerFechaNotificacion(item);
+
+  if (!milisegundos) return "Ahora";
+
+  return new Date(milisegundos).toLocaleDateString("es-MX", {
 
     day: "2-digit",
 
@@ -3510,761 +9222,95 @@ function formatearFechaServicio(item) {
 
  
 
-function obtenerEtiquetaEstado(estado) {
+async function marcarNotificacionLeida(idNotificacion) {
 
-  const etiquetas = {
+  const item = notificacionesActuales.find(notificacion => notificacion.id === idNotificacion);
 
-    solicitado: "Solicitado",
-
-    asignado: "Asignado",
-
-    aceptado: "Aceptado",
-
-    en_camino: "En camino",
-
-    arribo: "En sitio",
-
-    en_proceso: "En proceso",
-
-    finalizado: "Finalizado",
-
-    terminado: "Finalizado",
-
-    completado: "Finalizado",
-
-    cancelado: "Cancelado",
-
-    cancelada: "Cancelado"
-
-  };
+  if (!item || item.leida === true) return;
 
  
 
-  return etiquetas[estado] || estado.replace(/_/g, " ");
+  try {
 
-}
+    await firestoreUpdateDoc(
 
- 
+      firestoreDoc(db, "notificaciones", idNotificacion),
 
-function obtenerClaseEstado(estado) {
-
-  if (["finalizado", "terminado", "completado"].includes(estado)) {
-
-    return "finished";
-
-  }
-
- 
-
-  if (["cancelado", "cancelada"].includes(estado)) {
-
-    return "cancelled";
-
-  }
-
- 
-
-  return "process";
-
-}
-
- 
-
-function escaparHtml(valor) {
-
-  return String(valor ?? "")
-
-    .replaceAll("&", "&amp;")
-
-    .replaceAll("<", "&lt;")
-
-    .replaceAll(">", "&gt;")
-
-    .replaceAll('"', "&quot;")
-
-    .replaceAll("'", "&#039;");
-
-}
-
- 
-
-function escaparAtributo(valor) {
-
-  return String(valor ?? "")
-
-    .replaceAll("\\", "\\\\")
-
-    .replaceAll("'", "\\'")
-
-    .replaceAll("\n", " ")
-
-    .replaceAll("\r", " ");
-
-}
-
- 
-
-/* =========================================
-
- 
-
-   UBICACIÓN
-
- 
-
-========================================= */
-
- 
-
- 
-
- 
-
-function obtenerUbicacion() {
-
- 
-
-  return new Promise(resolve => {
-
- 
-
-    if (!navigator.geolocation) {
-
- 
-
-      resolve(
-
- 
-
-        "El cliente la compartirá por WhatsApp"
-
- 
-
-      );
-
- 
-
-      return;
-
- 
-
-    }
-
- 
-
- 
-
- 
-
-    navigator.geolocation.getCurrentPosition(
-
- 
-
-      posicion => {
-
- 
-
-        const latitud =
-
- 
-
-          posicion.coords.latitude;
-
- 
-
- 
-
- 
-
-        const longitud =
-
- 
-
-          posicion.coords.longitude;
-
- 
-
- 
-
- 
-
-        resolve(
-
- 
-
-          `https://maps.google.com/?q=${latitud},${longitud}`
-
- 
-
-        );
-
- 
-
-      },
-
- 
-
- 
-
- 
-
-      () => {
-
- 
-
-        resolve(
-
- 
-
-          "El cliente la compartirá por WhatsApp"
-
- 
-
-        );
-
- 
-
-      },
-
- 
-
- 
-
- 
-
-      {
-
- 
-
-        enableHighAccuracy: true,
-
- 
-
-        timeout: 8000,
-
- 
-
-        maximumAge: 60000
-
- 
-
-      }
-
- 
+      { leida: true, leidaEn: firestoreServerTimestamp() }
 
     );
 
- 
+  } catch (error) {
 
-  });
-
- 
-
-}
-
- 
-
- 
-
- 
-
-/* =========================================
-
- 
-
-   ALERTAS DE EMERGENCIA
-
- 
-
-========================================= */
-
- 
-
- 
-
- 
-
-async function activarAlerta(tipo) {
-
- 
-
-  if (!perfilActual.puedeUsarAlertas) {
-
- 
-
-    mostrarModal(
-
- 
-
-      "🔒",
-
- 
-
-      "Función exclusiva para miembros",
-
- 
-
-      "Las alertas de robo y montachoques están disponibles únicamente para miembros AS CLICK activos."
-
- 
-
-    );
-
- 
-
-    return;
-
- 
+    console.error("No fue posible marcar la notificación:", error);
 
   }
 
- 
+}
 
  
 
- 
+async function marcarTodasNotificacionesLeidas() {
 
-  const confirmar = confirm(
+  const pendientes = notificacionesActuales.filter(item => item.leida !== true);
 
- 
-
-    `¿Confirmas que deseas activar la alerta de ${tipo}? Esta función debe utilizarse únicamente en una emergencia real.`
+  if (!pendientes.length) return;
 
  
 
-  );
+  try {
 
- 
+    await Promise.all(pendientes.map(item =>
 
- 
+      firestoreUpdateDoc(
 
- 
+        firestoreDoc(db, "notificaciones", item.id),
 
-  if (!confirmar) return;
+        { leida: true, leidaEn: firestoreServerTimestamp() }
 
- 
+      )
 
- 
+    ));
 
- 
+  } catch (error) {
 
-  const ubicacion =
+    console.error("No fue posible marcar todas las notificaciones:", error);
 
- 
-
-    await obtenerUbicacion();
-
- 
-
- 
-
- 
-
-  const mensaje = [
-
- 
-
-    `*🚨 ALERTA AS CLICK - ${tipo.toUpperCase()}*`,
-
- 
-
-    "",
-
- 
-
-    "*MIEMBRO ACTIVO*",
-
- 
-
-    `Membresía: ${perfilActual.numeroMiembro || "No registrada"}`,
-
- 
-
-    `Nombre: ${perfilActual.nombre || "No registrado"}`,
-
- 
-
-    `Teléfono: ${perfilActual.telefono || "No registrado"}`,
-
- 
-
-    "",
-
- 
-
-    "*VEHÍCULO*",
-
- 
-
-    `Marca: ${perfilActual.marca || "No registrada"}`,
-
- 
-
-    `Submarca: ${perfilActual.subMarca || "No registrada"}`,
-
- 
-
-    `Color: ${perfilActual.color || "No registrado"}`,
-
- 
-
-    `Placas: ${perfilActual.placas || "No registradas"}`,
-
- 
-
-    `Serie: ${perfilActual.serie || "No registrada"}`,
-
- 
-
-    "",
-
- 
-
-    `Ubicación actual: ${ubicacion}`,
-
- 
-
-    "",
-
- 
-
-    "⚠ Esta alerta fue enviada desde el botón de emergencia de AS CLICK."
-
- 
-
-  ].join("\n");
-
- 
-
- 
-
- 
-
-  const url =
-
- 
-
-    `https://wa.me/${TELEFONO_EMERGENCIAS}` +
-
- 
-
-    `?text=${encodeURIComponent(mensaje)}`;
-
- 
-
- 
-
- 
-
-  window.open(
-
- 
-
-    url,
-
- 
-
-    "_blank",
-
- 
-
-    "noopener,noreferrer"
-
- 
-
-  );
-
- 
+  }
 
 }
 
  
 
- 
+async function crearNotificacionLocal({ titulo, mensaje, tipo = "general" }) {
 
- 
+  if (!usuarioActual) return;
 
-/* =========================================
+  try {
 
- 
+    await firestoreAddDoc(firestoreCollection(db, "notificaciones"), {
 
-   WHATSAPP ASESOR
+      uidUsuario: usuarioActual.uid,
 
- 
+      titulo,
 
-========================================= */
+      mensaje,
 
- 
+      tipo,
 
- 
+      leida: false,
 
- 
+      fechaCreacion: firestoreServerTimestamp()
 
-function hablarAsesor() {
+    });
 
- 
+  } catch (error) {
 
-  const mensaje = [
+    console.error("No fue posible crear la notificación:", error);
 
- 
-
-    "Hola, necesito hablar con un asesor de AS CLICK.",
-
- 
-
-    "",
-
- 
-
-    `Nombre: ${perfilActual.nombre || ""}`,
-
- 
-
-    `Teléfono: ${perfilActual.telefono || ""}`,
-
- 
-
-    `Membresía: ${
-
- 
-
-      perfilActual.tieneMembresia
-
- 
-
-        ? (
-
- 
-
-            perfilActual.numeroMiembro ||
-
- 
-
-            "Pendiente"
-
- 
-
-          )
-
- 
-
-        : "Sin membresía"
-
- 
-
-    }`
-
- 
-
-  ].join("\n");
-
- 
-
- 
-
- 
-
-  const url =
-
- 
-
-    `https://wa.me/${TELEFONO_ASESOR}` +
-
- 
-
-    `?text=${encodeURIComponent(mensaje)}`;
-
- 
-
- 
-
- 
-
-  window.open(
-
- 
-
-    url,
-
- 
-
-    "_blank",
-
- 
-
-    "noopener,noreferrer"
-
- 
-
-  );
-
- 
+  }
 
 }
-
- 
-
- 
-
- 
-
-/* =========================================
-
- 
-
-   OTRAS FUNCIONES
-
- 
-
-========================================= */
-
- 
-
- 
-
- 
-
-function verDetalle(folio) {
-
- 
-
-  mostrarModal(
-
- 
-
-    "▣",
-
- 
-
-    `Servicio ${folio}`,
-
- 
-
-    "Aquí aparecerá el seguimiento completo, operador asignado, ubicación, estado y detalles del servicio."
-
- 
-
-  );
-
- 
-
-}
-
- 
-
- 
-
- 
-
-function verMembresia() {
-
- 
-
-  cambiarSeccion("beneficios");
-
- 
-
-}
-
- 
-
- 
-
- 
-
-function agregarVehiculo() {
-
- 
-
-  mostrarModal(
-
- 
-
-    "🚙",
-
- 
-
-    "Vehículo principal",
-
- 
-
-    "Por ahora los datos del vehículo se registran al crear la cuenta. Para cambiar un vehículo, comunícate con un asesor de AS CLICK."
-
- 
-
-  );
-
- 
-
-}
-
- 
-
- 
-
- 
-
-function mostrarTerminos() {
-
- 
-
-  mostrarModal(
-
- 
-
-    "⚠",
-
- 
-
-    "Términos de las alertas",
-
- 
-
-    "Las alertas de robo y montachoques son exclusivas para miembros activos. Deben utilizarse únicamente en situaciones reales. El uso falso o irresponsable puede ocasionar sanciones o cancelación de la membresía."
-
- 
-
-  );
-
- 
-
-}
-
- 
-
- 
-
- 
-
-function abrirNotificaciones() {
-
- 
-
-  mostrarModal(
-
- 
-
-    "🔔",
-
- 
-
-    "Notificaciones",
-
- 
-
-    "Aquí aparecerán las notificaciones relacionadas con tus solicitudes y servicios."
-
- 
-
-  );
-
- 
-
-}
-
- 
-
- 
 
  
 
@@ -4272,7 +9318,15 @@ function abrirMenuUsuario() {
 
  
 
+ 
+
+ 
+
   cambiarSeccion("perfil");
+
+ 
+
+ 
 
  
 
@@ -4284,7 +9338,19 @@ function abrirMenuUsuario() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -4292,7 +9358,19 @@ function abrirMenuUsuario() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4304,7 +9382,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   const confirmar = confirm(
+
+ 
+
+ 
 
  
 
@@ -4312,7 +9398,19 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4328,15 +9426,39 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   try {
 
  
 
+ 
+
+ 
+
     if (!firebaseSignOut || !auth) {
+
       throw new Error("Firebase Authentication no está disponible.");
+
     }
 
+ 
+
     await firebaseSignOut(auth);
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4348,11 +9470,23 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
       "./login.html"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4360,7 +9494,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -4368,11 +9510,27 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
       error
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4384,7 +9542,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
       "No fue posible cerrar la sesión. Inténtalo nuevamente."
+
+ 
+
+ 
 
  
 
@@ -4392,7 +9558,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4404,7 +9578,19 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -4412,7 +9598,19 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4424,7 +9622,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   icono,
+
+ 
+
+ 
 
  
 
@@ -4432,7 +9638,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   texto
+
+ 
+
+ 
 
  
 
@@ -4440,7 +9654,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   const modalIcon =
+
+ 
+
+ 
 
  
 
@@ -4448,11 +9670,27 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
       "modalIcon"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4464,7 +9702,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -4472,7 +9718,19 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4484,7 +9742,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -4492,7 +9758,19 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4504,11 +9782,23 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     document.getElementById(
 
  
 
+ 
+
+ 
+
       "modalOverlay"
+
+ 
+
+ 
 
  
 
@@ -4520,7 +9810,19 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (modalIcon) {
+
+ 
+
+ 
 
  
 
@@ -4528,7 +9830,19 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4540,11 +9854,27 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     modalTitle.textContent = titulo;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4556,11 +9886,27 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     modalText.textContent = texto;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4572,7 +9918,19 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4584,7 +9942,15 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -4592,7 +9958,15 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
     event.target.id !== "modalOverlay"
+
+ 
+
+ 
 
  
 
@@ -4600,11 +9974,27 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4616,11 +10006,23 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
     .getElementById("modalOverlay")
 
  
 
+ 
+
+ 
+
     ?.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -4632,7 +10034,19 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -4640,7 +10054,19 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4652,7 +10078,15 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
   "keydown",
+
+ 
+
+ 
 
  
 
@@ -4660,7 +10094,15 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
     if (event.key === "Escape") {
+
+ 
+
+ 
 
  
 
@@ -4668,7 +10110,15 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
       cerrarModal();
+
+ 
+
+ 
 
  
 
@@ -4676,11 +10126,27 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4692,7 +10158,15 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
   "resize",
+
+ 
+
+ 
 
  
 
@@ -4700,7 +10174,15 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
     if (window.innerWidth > 760) {
+
+ 
+
+ 
 
  
 
@@ -4708,11 +10190,23 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4724,11 +10218,27 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* =========================================
 
  
 
+ 
+
+ 
+
    EXPONER FUNCIONES AL HTML
+
+ 
+
+ 
 
  
 
@@ -4740,7 +10250,19 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.cambiarSeccion =
+
+ 
+
+ 
 
  
 
@@ -4752,7 +10274,19 @@ window.cambiarSeccion =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.abrirMenuMovil =
+
+ 
+
+ 
 
  
 
@@ -4764,7 +10298,19 @@ window.abrirMenuMovil =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.cerrarMenuMovil =
+
+ 
+
+ 
 
  
 
@@ -4776,7 +10322,19 @@ window.cerrarMenuMovil =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.solicitarServicio =
+
+ 
+
+ 
 
  
 
@@ -4788,7 +10346,19 @@ window.solicitarServicio =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.activarAlerta =
+
+ 
+
+ 
 
  
 
@@ -4800,7 +10370,19 @@ window.activarAlerta =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.hablarAsesor =
+
+ 
+
+ 
 
  
 
@@ -4812,7 +10394,19 @@ window.hablarAsesor =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.verDetalle =
+
+ 
+
+ 
 
  
 
@@ -4824,7 +10418,19 @@ window.verDetalle =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.verMembresia =
+
+ 
+
+ 
 
  
 
@@ -4836,7 +10442,19 @@ window.verMembresia =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.agregarVehiculo =
+
+ 
+
+ 
 
  
 
@@ -4848,7 +10466,19 @@ window.agregarVehiculo =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.mostrarTerminos =
+
+ 
+
+ 
 
  
 
@@ -4860,7 +10490,19 @@ window.mostrarTerminos =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.abrirNotificaciones =
+
+ 
+
+ 
 
  
 
@@ -4872,7 +10514,19 @@ window.abrirNotificaciones =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.abrirMenuUsuario =
+
+ 
+
+ 
 
  
 
@@ -4884,7 +10538,19 @@ window.abrirMenuUsuario =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.cerrarSesion =
+
+ 
+
+ 
 
  
 
@@ -4896,7 +10562,19 @@ window.cerrarSesion =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 window.cerrarModal =
+
+ 
+
+ 
 
  
 
@@ -4904,7 +10582,15 @@ window.cerrarModal =
 
  
 
+ 
+
+ 
+
 window.filtrarHistorial =
+
+ 
+
+ 
 
  
 
@@ -4912,10 +10598,46 @@ window.filtrarHistorial =
 
  
 
+ 
+
+ 
+
 window.mostrarModal = mostrarModal;
 
+window.cerrarNotificaciones = cerrarNotificaciones;
+
+window.marcarNotificacionLeida = marcarNotificacionLeida;
+
+window.marcarTodasNotificacionesLeidas = marcarTodasNotificacionesLeidas;
+
+window.cerrarModalVehiculo = cerrarModalVehiculo;
+
+window.guardarNuevoVehiculo = guardarNuevoVehiculo;
+
+window.hacerVehiculoPrincipal = hacerVehiculoPrincipal;
+
+window.eliminarVehiculo = eliminarVehiculo;
+
+ 
+
  
 
  
 
-iniciarFirebase();
+ 
+
+ 
+
+ 
+
+window.abrirAuxilioVial = abrirAuxilioVial;
+
+window.cerrarAuxilioVial = cerrarAuxilioVial;
+
+window.actualizarAvisoCombustible = actualizarAvisoCombustible;
+
+window.confirmarAuxilioVial = confirmarAuxilioVial;
+
+ 
+
+iniciarFirebase()
