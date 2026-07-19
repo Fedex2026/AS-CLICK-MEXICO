@@ -13,6 +13,10 @@ import {
 import {
   doc,
   getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
   runTransaction,
   serverTimestamp,
   setDoc
@@ -266,6 +270,10 @@ registerForm?.addEventListener(
         con el correo y contraseña elegidos por el cliente.
       */
 
+      if (datos.tieneMembresia) {
+        await validarMembresiaAntesDeCrearCuenta(datos.numeroMembresia);
+      }
+
       const credencial =
         await createUserWithEmailAndPassword(
           auth,
@@ -429,24 +437,111 @@ function normalizarNumeroMembresia(numero) {
    REGISTRO CON MEMBRESÍA
 ========================================= */
 
+async function obtenerReferenciaMembresia(numeroMembresia) {
+  const referenciaDirecta = doc(
+    db,
+    "membresias",
+    numeroMembresia
+  );
+
+  const directa = await getDoc(referenciaDirecta);
+
+  if (directa.exists()) {
+    return referenciaDirecta;
+  }
+
+  // Compatibilidad con membresías creadas anteriormente con ID automático.
+  const consulta = query(
+    collection(db, "membresias"),
+    where("numeroMembresia", "==", numeroMembresia)
+  );
+
+  const resultado = await getDocs(consulta);
+
+  if (!resultado.empty) {
+    return resultado.docs[0].ref;
+  }
+
+  return null;
+}
+
+async function validarMembresiaAntesDeCrearCuenta(numeroMembresia) {
+  const referencia = await obtenerReferenciaMembresia(numeroMembresia);
+
+  if (!referencia) {
+    throw crearErrorPersonalizado(
+      "membership/not-found",
+      "El número de membresía no existe."
+    );
+  }
+
+  const documento = await getDoc(referencia);
+  const membresia = documento.data();
+  validarDisponibilidadMembresia(membresia, "");
+}
+
+function normalizarEstadoMembresia(valor) {
+  const estado = String(valor || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+
+  const equivalencias = {
+    activo: "activa",
+    active: "activa",
+    asignada: "activa",
+    asignado: "activa",
+    disponible: "activa",
+    vigente: "activa",
+    cancelado: "cancelada",
+    vencido: "vencida"
+  };
+
+  return equivalencias[estado] || estado;
+}
+
+function validarDisponibilidadMembresia(membresia, uidUsuario) {
+  const uidVinculado = membresia.uidUsuario || "";
+  const estado = normalizarEstadoMembresia(
+    membresia.estadoMembresia || membresia.estado || "activa"
+  );
+
+  if (uidVinculado && uidVinculado !== uidUsuario) {
+    throw crearErrorPersonalizado(
+      "membership/already-used",
+      "Esta membresía ya está vinculada a otra cuenta."
+    );
+  }
+
+  if (estado === "cancelada") {
+    throw crearErrorPersonalizado(
+      "membership/cancelled",
+      "Esta membresía está cancelada."
+    );
+  }
+
+  if (estado === "vencida") {
+    throw crearErrorPersonalizado(
+      "membership/expired",
+      "Esta membresía está vencida."
+    );
+  }
+}
+
 async function registrarClienteConMembresia(
   usuario,
   datos
 ) {
-  /*
-    La membresía debe existir previamente en:
-
-    membresias/ASC-000245
-
-    El ID del documento debe ser exactamente
-    el número de membresía.
-  */
-
-  const membresiaRef = doc(
-    db,
-    "membresias",
+  const membresiaRef = await obtenerReferenciaMembresia(
     datos.numeroMembresia
   );
+
+  if (!membresiaRef) {
+    throw crearErrorPersonalizado(
+      "membership/not-found",
+      "El número de membresía no existe."
+    );
+  }
 
   const usuarioRef = doc(
     db,
@@ -457,10 +552,7 @@ async function registrarClienteConMembresia(
   await runTransaction(
     db,
     async transaction => {
-      const membresiaSnap =
-        await transaction.get(
-          membresiaRef
-        );
+      const membresiaSnap = await transaction.get(membresiaRef);
 
       if (!membresiaSnap.exists()) {
         throw crearErrorPersonalizado(
@@ -469,120 +561,54 @@ async function registrarClienteConMembresia(
         );
       }
 
-      const membresia =
-        membresiaSnap.data();
+      const membresia = membresiaSnap.data();
+      validarDisponibilidadMembresia(membresia, usuario.uid);
 
-      const uidVinculado =
-        membresia.uidUsuario || "";
-
-      const estado =
-        String(
-          membresia.estado || ""
-        ).toLowerCase();
-
-      const estadoMembresia =
-        String(
-          membresia.estadoMembresia ||
-          membresia.estado ||
-          "activa"
-        ).toLowerCase();
-
-      if (
-        uidVinculado &&
-        uidVinculado !== usuario.uid
-      ) {
-        throw crearErrorPersonalizado(
-          "membership/already-used",
-          "Esta membresía ya está vinculada a otra cuenta."
-        );
-      }
-
-      if (
-        estado === "cancelada" ||
-        estado === "cancelado"
-      ) {
-        throw crearErrorPersonalizado(
-          "membership/cancelled",
-          "Esta membresía está cancelada."
-        );
-      }
-
-      if (
-        estado === "vencida" ||
-        estado === "vencido"
-      ) {
-        throw crearErrorPersonalizado(
-          "membership/expired",
-          "Esta membresía está vencida."
-        );
-      }
-
-      const perfilUsuario =
-        construirPerfilUsuario(
-          usuario,
-          datos,
-          {
-            tieneMembresia: true,
-
-            numeroMiembro:
-              datos.numeroMembresia,
-
-            estadoMembresia:
-              estadoMembresia ===
-              "disponible"
-                ? "activa"
-                : estadoMembresia,
-
-            tipoMembresia:
-              membresia.tipoMembresia ||
-              membresia.plan ||
-              datos.tipoCliente,
-
-            vigencia:
-              membresia.vigencia ||
-              membresia.finVigencia ||
-              "",
-
-            tarifa:
-              "preferencial",
-
-            puedeUsarAlertas:
-              estadoMembresia !==
-              "vencida" &&
-              estadoMembresia !==
-              "cancelada"
-          }
-        );
-
-      transaction.set(
-        usuarioRef,
-        perfilUsuario
+      const estadoMembresia = normalizarEstadoMembresia(
+        membresia.estadoMembresia || membresia.estado || "activa"
       );
 
-      transaction.update(
+      const perfilUsuario = construirPerfilUsuario(
+        usuario,
+        datos,
+        {
+          tieneMembresia: true,
+          numeroMiembro: datos.numeroMembresia,
+          estadoMembresia,
+          tipoMembresia:
+            membresia.tipoMembresia ||
+            membresia.plan ||
+            datos.tipoCliente,
+          vigencia:
+            membresia.vigencia ||
+            membresia.finVigencia ||
+            "",
+          tarifa: "preferencial",
+          puedeUsarAlertas: estadoMembresia === "activa"
+        }
+      );
+
+      transaction.set(usuarioRef, perfilUsuario, { merge: true });
+
+      transaction.set(
         membresiaRef,
         {
+          numeroMembresia: datos.numeroMembresia,
           uidUsuario: usuario.uid,
           correo: datos.email,
-          nombreRegistro:
-            datos.nombre,
-          telefonoRegistro:
-            datos.telefono,
+          nombreRegistro: datos.nombre,
+          telefonoRegistro: datos.telefono,
           estado: "asignada",
-          fechaVinculacion:
-            serverTimestamp(),
-
-          marcaRegistro:
-            datos.marca,
-          subMarcaRegistro:
-            datos.subMarca,
-          colorRegistro:
-            datos.color,
-          placasRegistro:
-            datos.placas,
-          serieRegistro:
-            datos.serie
-        }
+          estadoMembresia,
+          puedeUsarAlertas: estadoMembresia === "activa",
+          fechaVinculacion: serverTimestamp(),
+          marcaRegistro: datos.marca,
+          subMarcaRegistro: datos.subMarca,
+          colorRegistro: datos.color,
+          placasRegistro: datos.placas,
+          serieRegistro: datos.serie
+        },
+        { merge: true }
       );
     }
   );
