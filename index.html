@@ -6,8 +6,6 @@
 
   <meta charset="UTF-8" />
 
- 
-
   <meta
 
     name="viewport"
@@ -16,25 +14,15 @@
 
   />
 
- 
-
   <title>AS CLICK | Asistencia Vial</title>
 
- 
-
   <link rel="stylesheet" href="styles.css" />
-
- 
 
   <link rel="icon" href="logo.png" />
 
   <link rel="apple-touch-icon" href="logo.png" />
 
- 
-
   <meta name="theme-color" content="#052b5c" />
-
- 
 
   <style>
 
@@ -45,10 +33,6 @@
     .vehicleForm{padding:20px 22px}.vehicleFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.vehicleForm label{display:flex;flex-direction:column;gap:6px;color:#536980;font-size:13px}.vehicleForm input{border:1px solid #cbd7e5;border-radius:8px;padding:12px;font:inherit}.vehicleForm .fullWidth{grid-column:1/-1}.vehiclePrincipalCheck{flex-direction:row!important;align-items:center;gap:9px!important;margin-top:4px}.vehiclePrincipalCheck input{width:auto}.vehicleFormError{min-height:20px;color:#c82431;margin:10px 0}.vehicleFormActions{display:flex;justify-content:flex-end;gap:10px}.vehicleFormActions button{border-radius:8px;padding:11px 18px;font-weight:700;cursor:pointer}.vehicleCancelButton{background:#fff;border:1px solid #cbd7e5}.vehicleSaveButton{background:#1f6fe5;color:#fff;border:1px solid #1f6fe5}
 
     @media(max-width:700px){.vehiclesPage{padding:18px}.savedVehicleCard{grid-template-columns:60px 1fr}.savedVehicleActions{grid-column:1/-1;align-items:stretch}.vehicleFormGrid{grid-template-columns:1fr}.vehicleForm .fullWidth{grid-column:auto}}
-
-  
-
- 
 
     /* SELECTOR DE AUXILIO VIAL */
 
@@ -61,8 +45,6 @@
       margin: 8px 0 18px;
 
     }
-
- 
 
     .auxilioOption {
 
@@ -84,8 +66,6 @@
 
     }
 
- 
-
     .auxilioOption:hover {
 
       border-color: #1f6fde;
@@ -93,8 +73,6 @@
       background: #f6f9ff;
 
     }
-
- 
 
     .auxilioOption input {
 
@@ -104,23 +82,17 @@
 
     }
 
- 
-
     .auxilioOption span {
 
       font-size: 22px;
 
     }
 
- 
-
     .auxilioOption b {
 
       color: #102a4c;
 
     }
-
- 
 
     .fuelNotice {
 
@@ -142,15 +114,11 @@
 
     }
 
- 
-
     .fuelNotice.visible {
 
       display: block;
 
     }
-
- 
 
     .fuelAcceptance {
 
@@ -166,8 +134,6 @@
 
     }
 
- 
-
     .auxilioFormError {
 
       min-height: 20px;
@@ -180,31 +146,19 @@
 
     }
 
- 
-
   </style>
 
 </head>
 
- 
-
 <body>
 
- 
-
   <div class="app">
-
- 
 
     <!-- MENÚ LATERAL DE ESCRITORIO -->
 
     <aside class="sidebar" id="sidebar">
 
- 
-
       <div class="brand">
-
- 
 
         <div class="brandLogo">
 
@@ -212,23 +166,15 @@
 
         </div>
 
- 
-
         <small>
 
           ASISTENCIA VIAL
 
         </small>
 
- 
-
       </div>
 
- 
-
       <nav class="sidebarNav">
-
- 
 
         <button
 
@@ -248,8 +194,6 @@
 
         </button>
 
- 
-
         <button
 
           type="button"
@@ -267,8 +211,6 @@
           Mis servicios
 
         </button>
-
- 
 
         <button
 
@@ -288,8 +230,6 @@
 
         </button>
 
- 
-
         <button
 
           type="button"
@@ -307,8 +247,6 @@
           Beneficios
 
         </button>
-
- 
 
         <button
 
@@ -328,8 +266,6 @@
 
         </button>
 
- 
-
         <button
 
           type="button"
@@ -347,8 +283,6 @@
           Perfil
 
         </button>
-
- 
 
         <button
 
@@ -368,8 +302,6 @@
 
         </button>
 
- 
-
         <button
 
           type="button"
@@ -386,15 +318,9 @@
 
         </button>
 
- 
-
       </nav>
 
- 
-
       <div class="advisorCard">
-
- 
 
         <div class="advisorIcon">
 
@@ -402,23 +328,17 @@
 
         </div>
 
- 
-
         <p>
 
           ¿Necesitas ayuda?
 
         </p>
 
- 
-
         <b>
 
           Hablar con un asesor
 
         </b>
-
- 
 
         <button
 
@@ -432,15 +352,11 @@
 
         </button>
 
- 
-
         <small>
 
           o llámanos
 
         </small>
-
- 
 
         <strong>
 
@@ -448,39 +364,25 @@
 
         </strong>
 
- 
-
         <small>
 
           Atención 24/7
 
         </small>
 
- 
-
       </div>
 
- 
-
     </aside>
-
- 
 
     <!-- CONTENIDO -->
 
     <main class="mainContent">
 
- 
-
       <!-- BARRA SUPERIOR -->
 
       <header class="topbar">
 
- 
-
         <div class="mobileBrand">
-
- 
 
           <button
 
@@ -498,11 +400,7 @@
 
           </button>
 
- 
-
           <div>
-
- 
 
             <b>
 
@@ -510,27 +408,17 @@
 
             </b>
 
- 
-
             <small>
 
               ASISTENCIA VIAL
 
             </small>
 
- 
-
           </div>
-
- 
 
         </div>
 
- 
-
         <nav class="topNavigation">
-
- 
 
           <button
 
@@ -546,8 +434,6 @@
 
           </button>
 
- 
-
           <button
 
             type="button"
@@ -559,8 +445,6 @@
             ⚒ Mis servicios
 
           </button>
-
- 
 
           <button
 
@@ -574,8 +458,6 @@
 
           </button>
 
- 
-
           <button
 
             type="button"
@@ -586,21 +468,13 @@
 
             ♧ Notificaciones
 
- 
-
             <span class="notificationCounter" id="notificationCounter" hidden>0</span>
 
           </button>
 
- 
-
         </nav>
 
- 
-
         <div class="topActions">
-
- 
 
           <div
 
@@ -614,8 +488,6 @@
 
           </div>
 
- 
-
           <button
 
             type="button"
@@ -625,8 +497,6 @@
             onclick="abrirMenuUsuario()"
 
           >
-
- 
 
             <span
 
@@ -640,15 +510,11 @@
 
             </span>
 
- 
-
             <span id="nombreUsuarioTop">
 
               Usuario
 
             </span>
-
- 
 
             <small>
 
@@ -656,19 +522,11 @@
 
             </small>
 
- 
-
           </button>
-
- 
 
         </div>
 
- 
-
       </header>
-
- 
 
       <!-- SECCIÓN INICIO -->
 
@@ -680,17 +538,11 @@
 
       >
 
- 
-
         <!-- BIENVENIDA -->
 
         <section class="welcomeCard">
 
- 
-
           <div class="welcomeUser">
-
- 
 
             <div class="largeAvatar">
 
@@ -698,11 +550,7 @@
 
             </div>
 
- 
-
             <div>
-
- 
 
               <h1 id="nombreBienvenida">
 
@@ -710,21 +558,15 @@
 
               </h1>
 
- 
-
               <p>
 
                 Membresía:
-
- 
 
                 <b id="numeroMembresiaPrincipal">
 
                   SIN MEMBRESÍA
 
                 </b>
-
- 
 
                 <span
 
@@ -740,13 +582,9 @@
 
               </p>
 
- 
-
               <p>
 
                 Vigencia:
-
- 
 
                 <b id="vigenciaPrincipal">
 
@@ -756,13 +594,9 @@
 
               </p>
 
- 
-
               <p>
 
                 Plan:
-
- 
 
                 <b id="planPrincipal">
 
@@ -772,33 +606,21 @@
 
               </p>
 
- 
-
             </div>
 
- 
-
           </div>
-
- 
 
           <!-- VEHÍCULO PRINCIPAL -->
 
           <div class="vehiclePreview">
 
- 
-
             <div class="vehicleHeader">
-
- 
 
               <span>
 
                 Mi vehículo principal
 
               </span>
-
- 
 
               <button
 
@@ -812,15 +634,9 @@
 
               </button>
 
- 
-
             </div>
 
- 
-
             <div class="vehicleBody">
-
- 
 
               <div class="vehicleImage">
 
@@ -828,11 +644,7 @@
 
               </div>
 
- 
-
               <div>
-
- 
 
                 <b>
 
@@ -840,15 +652,11 @@
 
                 </b>
 
- 
-
                 <span>
 
                   Placas: Sin registrar
 
                 </span>
-
- 
 
                 <span>
 
@@ -856,29 +664,17 @@
 
                 </span>
 
- 
-
               </div>
-
- 
 
             </div>
 
- 
-
           </div>
 
- 
-
         </section>
-
- 
 
         <!-- SERVICIOS -->
 
         <section class="servicesSection">
-
- 
 
           <h2>
 
@@ -886,17 +682,11 @@
 
           </h2>
 
- 
-
           <div class="serviceGrid">
-
- 
 
             <!-- AJUSTADOR -->
 
             <article class="serviceCard blue">
-
- 
 
               <div class="serviceIcon">
 
@@ -904,23 +694,17 @@
 
               </div>
 
- 
-
               <h3>
 
                 Solicitar Ajustador
 
               </h3>
 
- 
-
               <p>
 
                 Atención en accidentes con ajustador profesional.
 
               </p>
-
- 
 
               <button
 
@@ -934,17 +718,11 @@
 
               </button>
 
- 
-
             </article>
-
- 
 
             <!-- ABOGADO -->
 
             <article class="serviceCard green">
-
- 
 
               <div class="serviceIcon">
 
@@ -952,23 +730,17 @@
 
               </div>
 
- 
-
               <h3>
 
                 Solicitar Abogado
 
               </h3>
 
- 
-
               <p>
 
                 Asesoría legal y defensa especializada.
 
               </p>
-
- 
 
               <button
 
@@ -982,17 +754,11 @@
 
               </button>
 
- 
-
             </article>
-
- 
 
             <!-- AUXILIO VIAL -->
 
             <article class="serviceCard orange">
-
- 
 
               <div class="serviceIcon">
 
@@ -1000,23 +766,17 @@
 
               </div>
 
- 
-
               <h3>
 
                 Auxilio Vial
 
               </h3>
 
- 
-
               <p>
 
                 Paso de corriente, cambio de llanta, gasolina y más.
 
               </p>
-
- 
 
               <button
 
@@ -1030,17 +790,11 @@
 
               </button>
 
- 
-
             </article>
-
- 
 
             <!-- GRÚA -->
 
             <article class="serviceCard purple">
-
- 
 
               <div class="serviceIcon">
 
@@ -1048,23 +802,17 @@
 
               </div>
 
- 
-
               <h3>
 
                 Cotizar Grúa
 
               </h3>
 
- 
-
               <p>
 
                 Cotiza y solicita tu servicio de grúa al instante.
 
               </p>
-
- 
 
               <button
 
@@ -1078,25 +826,15 @@
 
               </button>
 
- 
-
             </article>
-
- 
 
           </div>
 
- 
-
         </section>
-
- 
 
         <!-- EMERGENCIAS -->
 
         <section class="emergencySection">
-
- 
 
           <div class="sectionHeading emergencyHeading">
 
@@ -1104,17 +842,11 @@
 
           </div>
 
- 
-
           <div class="emergencyGrid">
-
- 
 
             <!-- MONTACHOQUES -->
 
             <article class="emergencyCard">
-
- 
 
               <div class="emergencyIcon">
 
@@ -1122,19 +854,13 @@
 
               </div>
 
- 
-
               <div class="emergencyContent">
-
- 
 
                 <h3>
 
                   ALERTA MONTACHOQUES
 
                 </h3>
-
- 
 
                 <p>
 
@@ -1143,8 +869,6 @@
                   para recibir apoyo inmediato.
 
                 </p>
-
- 
 
                 <button
 
@@ -1158,21 +882,13 @@
 
                 </button>
 
- 
-
               </div>
 
- 
-
             </article>
-
- 
 
             <!-- ROBO -->
 
             <article class="emergencyCard">
-
- 
 
               <div class="emergencyIcon">
 
@@ -1180,19 +896,13 @@
 
               </div>
 
- 
-
               <div class="emergencyContent">
-
- 
 
                 <h3>
 
                   ALERTA ROBO
 
                 </h3>
-
- 
 
                 <p>
 
@@ -1201,8 +911,6 @@
                   y reporta el incidente.
 
                 </p>
-
- 
 
                 <button
 
@@ -1216,21 +924,13 @@
 
                 </button>
 
- 
-
               </div>
 
- 
-
             </article>
-
- 
 
             <!-- ADVERTENCIA -->
 
             <article class="warningCard">
-
- 
 
               <div class="warningIcon">
 
@@ -1238,19 +938,13 @@
 
               </div>
 
- 
-
               <div>
-
- 
 
                 <h3>
 
                   Importante
 
                 </h3>
-
- 
 
                 <p>
 
@@ -1259,8 +953,6 @@
                   generar sanciones o cancelación de la membresía.
 
                 </p>
-
- 
 
                 <button
 
@@ -1274,35 +966,21 @@
 
                 </button>
 
- 
-
               </div>
-
- 
 
             </article>
 
- 
-
           </div>
 
- 
-
         </section>
-
- 
 
         <!-- PARTE INFERIOR -->
 
         <section class="dashboardBottom">
 
- 
-
           <!-- SERVICIOS RECIENTES -->
 
           <div class="recentServices">
-
- 
 
             <h2>
 
@@ -1310,19 +988,11 @@
 
             </h2>
 
- 
-
             <div class="tableWrapper">
-
- 
 
               <table>
 
- 
-
                 <thead>
-
- 
 
                   <tr>
 
@@ -1338,11 +1008,7 @@
 
                   </tr>
 
- 
-
                 </thead>
-
- 
 
                 <tbody id="recentServicesBody">
 
@@ -1354,25 +1020,15 @@
 
                 </tbody>
 
- 
-
               </table>
-
- 
 
             </div>
 
- 
-
           </div>
-
- 
 
           <!-- INFORMACIÓN DE MEMBRESÍA -->
 
           <aside class="membershipInfo">
-
- 
 
             <h2>
 
@@ -1380,11 +1036,7 @@
 
             </h2>
 
- 
-
             <div class="infoRow">
-
- 
 
               <span>
 
@@ -1392,11 +1044,7 @@
 
               </span>
 
- 
-
               <div>
-
- 
 
                 <small>
 
@@ -1404,27 +1052,17 @@
 
                 </small>
 
- 
-
                 <b id="membresiaInformacion">
 
                   Público general
 
                 </b>
 
- 
-
               </div>
-
- 
 
             </div>
 
- 
-
             <div class="infoRow">
-
- 
 
               <span>
 
@@ -1432,11 +1070,7 @@
 
               </span>
 
- 
-
               <div>
-
- 
 
                 <small>
 
@@ -1444,27 +1078,17 @@
 
                 </small>
 
- 
-
                 <b id="numeroMembresiaInformacion">
 
                   SIN MEMBRESÍA
 
                 </b>
 
- 
-
               </div>
-
- 
 
             </div>
 
- 
-
             <div class="infoRow">
-
- 
 
               <span>
 
@@ -1472,11 +1096,7 @@
 
               </span>
 
- 
-
               <div>
-
- 
 
                 <small>
 
@@ -1484,23 +1104,15 @@
 
                 </small>
 
- 
-
                 <b id="vigenciaInformacion">
 
                   No aplica
 
                 </b>
 
- 
-
               </div>
 
- 
-
             </div>
-
- 
 
             <button
 
@@ -1514,19 +1126,11 @@
 
             </button>
 
- 
-
           </aside>
-
- 
 
         </section>
 
- 
-
       </section>
-
- 
 
       <!-- MIS SERVICIOS -->
 
@@ -1538,11 +1142,7 @@
 
       >
 
- 
-
         <div class="placeholderPage">
-
- 
 
           <div class="placeholderIcon">
 
@@ -1550,15 +1150,11 @@
 
           </div>
 
- 
-
           <h2>
 
             Mis servicios
 
           </h2>
-
- 
 
           <p>
 
@@ -1567,8 +1163,6 @@
             abogado, auxilio vial y grúa.
 
           </p>
-
- 
 
           <button
 
@@ -1582,15 +1176,9 @@
 
           </button>
 
- 
-
         </div>
 
- 
-
       </section>
-
- 
 
       <!-- VEHÍCULOS -->
 
@@ -1634,8 +1222,6 @@
 
       </section>
 
- 
-
       <!-- BENEFICIOS -->
 
       <section
@@ -1646,15 +1232,9 @@
 
       >
 
- 
-
         <div class="beneficiosContainer">
 
- 
-
           <h1>Beneficios AS CLICK</h1>
-
- 
 
           <p class="beneficiosTexto">
 
@@ -1662,11 +1242,7 @@
 
           </p>
 
- 
-
           <div class="beneficiosGrid">
-
- 
 
             <div class="beneficioCard cliente">
 
@@ -1702,8 +1278,6 @@
 
             </div>
 
- 
-
             <div class="beneficioCard miembro">
 
               <h2>⭐ Miembro AS CLICK</h2>
@@ -1736,11 +1310,7 @@
 
             </div>
 
- 
-
           </div>
-
- 
 
           <div class="beneficioInfo">
 
@@ -1762,15 +1332,9 @@
 
           </div>
 
- 
-
         </div>
 
- 
-
       </section>
-
- 
 
       <!-- HISTORIAL -->
 
@@ -1782,15 +1346,9 @@
 
       >
 
- 
-
         <div class="historyPage">
 
- 
-
           <div class="sectionTitleRow">
-
- 
 
             <div>
 
@@ -1806,8 +1364,6 @@
 
             </div>
 
- 
-
             <button
 
               type="button"
@@ -1822,15 +1378,9 @@
 
             </button>
 
- 
-
           </div>
 
- 
-
           <div class="historyStats">
-
- 
 
             <article class="historyStatCard">
 
@@ -1842,8 +1392,6 @@
 
             </article>
 
- 
-
             <article class="historyStatCard">
 
               <span>En proceso</span>
@@ -1853,8 +1401,6 @@
               <small>Servicios activos</small>
 
             </article>
-
- 
 
             <article class="historyStatCard">
 
@@ -1866,8 +1412,6 @@
 
             </article>
 
- 
-
             <article class="historyStatCard">
 
               <span>Cancelados</span>
@@ -1878,15 +1422,9 @@
 
             </article>
 
- 
-
           </div>
 
- 
-
           <div class="historyFilters">
-
- 
 
             <label class="historySearch">
 
@@ -1905,8 +1443,6 @@
               />
 
             </label>
-
- 
 
             <select
 
@@ -1934,8 +1470,6 @@
 
             </select>
 
- 
-
             <select
 
               id="filtroTipoHistorial"
@@ -1958,23 +1492,13 @@
 
             </select>
 
- 
-
           </div>
-
- 
 
           <div class="historyTableCard">
 
- 
-
             <div class="tableWrapper">
 
- 
-
               <table class="historyTable">
-
- 
 
                 <thead>
 
@@ -1996,11 +1520,7 @@
 
                 </thead>
 
- 
-
                 <tbody id="historialServiciosBody">
-
- 
 
                   <tr class="emptyHistoryRow">
 
@@ -2020,31 +1540,17 @@
 
                   </tr>
 
- 
-
                 </tbody>
-
- 
 
               </table>
 
- 
-
             </div>
-
- 
 
           </div>
 
- 
-
         </div>
 
- 
-
       </section>
-
- 
 
       <!-- PERFIL -->
 
@@ -2056,15 +1562,9 @@
 
       >
 
- 
-
         <div class="profilePage">
 
- 
-
           <div class="sectionTitleRow">
-
- 
 
             <div>
 
@@ -2075,8 +1575,6 @@
               <p>Consulta tus datos personales, membresía y vehículo principal.</p>
 
             </div>
-
- 
 
             <button
 
@@ -2092,19 +1590,11 @@
 
             </button>
 
- 
-
           </div>
-
- 
 
           <div class="profileLayout">
 
- 
-
             <aside class="profileSummaryCard">
-
- 
 
               <div class="profileAvatarLarge" id="perfilAvatar">
 
@@ -2112,13 +1602,9 @@
 
               </div>
 
- 
-
               <h2 id="perfilNombreResumen">Usuario</h2>
 
               <p id="perfilCorreoResumen">Correo no registrado</p>
-
- 
 
               <span class="profileMembershipStatus" id="perfilEstadoMembresia">
 
@@ -2126,11 +1612,7 @@
 
               </span>
 
- 
-
               <div class="profileSummaryInfo">
-
- 
 
                 <div>
 
@@ -2140,8 +1622,6 @@
 
                 </div>
 
- 
-
                 <div>
 
                   <small>Vigencia</small>
@@ -2149,8 +1629,6 @@
                   <b id="perfilVigencia">No aplica</b>
 
                 </div>
-
- 
 
                 <div>
 
@@ -2160,11 +1638,7 @@
 
                 </div>
 
- 
-
               </div>
-
- 
 
               <button
 
@@ -2180,19 +1654,11 @@
 
               </button>
 
- 
-
             </aside>
-
- 
 
             <div class="profileContent">
 
- 
-
               <article class="profileInfoCard">
-
- 
 
                 <div class="profileCardHeader">
 
@@ -2212,11 +1678,7 @@
 
                 </div>
 
- 
-
                 <div class="profileDataGrid">
-
- 
 
                   <div class="profileDataItem">
 
@@ -2226,8 +1688,6 @@
 
                   </div>
 
- 
-
                   <div class="profileDataItem">
 
                     <small>Teléfono</small>
@@ -2235,8 +1695,6 @@
                     <b id="perfilTelefono">No registrado</b>
 
                   </div>
-
- 
 
                   <div class="profileDataItem">
 
@@ -2246,8 +1704,6 @@
 
                   </div>
 
- 
-
                   <div class="profileDataItem">
 
                     <small>Tipo de cliente</small>
@@ -2256,11 +1712,7 @@
 
                   </div>
 
- 
-
                 </div>
-
- 
 
                 <button
 
@@ -2276,15 +1728,9 @@
 
                 </button>
 
- 
-
               </article>
 
- 
-
               <article class="profileInfoCard">
-
- 
 
                 <div class="profileCardHeader">
 
@@ -2302,8 +1748,6 @@
 
                   </div>
 
- 
-
                   <button
 
                     type="button"
@@ -2318,15 +1762,9 @@
 
                 </div>
 
- 
-
                 <div class="profileVehicleCard">
 
- 
-
                   <div class="profileVehicleIcon">🚙</div>
-
- 
 
                   <div>
 
@@ -2340,19 +1778,11 @@
 
                   </div>
 
- 
-
                 </div>
-
- 
 
               </article>
 
- 
-
               <article class="profileInfoCard profileSecurityCard">
-
- 
 
                 <div class="profileCardHeader">
 
@@ -2372,11 +1802,7 @@
 
                 </div>
 
- 
-
                 <div class="profileActions">
-
- 
 
                   <button
 
@@ -2390,8 +1816,6 @@
 
                   </button>
 
- 
-
                   <button
 
                     type="button"
@@ -2403,8 +1827,6 @@
                     Soporte de cuenta
 
                   </button>
-
- 
 
                   <button
 
@@ -2420,31 +1842,17 @@
 
                   </button>
 
- 
-
                 </div>
-
- 
 
               </article>
 
- 
-
             </div>
-
- 
 
           </div>
 
- 
-
         </div>
 
- 
-
       </section>
-
- 
 
       <!-- AYUDA -->
 
@@ -2456,11 +1864,7 @@
 
       >
 
- 
-
         <div class="placeholderPage">
-
- 
 
           <div class="placeholderIcon">
 
@@ -2468,23 +1872,17 @@
 
           </div>
 
- 
-
           <h2>
 
             Ayuda
 
           </h2>
 
- 
-
           <p>
 
             Habla con uno de nuestros asesores.
 
           </p>
-
- 
 
           <button
 
@@ -2498,25 +1896,15 @@
 
           </button>
 
- 
-
         </div>
-
- 
 
       </section>
 
- 
-
     </main>
-
- 
 
     <!-- MENÚ INFERIOR MÓVIL -->
 
     <nav class="mobileBottomNav">
-
- 
 
       <button
 
@@ -2534,13 +1922,9 @@
 
         </span>
 
- 
-
         Inicio
 
       </button>
-
- 
 
       <button
 
@@ -2556,13 +1940,9 @@
 
         </span>
 
- 
-
         Mis servicios
 
       </button>
-
- 
 
       <button
 
@@ -2578,13 +1958,9 @@
 
         </span>
 
- 
-
         Beneficios
 
       </button>
-
- 
 
       <button
 
@@ -2600,17 +1976,11 @@
 
         </span>
 
- 
-
         Perfil
 
       </button>
 
- 
-
     </nav>
-
- 
 
     <!-- FONDO MENÚ MÓVIL -->
 
@@ -2623,10 +1993,6 @@
       onclick="cerrarMenuMovil()"
 
     ></div>
-
- 
-
- 
 
     <!-- PANEL DE NOTIFICACIONES -->
 
@@ -2657,8 +2023,6 @@
       </section>
 
     </div>
-
- 
 
     <!-- FORMULARIO PARA AGREGAR VEHÍCULO -->
 
@@ -2708,12 +2072,6 @@
 
     </div>
 
- 
-
- 
-
- 
-
     <!-- SELECTOR DE AUXILIO VIAL -->
 
     <div class="customOverlay" id="auxilioModalOverlay" aria-hidden="true" onclick="cerrarAuxilioVial(event)">
@@ -2728,13 +2086,9 @@
 
         </header>
 
- 
-
         <form id="auxilioForm" onsubmit="confirmarAuxilioVial(event)">
 
           <p>Selecciona el tipo de auxilio que necesitas:</p>
-
- 
 
           <div class="auxilioOptions">
 
@@ -2748,8 +2102,6 @@
 
             </label>
 
- 
-
             <label class="auxilioOption">
 
               <input type="radio" name="tipoAuxilio" value="Cambio de llanta" onchange="actualizarAvisoCombustible()">
@@ -2759,8 +2111,6 @@
               <b>Cambio de llanta</b>
 
             </label>
-
- 
 
             <label class="auxilioOption">
 
@@ -2773,8 +2123,6 @@
             </label>
 
           </div>
-
- 
 
           <div class="fuelNotice" id="fuelNotice">
 
@@ -2792,11 +2140,7 @@
 
           </div>
 
- 
-
           <p class="auxilioFormError" id="auxilioFormError"></p>
-
- 
 
           <div class="vehicleFormActions">
 
@@ -2812,8 +2156,6 @@
 
     </div>
 
- 
-
     <!-- MODAL -->
 
     <div
@@ -2826,8 +2168,6 @@
 
     >
 
- 
-
       <div
 
         class="modal"
@@ -2835,8 +2175,6 @@
         id="modal"
 
       >
-
- 
 
         <button
 
@@ -2854,8 +2192,6 @@
 
         </button>
 
- 
-
         <div
 
           class="modalIcon"
@@ -2868,23 +2204,17 @@
 
         </div>
 
- 
-
         <h2 id="modalTitle">
 
           Solicitud enviada
 
         </h2>
 
- 
-
         <p id="modalText">
 
           Tu solicitud fue registrada correctamente.
 
         </p>
-
- 
 
         <button
 
@@ -2900,30 +2230,14 @@
 
         </button>
 
- 
-
       </div>
-
- 
 
     </div>
 
- 
-
   </div>
 
- 
-
-  <script
-
-    type="module"
-
-    src="./app.js"
-
-  ></script>
-
- 
+  <script src="./app.js" defer></script>
 
 </body>
 
-</html>
+</htm
