@@ -160,112 +160,73 @@ let perfilActual = {
  
 
 let auth = null;
-
 let db = null;
-
 let firebaseSignOut = null;
-
 let firestoreDoc = null;
-
 let firestoreGetDoc = null;
-
- 
+let firestoreSetDoc = null;
+let firestoreCollection = null;
+let firestoreQuery = null;
+let firestoreWhere = null;
+let firestoreGetDocs = null;
+let firestoreAddDoc = null;
+let firestoreServerTimestamp = null;
 
 async function iniciarFirebase() {
-
   try {
-
     const firebaseConfigModule = await import("./firebase-config.js");
-
     const authModule = await import(
-
       "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
-
     );
-
     const firestoreModule = await import(
-
       "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
-
     );
-
- 
 
     auth = firebaseConfigModule.auth;
-
     db = firebaseConfigModule.db;
-
     firebaseSignOut = authModule.signOut;
-
     firestoreDoc = firestoreModule.doc;
-
     firestoreGetDoc = firestoreModule.getDoc;
-
- 
+    firestoreSetDoc = firestoreModule.setDoc;
+    firestoreCollection = firestoreModule.collection;
+    firestoreQuery = firestoreModule.query;
+    firestoreWhere = firestoreModule.where;
+    firestoreGetDocs = firestoreModule.getDocs;
+    firestoreAddDoc = firestoreModule.addDoc;
+    firestoreServerTimestamp = firestoreModule.serverTimestamp;
 
     authModule.onAuthStateChanged(auth, async user => {
-
       if (!user) {
-
         window.location.replace("./login.html");
-
         return;
-
       }
-
- 
 
       usuarioActual = user;
 
- 
-
       try {
-
         await cargarDatosUsuario(user);
-
+        await cargarHistorialServicios();
       } catch (error) {
-
         console.error("Error al cargar los datos del usuario:", error);
-
         cargarDatosBasicos(user);
 
- 
-
         mostrarModal(
-
           "⚠",
-
           "No fue posible cargar tu perfil",
-
           "Tu sesión está activa, pero no pudimos cargar todos tus datos. Revisa tu conexión e inténtalo nuevamente."
-
         );
-
       }
-
     });
-
   } catch (error) {
-
     console.error("No fue posible iniciar Firebase:", error);
 
- 
-
     mostrarModal(
-
       "⚠",
-
       "Problema de conexión",
-
       "La interfaz está disponible, pero Firebase no pudo iniciar. Revisa la conexión o la configuración."
-
     );
-
   }
-
 }
-
- 
 
 /* =========================================
 
@@ -284,472 +245,254 @@ async function iniciarFirebase() {
  
 
 async function cargarDatosUsuario(user) {
+  const referenciaUsuario = firestoreDoc(db, "usuarios", user.uid);
+  const documentoUsuario = await firestoreGetDoc(referenciaUsuario);
+  const datosUsuario = documentoUsuario.exists()
+    ? documentoUsuario.data()
+    : {};
 
- 
-
-  const referenciaUsuario = firestoreDoc(
-
- 
-
-    db,
-
- 
-
-    "usuarios",
-
- 
-
-    user.uid
-
- 
-
+  const membresia = await buscarMembresiaVinculada(user, datosUsuario);
+  const datosCombinados = combinarUsuarioYMembresia(
+    user,
+    datosUsuario,
+    membresia
   );
 
- 
-
- 
-
- 
-
-  const documentoUsuario =
-
- 
-
-    await firestoreGetDoc(referenciaUsuario);
-
- 
-
- 
-
- 
-
-  if (!documentoUsuario.exists()) {
-
- 
-
-    cargarDatosBasicos(user);
-
- 
-
-    return;
-
- 
-
-  }
-
- 
-
- 
-
- 
-
-  const datos = documentoUsuario.data();
-
- 
-
-  const vehiculo = datos.vehiculoPrincipal || {};
-
- 
-
- 
-
- 
-
-  perfilActual = {
-
- 
-
-    nombre:
-
- 
-
-      datos.nombre ||
-
- 
-
-      user.displayName ||
-
- 
-
-      obtenerNombreCorreo(user.email) ||
-
- 
-
-      "Usuario",
-
- 
-
- 
-
- 
-
-    telefono:
-
- 
-
-      datos.telefono || "",
-
- 
-
- 
-
- 
-
-    correo:
-
- 
-
-      datos.correo ||
-
- 
-
-      user.email ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    tipoCliente:
-
- 
-
-      datos.tipoCliente ||
-
- 
-
-      "particular",
-
- 
-
- 
-
- 
-
-    tieneMembresia:
-
- 
-
-      datos.tieneMembresia === true,
-
- 
-
- 
-
- 
-
-    numeroMiembro:
-
- 
-
-      datos.numeroMiembro ||
-
- 
-
-      datos.numeroSocio ||
-
- 
-
-      datos.numeroMembresia ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    estadoMembresia:
-
- 
-
-      normalizarEstado(
-
- 
-
-        datos.estadoMembresia ||
-
- 
-
-        datos.estatus ||
-
- 
-
-        datos.estado ||
-
- 
-
-        (
-
- 
-
-          datos.tieneMembresia
-
- 
-
-            ? "activa"
-
- 
-
-            : "sin_membresia"
-
- 
-
-        )
-
- 
-
-      ),
-
- 
-
- 
-
- 
-
-    tipoMembresia:
-
- 
-
-      datos.tipoMembresia ||
-
- 
-
-      datos.plan ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    vigencia:
-
- 
-
-      formatearVigencia(
-
- 
-
-        datos.vigencia ||
-
- 
-
-        datos.finVigencia ||
-
- 
-
-        ""
-
- 
-
-      ),
-
- 
-
- 
-
- 
-
-    tarifa:
-
- 
-
-      datos.tarifa ||
-
- 
-
-      (
-
- 
-
-        datos.tieneMembresia
-
- 
-
-          ? "preferencial"
-
- 
-
-          : "publico_general"
-
- 
-
-      ),
-
- 
-
- 
-
- 
-
-    puedeUsarAlertas:
-
- 
-
-      datos.puedeUsarAlertas === true,
-
- 
-
- 
-
- 
-
-    marca:
-
- 
-
-      datos.marca ||
-
- 
-
-      vehiculo.marca ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    subMarca:
-
- 
-
-      datos.subMarca ||
-
- 
-
-      datos.submarca ||
-
- 
-
-      vehiculo.subMarca ||
-
- 
-
-      vehiculo.submarca ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    color:
-
- 
-
-      datos.color ||
-
- 
-
-      vehiculo.color ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    placas:
-
- 
-
-      datos.placas ||
-
- 
-
-      vehiculo.placas ||
-
- 
-
-      "",
-
- 
-
- 
-
- 
-
-    serie:
-
- 
-
-      datos.serie ||
-
- 
-
-      vehiculo.serie ||
-
- 
-
-      ""
-
- 
-
-  };
-
- 
-
- 
-
- 
-
-  perfilActual.puedeUsarAlertas =
-
- 
-
-    perfilActual.tieneMembresia === true &&
-
- 
-
-    perfilActual.estadoMembresia === "activa" &&
-
- 
-
-    datos.puedeUsarAlertas !== false;
-
- 
-
- 
-
- 
+  perfilActual = construirPerfilDashboard(user, datosCombinados);
+
+  // Mantiene usuarios/{uid} como fuente principal del Dashboard.
+  // Esto también convierte automáticamente a miembro a un cliente que
+  // adquirió una membresía después de haber creado su cuenta.
+  await firestoreSetDoc(
+    referenciaUsuario,
+    {
+      ...datosCombinados,
+      uid: user.uid,
+      correo: datosCombinados.correo || user.email || "",
+      nombre:
+        datosCombinados.nombre ||
+        user.displayName ||
+        obtenerNombreCorreo(user.email) ||
+        "Usuario",
+      actualizadoEn: firestoreServerTimestamp()
+    },
+    { merge: true }
+  );
 
   actualizarDatosPantalla(perfilActual);
-
- 
-
 }
 
- 
+async function buscarMembresiaVinculada(user, datosUsuario) {
+  const numero =
+    datosUsuario.numeroMiembro ||
+    datosUsuario.numeroMembresia ||
+    datosUsuario.numeroSocio ||
+    "";
 
- 
+  if (numero) {
+    const directa = await firestoreGetDoc(
+      firestoreDoc(db, "membresias", numero)
+    );
 
- 
+    if (directa.exists()) {
+      return {
+        id: directa.id,
+        ...directa.data()
+      };
+    }
+  }
+
+  const criterios = [
+    ["uidUsuario", user.uid],
+    ["correo", String(user.email || "").trim().toLowerCase()]
+  ];
+
+  for (const [campo, valor] of criterios) {
+    if (!valor) continue;
+
+    const consulta = firestoreQuery(
+      firestoreCollection(db, "membresias"),
+      firestoreWhere(campo, "==", valor)
+    );
+
+    const resultado = await firestoreGetDocs(consulta);
+
+    if (!resultado.empty) {
+      const documento = resultado.docs[0];
+      return {
+        id: documento.id,
+        ...documento.data()
+      };
+    }
+  }
+
+  return null;
+}
+
+function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
+  const datosMembresia = membresia || {};
+  const numeroMiembro =
+    usuario.numeroMiembro ||
+    usuario.numeroMembresia ||
+    usuario.numeroSocio ||
+    datosMembresia.numeroMembresia ||
+    datosMembresia.numeroMiembro ||
+    datosMembresia.id ||
+    "";
+
+  const estadoMembresia = normalizarEstado(
+    datosMembresia.estadoMembresia ||
+    usuario.estadoMembresia ||
+    datosMembresia.estado ||
+    usuario.estado ||
+    (numeroMiembro ? "activa" : "sin_membresia")
+  );
+
+  const tieneMembresia = Boolean(numeroMiembro) &&
+    !["cancelada", "vencida", "sin_membresia"].includes(estadoMembresia);
+
+  const vehiculoUsuario = usuario.vehiculoPrincipal || {};
+
+  return {
+    ...usuario,
+    nombre:
+      usuario.nombre ||
+      datosMembresia.nombreRegistro ||
+      user.displayName ||
+      obtenerNombreCorreo(user.email) ||
+      "Usuario",
+    telefono:
+      usuario.telefono ||
+      datosMembresia.telefonoRegistro ||
+      "",
+    correo:
+      usuario.correo ||
+      datosMembresia.correo ||
+      user.email ||
+      "",
+    tipoCliente:
+      usuario.tipoCliente ||
+      datosMembresia.tipoCliente ||
+      "particular",
+    tieneMembresia,
+    numeroMiembro: tieneMembresia ? numeroMiembro : "",
+    estadoMembresia: tieneMembresia ? estadoMembresia : "sin_membresia",
+    tipoMembresia:
+      datosMembresia.tipoMembresia ||
+      datosMembresia.plan ||
+      usuario.tipoMembresia ||
+      (tieneMembresia ? usuario.tipoCliente || "particular" : ""),
+    vigencia:
+      datosMembresia.vigencia ||
+      datosMembresia.finVigencia ||
+      usuario.vigencia ||
+      usuario.finVigencia ||
+      "",
+    tarifa: tieneMembresia ? "preferencial" : "publico_general",
+    puedeUsarAlertas: tieneMembresia,
+    marca:
+      usuario.marca ||
+      vehiculoUsuario.marca ||
+      datosMembresia.marcaRegistro ||
+      "",
+    subMarca:
+      usuario.subMarca ||
+      usuario.submarca ||
+      vehiculoUsuario.subMarca ||
+      vehiculoUsuario.submarca ||
+      datosMembresia.subMarcaRegistro ||
+      "",
+    color:
+      usuario.color ||
+      vehiculoUsuario.color ||
+      datosMembresia.colorRegistro ||
+      "",
+    placas:
+      usuario.placas ||
+      vehiculoUsuario.placas ||
+      datosMembresia.placasRegistro ||
+      "",
+    serie:
+      usuario.serie ||
+      vehiculoUsuario.serie ||
+      datosMembresia.serieRegistro ||
+      "",
+    vehiculoPrincipal: {
+      marca:
+        usuario.marca ||
+        vehiculoUsuario.marca ||
+        datosMembresia.marcaRegistro ||
+        "",
+      subMarca:
+        usuario.subMarca ||
+        usuario.submarca ||
+        vehiculoUsuario.subMarca ||
+        vehiculoUsuario.submarca ||
+        datosMembresia.subMarcaRegistro ||
+        "",
+      color:
+        usuario.color ||
+        vehiculoUsuario.color ||
+        datosMembresia.colorRegistro ||
+        "",
+      placas:
+        usuario.placas ||
+        vehiculoUsuario.placas ||
+        datosMembresia.placasRegistro ||
+        "",
+      serie:
+        usuario.serie ||
+        vehiculoUsuario.serie ||
+        datosMembresia.serieRegistro ||
+        ""
+    }
+  };
+}
+
+function construirPerfilDashboard(user, datos) {
+  const vehiculo = datos.vehiculoPrincipal || {};
+
+  return {
+    nombre:
+      datos.nombre ||
+      user.displayName ||
+      obtenerNombreCorreo(user.email) ||
+      "Usuario",
+    telefono: datos.telefono || "",
+    correo: datos.correo || user.email || "",
+    tipoCliente: datos.tipoCliente || "particular",
+    tieneMembresia: datos.tieneMembresia === true,
+    numeroMiembro:
+      datos.numeroMiembro ||
+      datos.numeroSocio ||
+      datos.numeroMembresia ||
+      "",
+    estadoMembresia: normalizarEstado(
+      datos.estadoMembresia ||
+      (datos.tieneMembresia ? "activa" : "sin_membresia")
+    ),
+    tipoMembresia: datos.tipoMembresia || datos.plan || "",
+    vigencia: formatearVigencia(
+      datos.vigencia || datos.finVigencia || ""
+    ),
+    tarifa:
+      datos.tarifa ||
+      (datos.tieneMembresia ? "preferencial" : "publico_general"),
+    puedeUsarAlertas:
+      datos.tieneMembresia === true &&
+      normalizarEstado(datos.estadoMembresia || "activa") === "activa",
+    marca: datos.marca || vehiculo.marca || "",
+    subMarca:
+      datos.subMarca ||
+      datos.submarca ||
+      vehiculo.subMarca ||
+      vehiculo.submarca ||
+      "",
+    color: datos.color || vehiculo.color || "",
+    placas: datos.placas || vehiculo.placas || "",
+    serie: datos.serie || vehiculo.serie || ""
+  };
+}
 
 function cargarDatosBasicos(user) {
 
@@ -920,32 +663,24 @@ function obtenerNombreCorreo(correo) {
  
 
 function normalizarEstado(estado) {
-
- 
-
-  return String(estado || "")
-
- 
-
+  const valor = String(estado || "")
     .trim()
-
- 
-
     .toLowerCase()
-
- 
-
     .replace(/\s+/g, "_");
 
- 
+  const equivalencias = {
+    activo: "activa",
+    active: "activa",
+    asignada: "activa",
+    asignado: "activa",
+    disponible: "activa",
+    vigente: "activa",
+    cancelado: "cancelada",
+    vencido: "vencida"
+  };
 
+  return equivalencias[valor] || valor;
 }
-
- 
-
- 
-
- 
 
 function formatearVigencia(valor) {
 
@@ -1610,6 +1345,8 @@ function actualizarDatosPantalla(perfil) {
   actualizarVehiculoPantalla(perfil);
 
  
+
+  actualizarPerfilPantalla(perfil);
 
   configurarAlertas(
 
@@ -3343,7 +3080,7 @@ async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion) {
 
   try {
 
-    await addDoc(collection(db, "servicios"), {
+    await firestoreAddDoc(firestoreCollection(db, "servicios"), {
 
       usuarioId: usuarioActual.uid,
 
@@ -3383,7 +3120,7 @@ async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion) {
 
       },
 
-      creadoEn: serverTimestamp(),
+      creadoEn: firestoreServerTimestamp(),
 
       fechaCreacion: new Date().toISOString()
 
@@ -3429,17 +3166,17 @@ async function cargarHistorialServicios() {
 
   try {
 
-    const consulta = query(
+    const consulta = firestoreQuery(
 
-      collection(db, "servicios"),
+      firestoreCollection(db, "servicios"),
 
-      where("usuarioId", "==", usuarioActual.uid)
+      firestoreWhere("usuarioId", "==", usuarioActual.uid)
 
     );
 
  
 
-    const resultado = await getDocs(consulta);
+    const resultado = await firestoreGetDocs(consulta);
 
  
 
@@ -4594,6 +4331,10 @@ async function cerrarSesion() {
   try {
 
  
+
+    if (!firebaseSignOut || !auth) {
+      throw new Error("Firebase Authentication no está disponible.");
+    }
 
     await firebaseSignOut(auth);
 
