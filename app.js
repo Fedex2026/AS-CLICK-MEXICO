@@ -96,6 +96,12 @@ let historialServicios = [];
 
  
 
+let notificacionesUsuario = [];
+
+let vehiculosUsuario = [];
+
+ 
+
  
 
  
@@ -344,18 +350,6 @@ let firestoreAddDoc = null;
 
 let firestoreServerTimestamp = null;
 
-let firestoreOnSnapshot = null;
-
-let firestoreUpdateDoc = null;
-
-let firestoreDeleteDoc = null;
-
-let firestoreUnsubscribeNotificaciones = null;
-
-let notificacionesActuales = [];
-
-let vehiculosActuales = [];
-
  
 
 async function iniciarFirebase() {
@@ -402,12 +396,6 @@ async function iniciarFirebase() {
 
     firestoreServerTimestamp = firestoreModule.serverTimestamp;
 
-    firestoreOnSnapshot = firestoreModule.onSnapshot;
-
-    firestoreUpdateDoc = firestoreModule.updateDoc;
-
-    firestoreDeleteDoc = firestoreModule.deleteDoc;
-
  
 
     authModule.onAuthStateChanged(auth, async user => {
@@ -432,7 +420,7 @@ async function iniciarFirebase() {
 
         await cargarHistorialServicios();
 
-        escucharNotificaciones(user.uid);
+        await cargarNotificaciones();
 
         await cargarVehiculos();
 
@@ -5496,309 +5484,37 @@ function cerrarMenuMovil() {
 
  
 
-async function solicitarServicio(servicio, detalleServicio = {}) {
-
- 
-
- 
-
- 
+async function solicitarServicio(servicio) {
 
   if (!usuarioActual) {
 
- 
-
- 
-
- 
-
     mostrarModal(
-
- 
-
- 
-
- 
 
       "⚠",
 
- 
-
- 
-
- 
-
       "Sesión no disponible",
-
- 
-
- 
-
- 
 
       "Inicia sesión nuevamente para solicitar el servicio."
 
- 
-
- 
-
- 
-
     );
 
- 
-
- 
-
- 
-
     return;
-
- 
-
- 
-
- 
 
   }
 
  
 
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-  const tipoTarifa =
-
- 
-
- 
-
- 
-
-    perfilActual.tieneMembresia &&
-
- 
-
- 
-
- 
-
-    perfilActual.estadoMembresia === "activa"
-
- 
-
- 
-
- 
-
-      ? "Tarifa preferencial de miembro"
-
- 
-
- 
-
- 
-
-      : "Tarifa de público general";
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-  const ubicacion =
-
- 
-
- 
-
- 
-
-    await obtenerUbicacion();
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-  await guardarSolicitudServicio(
-
- 
-
-    servicio,
-
- 
-
-    tipoTarifa,
-
- 
-
-    ubicacion
-
- 
-
-  );
-
- 
-
- 
-
- 
-
-  const mensaje =
-
- 
-
- 
-
- 
-
-    construirMensajeServicio(
-
- 
-
- 
-
- 
-
-      servicio,
-
- 
-
- 
-
- 
-
-      tipoTarifa,
-
- 
-
- 
-
- 
-
-      ubicacion
-
- 
-
- 
-
- 
-
-    );
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-  const url =
-
- 
-
- 
-
- 
+  if (normalizarEstado(servicio) === "auxilio_vial") {
 
-    `https://wa.me/${TELEFONO_CABINA}` +
+    abrirSelectorAuxilioVial();
 
- 
-
- 
-
- 
-
-    `?text=${encodeURIComponent(mensaje)}`;
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-  window.open(
-
- 
-
- 
+    return;
 
- 
-
-    url,
-
- 
-
- 
-
- 
-
-    "_blank",
-
- 
-
- 
+  }
 
  
 
-    "noopener,noreferrer"
-
- 
-
- 
-
- 
-
-  );
-
- 
-
- 
-
- 
+  await procesarSolicitudServicio(servicio, "");
 
 }
 
@@ -5818,315 +5534,101 @@ async function solicitarServicio(servicio, detalleServicio = {}) {
 
 function construirMensajeServicio(
 
- 
-
- 
-
- 
-
   servicio,
-
- 
-
- 
-
- 
 
   tipoTarifa,
 
- 
+  ubicacion,
 
- 
-
- 
-
-  ubicacion
-
- 
-
- 
-
- 
+  detalleAuxilio = ""
 
 ) {
 
- 
+  const numeroMembresia = perfilActual.tieneMembresia
+
+    ? (perfilActual.numeroMiembro || "Pendiente")
+
+    : "Sin membresía";
 
  
 
- 
-
-  const numeroMembresia =
-
- 
-
- 
-
- 
-
-    perfilActual.tieneMembresia
-
- 
-
- 
-
- 
-
-      ? (
-
- 
-
- 
-
- 
-
-          perfilActual.numeroMiembro ||
-
- 
-
- 
-
- 
-
-          "Pendiente"
-
- 
-
- 
-
- 
-
-        )
-
- 
-
- 
-
- 
-
-      : "Sin membresía";
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-  return [
-
- 
-
- 
-
- 
+  const lineas = [
 
     `*SOLICITUD AS CLICK - ${servicio.toUpperCase()}*`,
 
- 
-
- 
-
- 
-
     "",
-
- 
-
- 
-
- 
 
     `Tipo de tarifa: ${tipoTarifa}`,
 
- 
-
- 
-
- 
-
     `Tipo de cliente: ${obtenerTipoClienteTexto(perfilActual.tipoCliente)}`,
-
- 
-
- 
-
- 
 
     `Membresía: ${numeroMembresia}`,
 
- 
-
- 
-
- 
-
     `Estado: ${obtenerTextoEstado(perfilActual)}`,
 
- 
-
- 
-
- 
-
     "",
-
- 
-
- 
-
- 
 
     "*DATOS DEL CLIENTE*",
 
- 
-
- 
-
- 
-
     `Nombre: ${perfilActual.nombre || "No registrado"}`,
-
- 
-
- 
-
- 
 
     `Teléfono: ${perfilActual.telefono || "No registrado"}`,
 
- 
-
- 
-
- 
-
     `Correo: ${perfilActual.correo || "No registrado"}`,
 
- 
-
- 
-
- 
-
     "",
-
- 
-
- 
-
- 
 
     "*DATOS DEL VEHÍCULO*",
 
- 
-
- 
-
- 
-
     `Marca: ${perfilActual.marca || "No registrada"}`,
-
- 
-
- 
-
- 
 
     `Submarca: ${perfilActual.subMarca || "No registrada"}`,
 
- 
-
- 
-
- 
-
     `Color: ${perfilActual.color || "No registrado"}`,
-
- 
-
- 
-
- 
 
     `Placas: ${perfilActual.placas || "No registradas"}`,
 
- 
-
- 
-
- 
-
     `Serie / VIN: ${perfilActual.serie || "No registrada"}`,
 
- 
-
- 
-
- 
-
     "",
-
- 
-
- 
-
- 
 
     "*SERVICIO SOLICITADO*",
 
- 
+    `Servicio: ${servicio}`
+
+  ];
 
  
 
- 
+  if (detalleAuxilio) {
 
-    `Servicio: ${servicio}`,
+    lineas.push(`Tipo de auxilio: ${detalleAuxilio}`);
 
- 
-
- 
+  }
 
  
+
+  if (detalleAuxilio === "Surtir gasolina") {
+
+    lineas.push("Aviso aceptado: el costo del combustible corre por cuenta del cliente.");
+
+  }
+
+ 
+
+  lineas.push(
 
     `Ubicación: ${ubicacion}`,
 
- 
-
- 
-
- 
-
     "",
-
- 
-
- 
-
- 
 
     "Comentarios:"
 
- 
+  );
 
  
 
- 
-
-  ].join("\n");
-
- 
-
- 
-
- 
+  return lineas.join("\n");
 
 }
 
@@ -6168,135 +5670,87 @@ function construirMensajeServicio(
 
  
 
-async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalleServicio = {}) {
+async function guardarSolicitudServicio(
 
- 
+  servicio,
 
-  if (!usuarioActual) return;
+  tipoTarifa,
 
- 
+  ubicacion,
 
- 
+  detalleAuxilio = ""
+
+) {
+
+  if (!usuarioActual) return null;
 
  
 
   try {
 
+    const folio = generarFolioServicio();
+
  
 
     await firestoreAddDoc(firestoreCollection(db, "servicios"), {
 
- 
-
       usuarioId: usuarioActual.uid,
-
- 
 
       uid: usuarioActual.uid,
 
- 
-
-      folio: generarFolioServicio(),
-
- 
+      folio,
 
       servicio,
 
- 
-
-      tipoAuxilio: detalleServicio.tipoAuxilio || "",
-
- 
-
-      combustiblePorCuentaCliente:
-
-        detalleServicio.tipoAuxilio === "Surtir gasolina",
-
- 
+      tipoAuxilio: detalleAuxilio,
 
       estado: "solicitado",
 
- 
-
       tipoTarifa,
-
- 
 
       ubicacion,
 
- 
-
       cliente: {
-
- 
 
         nombre: perfilActual.nombre || "",
 
- 
-
         telefono: perfilActual.telefono || "",
-
- 
 
         correo: perfilActual.correo || ""
 
- 
-
       },
-
- 
 
       vehiculo: {
 
- 
-
         marca: perfilActual.marca || "",
-
- 
 
         subMarca: perfilActual.subMarca || "",
 
- 
-
         color: perfilActual.color || "",
-
- 
 
         placas: perfilActual.placas || "",
 
- 
-
         serie: perfilActual.serie || ""
-
- 
 
       },
 
- 
-
       creadoEn: firestoreServerTimestamp(),
 
- 
-
       fechaCreacion: new Date().toISOString()
-
- 
 
     });
 
  
 
- 
-
- 
-
-    await cargarHistorialServicios();
-
-    await crearNotificacionLocal({
+    await crearNotificacion({
 
       titulo: "Solicitud recibida",
 
-      mensaje: `Tu solicitud de ${servicio} fue registrada correctamente.`,
+      mensaje: detalleAuxilio
+
+        ? `${servicio}: ${detalleAuxilio}. Folio ${folio}.`
+
+        : `${servicio}. Folio ${folio}.`,
 
       tipo: "servicio"
 
@@ -6304,17 +5758,17 @@ async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalle
 
  
 
-  } catch (error) {
+    await cargarHistorialServicios();
 
- 
+    return folio;
+
+  } catch (error) {
 
     console.error("No fue posible guardar la solicitud:", error);
 
- 
+    return null;
 
   }
-
- 
 
 }
 
@@ -8260,6 +7714,774 @@ function hablarAsesor() {
 
  
 
+ 
+
+/* =========================================
+
+   NOTIFICACIONES, VEHÍCULOS Y AUXILIO VIAL
+
+========================================= */
+
+ 
+
+async function procesarSolicitudServicio(servicio, detalleAuxilio = "") {
+
+  const tipoTarifa =
+
+    perfilActual.tieneMembresia && perfilActual.estadoMembresia === "activa"
+
+      ? "Tarifa preferencial de miembro"
+
+      : "Tarifa de público general";
+
+ 
+
+  const ubicacion = await obtenerUbicacion();
+
+ 
+
+  await guardarSolicitudServicio(
+
+    servicio,
+
+    tipoTarifa,
+
+    ubicacion,
+
+    detalleAuxilio
+
+  );
+
+ 
+
+  const mensaje = construirMensajeServicio(
+
+    servicio,
+
+    tipoTarifa,
+
+    ubicacion,
+
+    detalleAuxilio
+
+  );
+
+ 
+
+  const url = `https://wa.me/${TELEFONO_CABINA}?text=${encodeURIComponent(mensaje)}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+
+}
+
+ 
+
+function abrirSelectorAuxilioVial() {
+
+  abrirModalPersonalizado({
+
+    titulo: "Auxilio vial",
+
+    icono: "🔧",
+
+    contenido: `
+
+      <p class="asClickIntro">Selecciona el tipo de auxilio que necesitas:</p>
+
+      <div class="asClickOptionGrid">
+
+        <button type="button" onclick="seleccionarTipoAuxilio('Paso de corriente')">🔋<b>Paso de corriente</b></button>
+
+        <button type="button" onclick="seleccionarTipoAuxilio('Cambio de llanta')">🛞<b>Cambio de llanta</b></button>
+
+        <button type="button" onclick="seleccionarTipoAuxilio('Surtir gasolina')">⛽<b>Surtir gasolina</b></button>
+
+      </div>
+
+      <div id="avisoGasolina" class="asClickFuelNotice" hidden>
+
+        <b>⚠ Aviso importante</b>
+
+        <p>El costo del combustible corre por cuenta del cliente. AS CLICK únicamente proporciona el servicio para llevar el combustible hasta tu ubicación.</p>
+
+        <label class="asClickCheck"><input type="checkbox" id="aceptaCostoCombustible" onchange="actualizarBotonAuxilio()"> He leído y acepto que el costo del combustible será cubierto por mí.</label>
+
+      </div>
+
+      <input type="hidden" id="tipoAuxilioSeleccionado">
+
+      <div class="asClickActions">
+
+        <button type="button" class="asClickSecondary" onclick="cerrarModalPersonalizado()">Cancelar</button>
+
+        <button type="button" class="asClickPrimary" id="confirmarAuxilioButton" disabled onclick="confirmarSolicitudAuxilio()">Solicitar servicio</button>
+
+      </div>
+
+    `
+
+  });
+
+}
+
+ 
+
+function seleccionarTipoAuxilio(tipo) {
+
+  const campo = document.getElementById("tipoAuxilioSeleccionado");
+
+  if (campo) campo.value = tipo;
+
+ 
+
+  document.querySelectorAll(".asClickOptionGrid button").forEach(boton => {
+
+    boton.classList.toggle("selected", boton.textContent.includes(tipo));
+
+  });
+
+ 
+
+  const aviso = document.getElementById("avisoGasolina");
+
+  if (aviso) aviso.hidden = tipo !== "Surtir gasolina";
+
+ 
+
+  const acepta = document.getElementById("aceptaCostoCombustible");
+
+  if (acepta && tipo !== "Surtir gasolina") acepta.checked = false;
+
+ 
+
+  actualizarBotonAuxilio();
+
+}
+
+ 
+
+function actualizarBotonAuxilio() {
+
+  const tipo = document.getElementById("tipoAuxilioSeleccionado")?.value || "";
+
+  const acepta = document.getElementById("aceptaCostoCombustible")?.checked === true;
+
+  const boton = document.getElementById("confirmarAuxilioButton");
+
+ 
+
+  if (boton) {
+
+    boton.disabled = !tipo || (tipo === "Surtir gasolina" && !acepta);
+
+  }
+
+}
+
+ 
+
+async function confirmarSolicitudAuxilio() {
+
+  const tipo = document.getElementById("tipoAuxilioSeleccionado")?.value || "";
+
+  if (!tipo) return;
+
+ 
+
+  if (tipo === "Surtir gasolina" && !document.getElementById("aceptaCostoCombustible")?.checked) {
+
+    return;
+
+  }
+
+ 
+
+  cerrarModalPersonalizado();
+
+  await procesarSolicitudServicio("Auxilio vial", tipo);
+
+}
+
+ 
+
+async function crearNotificacion({ titulo, mensaje, tipo = "general" }) {
+
+  if (!usuarioActual || !firestoreAddDoc || !firestoreCollection) return;
+
+ 
+
+  try {
+
+    await firestoreAddDoc(firestoreCollection(db, "notificaciones"), {
+
+      uidUsuario: usuarioActual.uid,
+
+      titulo,
+
+      mensaje,
+
+      tipo,
+
+      leida: false,
+
+      fechaCreacion: firestoreServerTimestamp(),
+
+      fechaIso: new Date().toISOString()
+
+    });
+
+    await cargarNotificaciones();
+
+  } catch (error) {
+
+    console.error("No fue posible crear la notificación:", error);
+
+  }
+
+}
+
+ 
+
+async function cargarNotificaciones() {
+
+  if (!usuarioActual || !firestoreQuery || !firestoreCollection) return;
+
+ 
+
+  try {
+
+    const consulta = firestoreQuery(
+
+      firestoreCollection(db, "notificaciones"),
+
+      firestoreWhere("uidUsuario", "==", usuarioActual.uid)
+
+    );
+
+    const resultado = await firestoreGetDocs(consulta);
+
+ 
+
+    notificacionesUsuario = resultado.docs
+
+      .map(documento => ({ id: documento.id, ...documento.data() }))
+
+      .sort((a, b) => obtenerFechaNotificacion(b) - obtenerFechaNotificacion(a));
+
+ 
+
+    actualizarContadorNotificaciones();
+
+  } catch (error) {
+
+    console.error("No fue posible cargar las notificaciones:", error);
+
+    notificacionesUsuario = [];
+
+    actualizarContadorNotificaciones();
+
+  }
+
+}
+
+ 
+
+function obtenerFechaNotificacion(item) {
+
+  const valor = item.fechaCreacion || item.fechaIso || "";
+
+  if (valor && typeof valor.toDate === "function") return valor.toDate().getTime();
+
+  const fecha = new Date(valor).getTime();
+
+  return Number.isNaN(fecha) ? 0 : fecha;
+
+}
+
+ 
+
+function formatearFechaNotificacion(item) {
+
+  const valor = item.fechaCreacion || item.fechaIso || "";
+
+  const fecha = valor && typeof valor.toDate === "function" ? valor.toDate() : new Date(valor);
+
+  if (!fecha || Number.isNaN(fecha.getTime())) return "";
+
+  return fecha.toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" });
+
+}
+
+ 
+
+function actualizarContadorNotificaciones() {
+
+  const contador = document.querySelector(".notificationCounter");
+
+  if (!contador) return;
+
+  const noLeidas = notificacionesUsuario.filter(item => item.leida !== true).length;
+
+  contador.textContent = String(noLeidas);
+
+  contador.style.display = noLeidas > 0 ? "" : "none";
+
+}
+
+ 
+
+function obtenerIconoNotificacion(tipo) {
+
+  const iconos = {
+
+    servicio: "🚙",
+
+    membresia: "⭐",
+
+    alerta: "🚨",
+
+    promocion: "🎁"
+
+  };
+
+  return iconos[tipo] || "🔔";
+
+}
+
+ 
+
+async function marcarNotificacionLeida(id) {
+
+  const item = notificacionesUsuario.find(n => n.id === id);
+
+  if (!item || item.leida === true) return;
+
+ 
+
+  try {
+
+    await firestoreSetDoc(
+
+      firestoreDoc(db, "notificaciones", id),
+
+      { leida: true, leidaEn: firestoreServerTimestamp() },
+
+      { merge: true }
+
+    );
+
+    item.leida = true;
+
+    actualizarContadorNotificaciones();
+
+    await abrirNotificaciones();
+
+  } catch (error) {
+
+    console.error("No fue posible marcar la notificación:", error);
+
+  }
+
+}
+
+ 
+
+async function marcarTodasNotificacionesLeidas() {
+
+  const pendientes = notificacionesUsuario.filter(item => item.leida !== true);
+
+  try {
+
+    await Promise.all(pendientes.map(item =>
+
+      firestoreSetDoc(
+
+        firestoreDoc(db, "notificaciones", item.id),
+
+        { leida: true, leidaEn: firestoreServerTimestamp() },
+
+        { merge: true }
+
+      )
+
+    ));
+
+    await cargarNotificaciones();
+
+    await abrirNotificaciones();
+
+  } catch (error) {
+
+    console.error("No fue posible actualizar las notificaciones:", error);
+
+  }
+
+}
+
+ 
+
+async function guardarNuevoVehiculo(event) {
+
+  event.preventDefault();
+
+  if (!usuarioActual) return;
+
+ 
+
+  const marca = document.getElementById("nuevoVehiculoMarca")?.value.trim() || "";
+
+  const subMarca = document.getElementById("nuevoVehiculoSubMarca")?.value.trim() || "";
+
+  const color = document.getElementById("nuevoVehiculoColor")?.value.trim() || "";
+
+  const placas = (document.getElementById("nuevoVehiculoPlacas")?.value || "").trim().toUpperCase();
+
+  const serie = (document.getElementById("nuevoVehiculoSerie")?.value || "").trim().toUpperCase().replace(/\s/g, "");
+
+  const esPrincipal = document.getElementById("nuevoVehiculoPrincipal")?.checked === true;
+
+ 
+
+  if (!marca || !subMarca || !color || !placas || !serie) return;
+
+ 
+
+  try {
+
+    const referencia = await firestoreAddDoc(
+
+      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos"),
+
+      {
+
+        marca,
+
+        subMarca,
+
+        color,
+
+        placas,
+
+        serie,
+
+        esPrincipal,
+
+        activo: true,
+
+        fechaRegistro: firestoreServerTimestamp()
+
+      }
+
+    );
+
+ 
+
+    if (esPrincipal) {
+
+      await establecerVehiculoPrincipal(referencia.id, { marca, subMarca, color, placas, serie });
+
+    }
+
+ 
+
+    await crearNotificacion({
+
+      titulo: "Vehículo agregado",
+
+      mensaje: `${marca} ${subMarca}, placas ${placas}.`,
+
+      tipo: "general"
+
+    });
+
+ 
+
+    cerrarModalPersonalizado();
+
+    await cargarVehiculos();
+
+  } catch (error) {
+
+    console.error("No fue posible guardar el vehículo:", error);
+
+    mostrarModal("⚠", "No fue posible guardar", "Revisa las reglas de Firestore e inténtalo nuevamente.");
+
+  }
+
+}
+
+ 
+
+async function cargarVehiculos() {
+
+  if (!usuarioActual || !firestoreCollection) return;
+
+ 
+
+  try {
+
+    const resultado = await firestoreGetDocs(
+
+      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos")
+
+    );
+
+    vehiculosUsuario = resultado.docs.map(documento => ({ id: documento.id, ...documento.data() }));
+
+    renderizarVehiculos();
+
+  } catch (error) {
+
+    console.error("No fue posible cargar los vehículos:", error);
+
+  }
+
+}
+
+ 
+
+function renderizarVehiculos() {
+
+  const pagina = document.querySelector("#seccion-vehiculos .placeholderPage");
+
+  if (!pagina) return;
+
+ 
+
+  let contenedor = document.getElementById("vehiculosAdicionales");
+
+  if (!contenedor) {
+
+    contenedor = document.createElement("div");
+
+    contenedor.id = "vehiculosAdicionales";
+
+    contenedor.className = "asClickVehiclesGrid";
+
+    const botonAgregar = pagina.querySelector('button[onclick="agregarVehiculo()"]');
+
+    pagina.insertBefore(contenedor, botonAgregar || null);
+
+  }
+
+ 
+
+  contenedor.innerHTML = vehiculosUsuario.map(vehiculo => `
+
+    <article class="asClickVehicleCard">
+
+      <span>🚙</span>
+
+      <div>
+
+        <b>${escaparHtml([vehiculo.marca, vehiculo.subMarca].filter(Boolean).join(" "))}</b>
+
+        <small>Placas: ${escaparHtml(vehiculo.placas || "Sin registrar")}</small>
+
+        <small>Color: ${escaparHtml(vehiculo.color || "Sin registrar")}</small>
+
+      </div>
+
+      ${vehiculo.esPrincipal
+
+        ? '<em>Principal</em>'
+
+        : `<button type="button" onclick="usarVehiculoPrincipal('${escaparAtributo(vehiculo.id)}')">Usar como principal</button>`}
+
+    </article>
+
+  `).join("");
+
+}
+
+ 
+
+async function usarVehiculoPrincipal(id) {
+
+  const vehiculo = vehiculosUsuario.find(item => item.id === id);
+
+  if (!vehiculo) return;
+
+  await establecerVehiculoPrincipal(id, vehiculo);
+
+  await cargarVehiculos();
+
+}
+
+ 
+
+async function establecerVehiculoPrincipal(id, vehiculo) {
+
+  await Promise.all(vehiculosUsuario.map(item =>
+
+    firestoreSetDoc(
+
+      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", item.id),
+
+      { esPrincipal: item.id === id },
+
+      { merge: true }
+
+    )
+
+  ));
+
+ 
+
+  await firestoreSetDoc(
+
+    firestoreDoc(db, "usuarios", usuarioActual.uid),
+
+    {
+
+      marca: vehiculo.marca || "",
+
+      subMarca: vehiculo.subMarca || "",
+
+      color: vehiculo.color || "",
+
+      placas: vehiculo.placas || "",
+
+      serie: vehiculo.serie || "",
+
+      vehiculoPrincipal: {
+
+        marca: vehiculo.marca || "",
+
+        subMarca: vehiculo.subMarca || "",
+
+        color: vehiculo.color || "",
+
+        placas: vehiculo.placas || "",
+
+        serie: vehiculo.serie || ""
+
+      },
+
+      actualizadoEn: firestoreServerTimestamp()
+
+    },
+
+    { merge: true }
+
+  );
+
+ 
+
+  Object.assign(perfilActual, {
+
+    marca: vehiculo.marca || "",
+
+    subMarca: vehiculo.subMarca || "",
+
+    color: vehiculo.color || "",
+
+    placas: vehiculo.placas || "",
+
+    serie: vehiculo.serie || ""
+
+  });
+
+  actualizarDatosPantalla(perfilActual);
+
+}
+
+ 
+
+function asegurarInterfazModulos() {
+
+  if (!document.getElementById("asClickModuleStyles")) {
+
+    const style = document.createElement("style");
+
+    style.id = "asClickModuleStyles";
+
+    style.textContent = `
+
+      .asClickOverlay{position:fixed;inset:0;background:rgba(7,27,50,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+
+      .asClickModal{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.3);font-family:inherit;color:#102b4e}
+
+      .asClickModalTop{display:flex;align-items:center;gap:12px;margin-bottom:18px}.asClickModalTop>span{font-size:28px}.asClickModalTop h2{margin:0;flex:1}.asClickClose{border:0;background:transparent;font-size:25px;cursor:pointer}
+
+      .asClickActions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.asClickPrimary,.asClickSecondary{border:0;border-radius:7px;padding:12px 18px;font-weight:700;cursor:pointer}.asClickPrimary{background:#1769dc;color:#fff}.asClickPrimary:disabled{opacity:.45;cursor:not-allowed}.asClickSecondary{background:#eef3f8;color:#17395f}
+
+      .asClickForm{display:grid;grid-template-columns:1fr 1fr;gap:14px}.asClickForm label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700}.asClickForm input{padding:11px;border:1px solid #ccd8e5;border-radius:7px}.asClickForm .asClickCheck,.asClickCheck{grid-column:1/-1;display:flex;flex-direction:row;align-items:flex-start;font-weight:500}.asClickCheck input{margin-top:3px}
+
+      .asClickIntro{margin-top:0}.asClickOptionGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.asClickOptionGrid button{border:1px solid #d5e0ea;background:#f8fafc;border-radius:10px;padding:18px 8px;font-size:24px;cursor:pointer}.asClickOptionGrid b{display:block;margin-top:8px;font-size:13px}.asClickOptionGrid button.selected{border-color:#1769dc;background:#eaf3ff}
+
+      .asClickFuelNotice{margin-top:16px;padding:14px;border:1px solid #f0c36d;background:#fff8e8;border-radius:9px;color:#6d4a00}.asClickFuelNotice p{margin:8px 0 12px}
+
+      .asClickNotificationHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.asClickNotificationHeader button{border:0;background:transparent;color:#1769dc;font-weight:700;cursor:pointer}.asClickNotificationList{display:grid;gap:8px}.asClickNotification{display:flex;text-align:left;gap:12px;width:100%;border:1px solid #dde6ef;background:#fff;border-radius:9px;padding:13px;cursor:pointer}.asClickNotification.noLeida{background:#edf5ff;border-color:#a7c9f4}.asClickNotification>span{font-size:22px}.asClickNotification div{flex:1}.asClickNotification p{margin:4px 0;color:#536b84}.asClickNotification small{color:#8294a7}.asClickEmpty{text-align:center;padding:30px}.asClickEmpty span{font-size:34px}.asClickEmpty b,.asClickEmpty p{display:block;margin-top:8px}
+
+      .asClickVehiclesGrid{width:100%;display:grid;gap:12px;margin:16px 0}.asClickVehicleCard{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #d9e3ec;border-radius:10px;background:#fff;text-align:left}.asClickVehicleCard>span{font-size:28px}.asClickVehicleCard div{display:grid;flex:1}.asClickVehicleCard small{color:#657b91}.asClickVehicleCard em{font-style:normal;color:#168348;font-weight:700}.asClickVehicleCard button{border:1px solid #1769dc;background:#fff;color:#1769dc;border-radius:6px;padding:8px;cursor:pointer}
+
+      @media(max-width:600px){.asClickForm{grid-template-columns:1fr}.asClickOptionGrid{grid-template-columns:1fr}.asClickActions{flex-direction:column-reverse}.asClickActions button{width:100%}}
+
+    `;
+
+    document.head.appendChild(style);
+
+  }
+
+}
+
+ 
+
+function abrirModalPersonalizado({ titulo, icono, contenido }) {
+
+  asegurarInterfazModulos();
+
+  cerrarModalPersonalizado();
+
+  const overlay = document.createElement("div");
+
+  overlay.id = "asClickCustomOverlay";
+
+  overlay.className = "asClickOverlay";
+
+  overlay.innerHTML = `
+
+    <section class="asClickModal" role="dialog" aria-modal="true" aria-label="${escaparHtml(titulo)}">
+
+      <div class="asClickModalTop">
+
+        <span>${icono}</span><h2>${escaparHtml(titulo)}</h2>
+
+        <button type="button" class="asClickClose" onclick="cerrarModalPersonalizado()" aria-label="Cerrar">×</button>
+
+      </div>
+
+      ${contenido}
+
+    </section>
+
+  `;
+
+  overlay.addEventListener("click", event => {
+
+    if (event.target === overlay) cerrarModalPersonalizado();
+
+  });
+
+  document.body.appendChild(overlay);
+
+  document.body.style.overflow = "hidden";
+
+}
+
+ 
+
+function cerrarModalPersonalizado() {
+
+  document.getElementById("asClickCustomOverlay")?.remove();
+
+  document.body.style.overflow = "";
+
+}
+
+ 
+
 /* =========================================
 
  
@@ -8390,91 +8612,17 @@ function verMembresia() {
 
 function agregarVehiculo() {
 
-  abrirModalVehiculo();
+  if (!usuarioActual) {
 
-}
+    mostrarModal(
 
- 
+      "⚠",
 
-function abrirModalVehiculo() {
+      "Sesión no disponible",
 
-  const modal = document.getElementById("vehicleModalOverlay");
+      "Inicia sesión nuevamente para agregar un vehículo."
 
-  const form = document.getElementById("vehicleForm");
-
-  const error = document.getElementById("vehicleFormError");
-
- 
-
-  form?.reset();
-
-  if (error) error.textContent = "";
-
-  modal?.classList.add("active");
-
-  modal?.setAttribute("aria-hidden", "false");
-
-  document.body.style.overflow = "hidden";
-
-}
-
- 
-
-function cerrarModalVehiculo(event = null) {
-
-  if (event && event.target.id !== "vehicleModalOverlay") return;
-
-  const modal = document.getElementById("vehicleModalOverlay");
-
-  modal?.classList.remove("active");
-
-  modal?.setAttribute("aria-hidden", "true");
-
-  document.body.style.overflow = "";
-
-}
-
- 
-
-async function guardarNuevoVehiculo(event) {
-
-  event.preventDefault();
-
- 
-
-  if (!usuarioActual) return;
-
- 
-
-  const marca = document.getElementById("nuevoVehiculoMarca")?.value.trim() || "";
-
-  const subMarca = document.getElementById("nuevoVehiculoSubMarca")?.value.trim() || "";
-
-  const color = document.getElementById("nuevoVehiculoColor")?.value.trim() || "";
-
-  const placas = (document.getElementById("nuevoVehiculoPlacas")?.value || "")
-
-    .trim().toUpperCase();
-
-  const serie = (document.getElementById("nuevoVehiculoSerie")?.value || "")
-
-    .trim().toUpperCase().replace(/\s/g, "");
-
-  const hacerloPrincipal =
-
-    document.getElementById("nuevoVehiculoPrincipal")?.checked === true ||
-
-    vehiculosActuales.length === 0;
-
-  const error = document.getElementById("vehicleFormError");
-
-  const boton = document.getElementById("guardarVehiculoButton");
-
- 
-
-  if (!marca || !subMarca || !color || !placas || !serie) {
-
-    if (error) error.textContent = "Completa todos los datos del vehículo.";
+    );
 
     return;
 
@@ -8482,445 +8630,59 @@ async function guardarNuevoVehiculo(event) {
 
  
 
-  if (placas.length < 4 || serie.length < 5) {
+  abrirModalPersonalizado({
 
-    if (error) error.textContent = "Revisa las placas y el número de serie.";
+    titulo: "Agregar vehículo",
 
-    return;
+    icono: "🚙",
 
-  }
+    contenido: `
 
- 
+      <form id="nuevoVehiculoForm" class="asClickForm">
 
-  try {
+        <label>Marca<input id="nuevoVehiculoMarca" required maxlength="40"></label>
 
-    if (boton) {
+        <label>Submarca<input id="nuevoVehiculoSubMarca" required maxlength="50"></label>
 
-      boton.disabled = true;
+        <label>Color<input id="nuevoVehiculoColor" required maxlength="30"></label>
 
-      boton.textContent = "Guardando...";
+        <label>Placas<input id="nuevoVehiculoPlacas" required maxlength="12"></label>
 
-    }
+        <label>Serie / VIN<input id="nuevoVehiculoSerie" required maxlength="17"></label>
 
- 
+        <label class="asClickCheck"><input type="checkbox" id="nuevoVehiculoPrincipal"> Usar como vehículo principal</label>
 
-    const vehiculo = {
+        <div class="asClickActions">
 
-      marca,
+          <button type="button" class="asClickSecondary" onclick="cerrarModalPersonalizado()">Cancelar</button>
 
-      subMarca,
+          <button type="submit" class="asClickPrimary">Guardar vehículo</button>
 
-      color,
+        </div>
 
-      placas,
+      </form>
 
-      serie,
+    `
 
-      esPrincipal: hacerloPrincipal,
-
-      activo: true,
-
-      creadoEn: firestoreServerTimestamp(),
-
-      actualizadoEn: firestoreServerTimestamp()
-
-    };
+  });
 
  
 
-    if (hacerloPrincipal) {
-
-      await quitarPrincipalActual();
-
-    }
-
- 
-
-    await firestoreAddDoc(
-
-      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos"),
-
-      vehiculo
-
-    );
-
- 
-
-    if (hacerloPrincipal) {
-
-      await actualizarVehiculoPrincipalUsuario(vehiculo);
-
-    }
-
- 
-
-    await crearNotificacionLocal({
-
-      titulo: "Vehículo agregado",
-
-      mensaje: `${marca} ${subMarca} fue agregado correctamente a tu cuenta.`,
-
-      tipo: "vehiculo"
-
-    });
-
- 
-
-    cerrarModalVehiculo();
-
-    await cargarVehiculos();
-
-    mostrarModal("✓", "Vehículo agregado", "El vehículo se guardó correctamente en tu cuenta.");
-
-  } catch (errorGuardar) {
-
-    console.error("No fue posible guardar el vehículo:", errorGuardar);
-
-    if (error) {
-
-      error.textContent = "No fue posible guardar el vehículo. Revisa tus permisos de Firestore.";
-
-    }
-
-  } finally {
-
-    if (boton) {
-
-      boton.disabled = false;
-
-      boton.textContent = "Guardar vehículo";
-
-    }
-
-  }
+  document.getElementById("nuevoVehiculoForm")?.addEventListener("submit", guardarNuevoVehiculo);
 
 }
 
  
 
-async function cargarVehiculos() {
-
-  if (!usuarioActual) return;
+ 
 
  
 
-  try {
-
-    const resultado = await firestoreGetDocs(
-
-      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos")
-
-    );
+ 
 
  
 
-    vehiculosActuales = resultado.docs.map(documento => ({
-
-      id: documento.id,
-
-      ...documento.data()
-
-    }));
-
  
-
-    const existePrincipalEnLista = vehiculosActuales.some(item => item.esPrincipal === true);
-
- 
-
-    if (!vehiculosActuales.length && perfilActual.marca) {
-
-      vehiculosActuales.push({
-
-        id: "principal-perfil",
-
-        marca: perfilActual.marca,
-
-        subMarca: perfilActual.subMarca,
-
-        color: perfilActual.color,
-
-        placas: perfilActual.placas,
-
-        serie: perfilActual.serie,
-
-        esPrincipal: true,
-
-        soloLectura: true
-
-      });
-
-    } else if (!existePrincipalEnLista && vehiculosActuales.length) {
-
-      vehiculosActuales[0].esPrincipal = true;
-
-    }
-
- 
-
-    vehiculosActuales.sort((a, b) => Number(b.esPrincipal) - Number(a.esPrincipal));
-
-    renderizarVehiculos();
-
-  } catch (error) {
-
-    console.error("No fue posible cargar los vehículos:", error);
-
-    renderizarVehiculos();
-
-  }
-
-}
-
- 
-
-function renderizarVehiculos() {
-
-  const contenedor = document.getElementById("vehiclesList");
-
-  if (!contenedor) return;
-
- 
-
-  if (!vehiculosActuales.length) {
-
-    contenedor.innerHTML = `
-
-      <div class="vehiclesEmptyState">
-
-        <span>🚙</span>
-
-        <b>No tienes vehículos registrados</b>
-
-        <p>Agrega tu primer vehículo para utilizarlo en tus solicitudes.</p>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
- 
-
-  contenedor.innerHTML = vehiculosActuales.map(vehiculo => `
-
-    <article class="savedVehicleCard ${vehiculo.esPrincipal ? "principal" : ""}">
-
-      <div class="savedVehicleIcon">🚙</div>
-
-      <div class="savedVehicleData">
-
-        <h3>${escaparHtml([vehiculo.marca, vehiculo.subMarca].filter(Boolean).join(" "))}</h3>
-
-        <p>Placas: ${escaparHtml(vehiculo.placas || "Sin registrar")}</p>
-
-        <p>Color: ${escaparHtml(vehiculo.color || "Sin registrar")}</p>
-
-        <small>Serie: ${escaparHtml(vehiculo.serie || "Sin registrar")}</small>
-
-      </div>
-
-      <div class="savedVehicleActions">
-
-        ${vehiculo.esPrincipal
-
-          ? '<span class="principalVehicleBadge">Vehículo principal</span>'
-
-          : `<button type="button" onclick="hacerVehiculoPrincipal('${escaparAtributo(vehiculo.id)}')">Hacer principal</button>`}
-
-        ${vehiculo.soloLectura
-
-          ? ""
-
-          : `<button type="button" class="deleteVehicleButton" onclick="eliminarVehiculo('${escaparAtributo(vehiculo.id)}')">Eliminar</button>`}
-
-      </div>
-
-    </article>
-
-  `).join("");
-
-}
-
- 
-
-async function quitarPrincipalActual() {
-
-  const principales = vehiculosActuales.filter(
-
-    item => item.esPrincipal === true && !item.soloLectura
-
-  );
-
- 
-
-  await Promise.all(principales.map(item =>
-
-    firestoreUpdateDoc(
-
-      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", item.id),
-
-      { esPrincipal: false, actualizadoEn: firestoreServerTimestamp() }
-
-    )
-
-  ));
-
-}
-
- 
-
-async function hacerVehiculoPrincipal(idVehiculo) {
-
-  const vehiculo = vehiculosActuales.find(item => item.id === idVehiculo);
-
-  if (!vehiculo || !usuarioActual) return;
-
- 
-
-  try {
-
-    await quitarPrincipalActual();
-
-    await firestoreUpdateDoc(
-
-      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", idVehiculo),
-
-      { esPrincipal: true, actualizadoEn: firestoreServerTimestamp() }
-
-    );
-
-    await actualizarVehiculoPrincipalUsuario(vehiculo);
-
-    await cargarDatosUsuario(usuarioActual);
-
-    await cargarVehiculos();
-
-    mostrarModal("✓", "Vehículo principal actualizado", "Este vehículo se utilizará en tus próximas solicitudes.");
-
-  } catch (error) {
-
-    console.error("No fue posible cambiar el vehículo principal:", error);
-
-    mostrarModal("⚠", "No fue posible actualizar", "Revisa tus permisos de Firestore e inténtalo nuevamente.");
-
-  }
-
-}
-
- 
-
-async function actualizarVehiculoPrincipalUsuario(vehiculo) {
-
-  const datos = {
-
-    marca: vehiculo.marca || "",
-
-    subMarca: vehiculo.subMarca || "",
-
-    color: vehiculo.color || "",
-
-    placas: vehiculo.placas || "",
-
-    serie: vehiculo.serie || "",
-
-    vehiculoPrincipal: {
-
-      marca: vehiculo.marca || "",
-
-      subMarca: vehiculo.subMarca || "",
-
-      color: vehiculo.color || "",
-
-      placas: vehiculo.placas || "",
-
-      serie: vehiculo.serie || ""
-
-    },
-
-    actualizadoEn: firestoreServerTimestamp()
-
-  };
-
- 
-
-  await firestoreSetDoc(
-
-    firestoreDoc(db, "usuarios", usuarioActual.uid),
-
-    datos,
-
-    { merge: true }
-
-  );
-
- 
-
-  perfilActual = {
-
-    ...perfilActual,
-
-    marca: datos.marca,
-
-    subMarca: datos.subMarca,
-
-    color: datos.color,
-
-    placas: datos.placas,
-
-    serie: datos.serie
-
-  };
-
-  actualizarDatosPantalla(perfilActual);
-
-}
-
- 
-
-async function eliminarVehiculo(idVehiculo) {
-
-  const vehiculo = vehiculosActuales.find(item => item.id === idVehiculo);
-
-  if (!vehiculo || !usuarioActual) return;
-
- 
-
-  if (vehiculo.esPrincipal) {
-
-    mostrarModal("⚠", "No puedes eliminarlo", "Primero selecciona otro vehículo como principal.");
-
-    return;
-
-  }
-
- 
-
-  if (!confirm(`¿Deseas eliminar ${vehiculo.marca} ${vehiculo.subMarca}?`)) return;
-
- 
-
-  try {
-
-    await firestoreDeleteDoc(
-
-      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", idVehiculo)
-
-    );
-
-    await cargarVehiculos();
-
-  } catch (error) {
-
-    console.error("No fue posible eliminar el vehículo:", error);
-
-    mostrarModal("⚠", "No fue posible eliminar", "Revisa tus permisos de Firestore e inténtalo nuevamente.");
-
-  }
-
-}
 
  
 
@@ -8988,157 +8750,19 @@ function mostrarTerminos() {
 
  
 
-function escucharNotificaciones(uidUsuario) {
+async function abrirNotificaciones() {
 
-  if (!firestoreOnSnapshot || !uidUsuario) return;
+  if (!usuarioActual) {
 
- 
+    mostrarModal(
 
-  if (typeof firestoreUnsubscribeNotificaciones === "function") {
+      "⚠",
 
-    firestoreUnsubscribeNotificaciones();
+      "Sesión no disponible",
 
-  }
+      "Inicia sesión nuevamente para consultar tus notificaciones."
 
- 
-
-  const consulta = firestoreQuery(
-
-    firestoreCollection(db, "notificaciones"),
-
-    firestoreWhere("uidUsuario", "==", uidUsuario)
-
-  );
-
- 
-
-  firestoreUnsubscribeNotificaciones = firestoreOnSnapshot(
-
-    consulta,
-
-    resultado => {
-
-      notificacionesActuales = resultado.docs
-
-        .map(documento => ({ id: documento.id, ...documento.data() }))
-
-        .sort((a, b) => obtenerFechaNotificacion(b) - obtenerFechaNotificacion(a));
-
- 
-
-      actualizarContadorNotificaciones();
-
-      renderizarNotificaciones();
-
-    },
-
-    error => {
-
-      console.error("No fue posible escuchar las notificaciones:", error);
-
-    }
-
-  );
-
-}
-
- 
-
-function obtenerFechaNotificacion(item) {
-
-  const valor = item.fechaCreacion || item.creadoEn || item.fecha || "";
-
-  if (valor && typeof valor.toDate === "function") return valor.toDate().getTime();
-
-  const fecha = new Date(valor).getTime();
-
-  return Number.isNaN(fecha) ? 0 : fecha;
-
-}
-
- 
-
-function actualizarContadorNotificaciones() {
-
-  const contador = document.getElementById("notificationCounter");
-
-  if (!contador) return;
-
- 
-
-  const noLeidas = notificacionesActuales.filter(item => item.leida !== true).length;
-
-  contador.textContent = noLeidas > 99 ? "99+" : String(noLeidas);
-
-  contador.hidden = noLeidas === 0;
-
-}
-
- 
-
-function abrirNotificaciones() {
-
-  const overlay = document.getElementById("notificationsOverlay");
-
-  overlay?.classList.add("active");
-
-  overlay?.setAttribute("aria-hidden", "false");
-
-  document.body.style.overflow = "hidden";
-
-  renderizarNotificaciones();
-
-}
-
- 
-
-function cerrarNotificaciones(event = null) {
-
-  if (event && event.target.id !== "notificationsOverlay") return;
-
-  const overlay = document.getElementById("notificationsOverlay");
-
-  overlay?.classList.remove("active");
-
-  overlay?.setAttribute("aria-hidden", "true");
-
-  document.body.style.overflow = "";
-
-}
-
- 
-
-function renderizarNotificaciones() {
-
-  const lista = document.getElementById("notificationsList");
-
-  const botonTodas = document.getElementById("markAllNotificationsButton");
-
-  if (!lista) return;
-
- 
-
-  const hayNoLeidas = notificacionesActuales.some(item => item.leida !== true);
-
-  if (botonTodas) botonTodas.disabled = !hayNoLeidas;
-
- 
-
-  if (!notificacionesActuales.length) {
-
-    lista.innerHTML = `
-
-      <div class="notificationsEmpty">
-
-        <span>🔔</span>
-
-        <b>No tienes notificaciones</b>
-
-        <p>Los avisos de tus servicios y membresía aparecerán aquí.</p>
-
-      </div>
-
-    `;
+    );
 
     return;
 
@@ -9146,75 +8770,65 @@ function renderizarNotificaciones() {
 
  
 
-  lista.innerHTML = notificacionesActuales.map(item => `
-
-    <article class="notificationItem ${item.leida === true ? "read" : "unread"}">
-
-      <div class="notificationTypeIcon">${obtenerIconoNotificacion(item.tipo)}</div>
-
-      <button type="button" class="notificationContent" onclick="marcarNotificacionLeida('${escaparAtributo(item.id)}')">
-
-        <div>
-
-          <b>${escaparHtml(item.titulo || "Notificación AS CLICK")}</b>
-
-          ${item.leida === true ? "" : '<span class="unreadDot"></span>'}
-
-        </div>
-
-        <p>${escaparHtml(item.mensaje || "Tienes una nueva actualización.")}</p>
-
-        <small>${escaparHtml(formatearFechaNotificacion(item))}</small>
-
-      </button>
-
-    </article>
-
-  `).join("");
-
-}
+  await cargarNotificaciones();
 
  
 
-function obtenerIconoNotificacion(tipo) {
+  const contenido = notificacionesUsuario.length
 
-  const iconos = {
+    ? notificacionesUsuario.map(item => {
 
-    servicio: "🚛",
+        const clase = item.leida ? "" : " noLeida";
 
-    membresia: "⭐",
+        return `
 
-    emergencia: "🚨",
+          <button type="button" class="asClickNotification${clase}" onclick="marcarNotificacionLeida('${escaparAtributo(item.id)}')">
 
-    vehiculo: "🚙",
+            <span>${obtenerIconoNotificacion(item.tipo)}</span>
 
-    promocion: "🎁"
+            <div>
 
-  };
+              <b>${escaparHtml(item.titulo || "Notificación")}</b>
 
-  return iconos[normalizarEstado(tipo)] || "🔔";
+              <p>${escaparHtml(item.mensaje || "")}</p>
 
-}
+              <small>${escaparHtml(formatearFechaNotificacion(item))}</small>
+
+            </div>
+
+          </button>
+
+        `;
+
+      }).join("")
+
+    : `<div class="asClickEmpty"><span>🔔</span><b>No tienes notificaciones</b><p>Los avisos de tus solicitudes y servicios aparecerán aquí.</p></div>`;
 
  
 
-function formatearFechaNotificacion(item) {
+  abrirModalPersonalizado({
 
-  const milisegundos = obtenerFechaNotificacion(item);
+    titulo: "Notificaciones",
 
-  if (!milisegundos) return "Ahora";
+    icono: "🔔",
 
-  return new Date(milisegundos).toLocaleDateString("es-MX", {
+    contenido: `
 
-    day: "2-digit",
+      <div class="asClickNotificationHeader">
 
-    month: "short",
+        <span>${notificacionesUsuario.length} notificación(es)</span>
 
-    year: "numeric",
+        ${notificacionesUsuario.some(item => !item.leida)
 
-    hour: "2-digit",
+          ? '<button type="button" onclick="marcarTodasNotificacionesLeidas()">Marcar todas como leídas</button>'
 
-    minute: "2-digit"
+          : ''}
+
+      </div>
+
+      <div class="asClickNotificationList">${contenido}</div>
+
+    `
 
   });
 
@@ -9222,95 +8836,15 @@ function formatearFechaNotificacion(item) {
 
  
 
-async function marcarNotificacionLeida(idNotificacion) {
-
-  const item = notificacionesActuales.find(notificacion => notificacion.id === idNotificacion);
-
-  if (!item || item.leida === true) return;
+ 
 
  
 
-  try {
-
-    await firestoreUpdateDoc(
-
-      firestoreDoc(db, "notificaciones", idNotificacion),
-
-      { leida: true, leidaEn: firestoreServerTimestamp() }
-
-    );
-
-  } catch (error) {
-
-    console.error("No fue posible marcar la notificación:", error);
-
-  }
-
-}
+ 
 
  
 
-async function marcarTodasNotificacionesLeidas() {
-
-  const pendientes = notificacionesActuales.filter(item => item.leida !== true);
-
-  if (!pendientes.length) return;
-
  
-
-  try {
-
-    await Promise.all(pendientes.map(item =>
-
-      firestoreUpdateDoc(
-
-        firestoreDoc(db, "notificaciones", item.id),
-
-        { leida: true, leidaEn: firestoreServerTimestamp() }
-
-      )
-
-    ));
-
-  } catch (error) {
-
-    console.error("No fue posible marcar todas las notificaciones:", error);
-
-  }
-
-}
-
- 
-
-async function crearNotificacionLocal({ titulo, mensaje, tipo = "general" }) {
-
-  if (!usuarioActual) return;
-
-  try {
-
-    await firestoreAddDoc(firestoreCollection(db, "notificaciones"), {
-
-      uidUsuario: usuarioActual.uid,
-
-      titulo,
-
-      mensaje,
-
-      tipo,
-
-      leida: false,
-
-      fechaCreacion: firestoreServerTimestamp()
-
-    });
-
-  } catch (error) {
-
-    console.error("No fue posible crear la notificación:", error);
-
-  }
-
-}
 
  
 
@@ -10604,39 +10138,29 @@ window.filtrarHistorial =
 
 window.mostrarModal = mostrarModal;
 
-window.cerrarNotificaciones = cerrarNotificaciones;
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+window.cerrarModalPersonalizado = cerrarModalPersonalizado;
+
+window.seleccionarTipoAuxilio = seleccionarTipoAuxilio;
+
+window.actualizarBotonAuxilio = actualizarBotonAuxilio;
+
+window.confirmarSolicitudAuxilio = confirmarSolicitudAuxilio;
 
 window.marcarNotificacionLeida = marcarNotificacionLeida;
 
 window.marcarTodasNotificacionesLeidas = marcarTodasNotificacionesLeidas;
 
-window.cerrarModalVehiculo = cerrarModalVehiculo;
-
-window.guardarNuevoVehiculo = guardarNuevoVehiculo;
-
-window.hacerVehiculoPrincipal = hacerVehiculoPrincipal;
-
-window.eliminarVehiculo = eliminarVehiculo;
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-window.abrirAuxilioVial = abrirAuxilioVial;
-
-window.cerrarAuxilioVial = cerrarAuxilioVial;
-
-window.actualizarAvisoCombustible = actualizarAvisoCombustible;
-
-window.confirmarAuxilioVial = confirmarAuxilioVial;
+window.usarVehiculoPrincipal = usarVehiculoPrincipal;
 
  
 
