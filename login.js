@@ -117,7 +117,7 @@ const acceptInfoModal =
   Sin espacios, guiones ni signo +
 */
 
-const TELEFONO_ASESOR = "525512345678";
+const TELEFONO_ASESOR = "525519750497";
 
 /* =========================================
    INICIAR SESIÓN
