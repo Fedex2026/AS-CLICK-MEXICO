@@ -28,6 +28,8 @@ let usuarioActual = null;
 
 let historialServicios = [];
 
+let vehiculosUsuario = [];
+
 let notificacionesActuales = [];
 
 let cancelarEscuchaNotificaciones = null;
@@ -102,6 +104,8 @@ let firestoreOnSnapshot = null;
 
 let firestoreUpdateDoc = null;
 
+let firestoreDeleteDoc = null;
+
 async function iniciarFirebase() {
 
   try {
@@ -148,6 +152,8 @@ async function iniciarFirebase() {
 
     firestoreUpdateDoc = firestoreModule.updateDoc;
 
+    firestoreDeleteDoc = firestoreModule.deleteDoc;
+
     authModule.onAuthStateChanged(auth, async user => {
 
       if (!user) {
@@ -165,6 +171,8 @@ async function iniciarFirebase() {
         await cargarDatosUsuario(user);
 
         await cargarHistorialServicios();
+
+        await cargarVehiculos();
 
         iniciarEscuchaNotificaciones(user.uid);
 
@@ -1514,6 +1522,12 @@ function cambiarSeccion(
 
   }
 
+  if (seccion === "vehiculos") {
+
+    cargarVehiculos();
+
+  }
+
   document
 
     .querySelectorAll(".pageSection")
@@ -2744,15 +2758,499 @@ function verMembresia() {
 
 function agregarVehiculo() {
 
-  mostrarModal(
+  const overlay = document.getElementById("vehicleModalOverlay");
 
-    "🚙",
+  const formulario = document.getElementById("vehicleForm");
 
-    "Vehículo principal",
+  const error = document.getElementById("vehicleFormError");
 
-    "Por ahora los datos del vehículo se registran al crear la cuenta. Para cambiar un vehículo, comunícate con un asesor de AS CLICK."
+  formulario?.reset();
+
+  if (error) error.textContent = "";
+
+  const principal = document.getElementById("nuevoVehiculoPrincipal");
+
+  if (principal) principal.checked = vehiculosUsuario.length === 0;
+
+  overlay?.classList.add("active");
+
+  overlay?.setAttribute("aria-hidden", "false");
+
+  document.body.style.overflow = "hidden";
+
+}
+
+function cerrarModalVehiculo(event = null) {
+
+  if (event && event.target.id !== "vehicleModalOverlay") return;
+
+  const overlay = document.getElementById("vehicleModalOverlay");
+
+  overlay?.classList.remove("active");
+
+  overlay?.setAttribute("aria-hidden", "true");
+
+  document.body.style.overflow = "";
+
+}
+
+async function cargarVehiculos() {
+
+  const lista = document.getElementById("vehiclesList");
+
+  if (!lista || !usuarioActual || !db || !firestoreGetDocs) return;
+
+  lista.innerHTML = `
+
+    <div class="vehiclesEmptyState">
+
+      <span>🚙</span>
+
+      <b>Cargando vehículos...</b>
+
+    </div>
+
+  `;
+
+  try {
+
+    const referenciaVehiculos = firestoreCollection(
+
+      db,
+
+      "usuarios",
+
+      usuarioActual.uid,
+
+      "vehiculos"
+
+    );
+
+    let resultado = await firestoreGetDocs(referenciaVehiculos);
+
+    if (resultado.empty && (perfilActual.marca || perfilActual.placas || perfilActual.serie)) {
+
+      const referenciaInicial = firestoreDoc(
+
+        db,
+
+        "usuarios",
+
+        usuarioActual.uid,
+
+        "vehiculos",
+
+        "vehiculo-principal"
+
+      );
+
+      await firestoreSetDoc(referenciaInicial, {
+
+        marca: perfilActual.marca || "",
+
+        subMarca: perfilActual.subMarca || "",
+
+        color: perfilActual.color || "",
+
+        placas: String(perfilActual.placas || "").toUpperCase(),
+
+        serie: String(perfilActual.serie || "").toUpperCase(),
+
+        principal: true,
+
+        creadoEn: firestoreServerTimestamp()
+
+      }, { merge: true });
+
+      resultado = await firestoreGetDocs(referenciaVehiculos);
+
+    }
+
+    vehiculosUsuario = resultado.docs.map(documento => ({
+
+      id: documento.id,
+
+      ...documento.data()
+
+    }));
+
+    if (vehiculosUsuario.length && !vehiculosUsuario.some(item => item.principal === true)) {
+
+      await establecerVehiculoPrincipal(vehiculosUsuario[0].id, false);
+
+      return;
+
+    }
+
+    vehiculosUsuario.sort((a, b) => Number(b.principal === true) - Number(a.principal === true));
+
+    renderizarVehiculos();
+
+  } catch (error) {
+
+    console.error("Error al cargar los vehículos:", error);
+
+    vehiculosUsuario = [];
+
+    lista.innerHTML = `
+
+      <div class="vehiclesEmptyState">
+
+        <span>⚠</span>
+
+        <b>No fue posible cargar los vehículos</b>
+
+        <p>Revisa tu conexión e inténtalo nuevamente.</p>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+function renderizarVehiculos() {
+
+  const lista = document.getElementById("vehiclesList");
+
+  if (!lista) return;
+
+  if (!vehiculosUsuario.length) {
+
+    lista.innerHTML = `
+
+      <div class="vehiclesEmptyState">
+
+        <span>🚙</span>
+
+        <b>No tienes vehículos registrados</b>
+
+        <p>Presiona “Agregar vehículo” para registrar el primero.</p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  lista.innerHTML = vehiculosUsuario.map(vehiculo => {
+
+    const nombre = [vehiculo.marca, vehiculo.subMarca].filter(Boolean).join(" ") || "Vehículo";
+
+    return `
+
+      <article class="savedVehicleCard ${vehiculo.principal ? "principal" : ""}">
+
+        <div class="savedVehicleIcon">🚙</div>
+
+        <div class="savedVehicleData">
+
+          <h3>${escaparHtml(nombre)}</h3>
+
+          <p>Placas: ${escaparHtml(vehiculo.placas || "Sin registrar")}</p>
+
+          <p>Color: ${escaparHtml(vehiculo.color || "Sin registrar")}</p>
+
+          <small>Serie: ${escaparHtml(vehiculo.serie || "Sin registrar")}</small>
+
+        </div>
+
+        <div class="savedVehicleActions">
+
+          ${vehiculo.principal
+
+            ? '<span class="principalVehicleBadge">Vehículo principal</span>'
+
+            : `<button type="button" onclick="establecerVehiculoPrincipal('${escaparAtributo(vehiculo.id)}')">Usar como principal</button>`}
+
+          <button type="button" class="deleteVehicleButton" onclick="eliminarVehiculo('${escaparAtributo(vehiculo.id)}')">Eliminar</button>
+
+        </div>
+
+      </article>
+
+    `;
+
+  }).join("");
+
+}
+
+async function guardarNuevoVehiculo(event) {
+
+  event?.preventDefault();
+
+  if (!usuarioActual || !db || !firestoreAddDoc) return;
+
+  const boton = document.getElementById("guardarVehiculoButton");
+
+  const error = document.getElementById("vehicleFormError");
+
+  const marca = document.getElementById("nuevoVehiculoMarca")?.value.trim() || "";
+
+  const subMarca = document.getElementById("nuevoVehiculoSubMarca")?.value.trim() || "";
+
+  const color = document.getElementById("nuevoVehiculoColor")?.value.trim() || "";
+
+  const placas = document.getElementById("nuevoVehiculoPlacas")?.value.trim().toUpperCase() || "";
+
+  const serie = document.getElementById("nuevoVehiculoSerie")?.value.trim().toUpperCase() || "";
+
+  const principalSolicitado = document.getElementById("nuevoVehiculoPrincipal")?.checked === true;
+
+  if (!marca || !subMarca || !color || !placas || !serie) {
+
+    if (error) error.textContent = "Completa todos los datos del vehículo.";
+
+    return;
+
+  }
+
+  if (vehiculosUsuario.some(item => String(item.placas || "").toUpperCase() === placas)) {
+
+    if (error) error.textContent = "Ya tienes un vehículo registrado con esas placas.";
+
+    return;
+
+  }
+
+  if (boton) {
+
+    boton.disabled = true;
+
+    boton.textContent = "Guardando...";
+
+  }
+
+  if (error) error.textContent = "";
+
+  try {
+
+    const debeSerPrincipal = principalSolicitado || vehiculosUsuario.length === 0;
+
+    if (debeSerPrincipal) {
+
+      await Promise.all(vehiculosUsuario.map(item =>
+
+        firestoreUpdateDoc(
+
+          firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", item.id),
+
+          { principal: false }
+
+        )
+
+      ));
+
+    }
+
+    const referencia = await firestoreAddDoc(
+
+      firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos"),
+
+      {
+
+        marca,
+
+        subMarca,
+
+        color,
+
+        placas,
+
+        serie,
+
+        principal: debeSerPrincipal,
+
+        creadoEn: firestoreServerTimestamp()
+
+      }
+
+    );
+
+    if (debeSerPrincipal) {
+
+      await actualizarVehiculoPrincipalUsuario({
+
+        id: referencia.id,
+
+        marca,
+
+        subMarca,
+
+        color,
+
+        placas,
+
+        serie,
+
+        principal: true
+
+      });
+
+    }
+
+    cerrarModalVehiculo();
+
+    await cargarVehiculos();
+
+  } catch (errorGuardar) {
+
+    console.error("Error al guardar el vehículo:", errorGuardar);
+
+    if (error) error.textContent = "No fue posible guardar el vehículo.";
+
+  } finally {
+
+    if (boton) {
+
+      boton.disabled = false;
+
+      boton.textContent = "Guardar vehículo";
+
+    }
+
+  }
+
+}
+
+async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
+
+  if (!usuarioActual || !idVehiculo) return;
+
+  try {
+
+    await Promise.all(vehiculosUsuario.map(item =>
+
+      firestoreUpdateDoc(
+
+        firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", item.id),
+
+        { principal: item.id === idVehiculo }
+
+      )
+
+    ));
+
+    const seleccionado = vehiculosUsuario.find(item => item.id === idVehiculo);
+
+    if (seleccionado) {
+
+      await actualizarVehiculoPrincipalUsuario({ ...seleccionado, principal: true });
+
+    }
+
+    if (recargar) await cargarVehiculos();
+
+  } catch (error) {
+
+    console.error("Error al cambiar el vehículo principal:", error);
+
+    mostrarModal("⚠", "No fue posible actualizar", "Inténtalo nuevamente en unos momentos.");
+
+  }
+
+}
+
+async function actualizarVehiculoPrincipalUsuario(vehiculo) {
+
+  if (!usuarioActual || !vehiculo) return;
+
+  const datos = {
+
+    marca: vehiculo.marca || "",
+
+    subMarca: vehiculo.subMarca || "",
+
+    color: vehiculo.color || "",
+
+    placas: vehiculo.placas || "",
+
+    serie: vehiculo.serie || "",
+
+    vehiculoPrincipal: {
+
+      id: vehiculo.id || "",
+
+      marca: vehiculo.marca || "",
+
+      subMarca: vehiculo.subMarca || "",
+
+      color: vehiculo.color || "",
+
+      placas: vehiculo.placas || "",
+
+      serie: vehiculo.serie || ""
+
+    },
+
+    actualizadoEn: firestoreServerTimestamp()
+
+  };
+
+  await firestoreSetDoc(
+
+    firestoreDoc(db, "usuarios", usuarioActual.uid),
+
+    datos,
+
+    { merge: true }
 
   );
+
+  perfilActual = { ...perfilActual, ...datos, vehiculoPrincipal: datos.vehiculoPrincipal };
+
+  actualizarVehiculoPantalla(perfilActual);
+
+  actualizarPerfilPantalla(perfilActual);
+
+}
+
+async function eliminarVehiculo(idVehiculo) {
+
+  if (!usuarioActual || !idVehiculo || !firestoreDeleteDoc) return;
+
+  const vehiculo = vehiculosUsuario.find(item => item.id === idVehiculo);
+
+  if (!vehiculo) return;
+
+  if (!confirm(`¿Deseas eliminar ${[vehiculo.marca, vehiculo.subMarca].filter(Boolean).join(" ") || "este vehículo"}?`)) return;
+
+  try {
+
+    await firestoreDeleteDoc(
+
+      firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", idVehiculo)
+
+    );
+
+    vehiculosUsuario = vehiculosUsuario.filter(item => item.id !== idVehiculo);
+
+    if (vehiculo.principal && vehiculosUsuario.length) {
+
+      await establecerVehiculoPrincipal(vehiculosUsuario[0].id, false);
+
+    } else if (vehiculo.principal) {
+
+      await actualizarVehiculoPrincipalUsuario({
+
+        id: "", marca: "", subMarca: "", color: "", placas: "", serie: ""
+
+      });
+
+    }
+
+    await cargarVehiculos();
+
+  } catch (error) {
+
+    console.error("Error al eliminar el vehículo:", error);
+
+    mostrarModal("⚠", "No fue posible eliminar", "Inténtalo nuevamente en unos momentos.");
+
+  }
 
 }
 
@@ -3389,6 +3887,14 @@ window.verMembresia =
 window.agregarVehiculo =
 
   agregarVehiculo;
+
+window.cerrarModalVehiculo = cerrarModalVehiculo;
+
+window.guardarNuevoVehiculo = guardarNuevoVehiculo;
+
+window.establecerVehiculoPrincipal = establecerVehiculoPrincipal;
+
+window.eliminarVehiculo = eliminarVehiculo;
 
 window.mostrarTerminos =
 
