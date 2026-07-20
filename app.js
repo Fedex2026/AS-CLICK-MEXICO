@@ -874,7 +874,7 @@ async function solicitarServicio(servicio, detalleServicio = "") {
       ? "Tarifa preferencial de miembro"
       : "Tarifa de público general";
   const ubicacion = await obtenerUbicacion();
-  await guardarSolicitudServicio(
+  const folio = await guardarSolicitudServicio(
     servicio,
     tipoTarifa,
     ubicacion,
@@ -885,7 +885,8 @@ async function solicitarServicio(servicio, detalleServicio = "") {
     servicio,
     tipoTarifa,
     ubicacion,
-    detalleServicio
+    detalleServicio,
+    folio
   );
   const url =
     `https://wa.me/${TELEFONO_CABINA}` +
@@ -990,7 +991,8 @@ function construirMensajeServicio(
   servicio,
   tipoTarifa,
   ubicacion,
-  detalleServicio = ""
+  detalleServicio = "",
+  folio = ""
 ) {
   const numeroMembresia =
     perfilActual.tieneMembresia
@@ -1002,6 +1004,7 @@ function construirMensajeServicio(
   return [
     `*SOLICITUD AS CLICK - ${servicio.toUpperCase()}*`,
     "",
+    `Folio: ${folio || "Pendiente"}`,
     `Tipo de tarifa: ${tipoTarifa}`,
     `Tipo de cliente: ${obtenerTipoClienteTexto(perfilActual.tipoCliente)}`,
     `Membresía: ${numeroMembresia}`,
@@ -1031,12 +1034,13 @@ function construirMensajeServicio(
    HISTORIAL DE SERVICIOS
 ========================================= */
 async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalleServicio = "") {
-  if (!usuarioActual) return;
+  if (!usuarioActual) return "";
+  const folio = generarFolioServicio();
   try {
     await firestoreAddDoc(firestoreCollection(db, "servicios"), {
       usuarioId: usuarioActual.uid,
       uid: usuarioActual.uid,
-      folio: generarFolioServicio(),
+      folio,
       servicio,
       tipoAuxilio: detalleServicio || "",
       estado: "solicitado",
@@ -1058,8 +1062,10 @@ async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalle
       fechaCreacion: new Date().toISOString()
     });
     await cargarHistorialServicios();
+    return folio;
   } catch (error) {
     console.error("No fue posible guardar la solicitud:", error);
+    return "";
   }
 }
 function generarFolioServicio() {
