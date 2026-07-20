@@ -14,7 +14,7 @@ const TELEFONO_CABINA = "525519750497";
 
 const TELEFONO_EMERGENCIAS = "525585373051";
 
-const TELEFONO_ASESOR = "525563577842";
+const TELEFONO_ASESOR = "525519750497";
 
  /* =========================================
 
