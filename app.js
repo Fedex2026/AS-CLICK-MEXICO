@@ -1204,7 +1204,10 @@ function renderizarHistorial(servicios) {
         <td>${escaparHtml(nombreVehiculo)}<br><small>${escaparHtml(placas)}</small></td>
         <td>${escaparHtml(formatearFechaServicio(item))}</td>
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
-        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+        <td>
+          <button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>
+          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
+        </td>
       </tr>
     `;
   }).join("");
@@ -1263,7 +1266,10 @@ function renderizarMisServicios(servicios) {
         <td>${escaparHtml(nombreVehiculo)}<br><small>${escaparHtml(placas)}</small></td>
         <td>${escaparHtml(formatearFechaServicio(item))}</td>
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
-        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+        <td>
+          <button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>
+          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
+        </td>
       </tr>
     `;
   }).join("");
@@ -1289,10 +1295,84 @@ function renderizarServiciosRecientes(servicios) {
         <td>${escaparHtml(servicio)}</td>
         <td>${escaparHtml(formatearFechaServicio(item))}</td>
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
-        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+        <td>
+          <button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>
+          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
+        </td>
       </tr>
     `;
   }).join("");
+}
+function esEstadoServicioActivo(estado) {
+  return [
+    "solicitado",
+    "asignado",
+    "aceptado",
+    "en_camino",
+    "arribo",
+    "en_sitio",
+    "en_proceso",
+    "corralon"
+  ].includes(normalizarEstadoServicio(estado));
+}
+function cancelarServicioWhatsApp(folioOId) {
+  const servicioEncontrado = historialServicios.find(item =>
+    String(item.folio || item.id) === String(folioOId)
+  );
+  if (!servicioEncontrado) {
+    mostrarModal(
+      "⚠",
+      "Servicio no encontrado",
+      "No fue posible localizar los datos del servicio. Actualiza la página e inténtalo nuevamente."
+    );
+    return;
+  }
+  const estado = normalizarEstadoServicio(servicioEncontrado.estado);
+  if (!esEstadoServicioActivo(estado)) {
+    mostrarModal(
+      "⚠",
+      "El servicio ya no puede cancelarse",
+      "Este servicio ya está finalizado o cancelado."
+    );
+    return;
+  }
+  const confirmarCancelacion = confirm(
+    "¿Deseas solicitar la cancelación de este servicio?\n\nIMPORTANTE: Después de 15 minutos de haber solicitado el servicio se cobrará el 50% del costo."
+  );
+  if (!confirmarCancelacion) return;
+  const vehiculo = servicioEncontrado.vehiculo || {};
+  const cliente = servicioEncontrado.cliente || {};
+  const mensaje = [
+    "*SOLICITUD DE CANCELACIÓN AS CLICK*",
+    "",
+    "⚠ Después de 15 minutos de haber solicitado el servicio se cobrará el 50% del costo.",
+    "",
+    "*DATOS DEL SERVICIO*",
+    `Folio: ${servicioEncontrado.folio || servicioEncontrado.id}`,
+    `Servicio: ${servicioEncontrado.servicio || servicioEncontrado.tipoServicio || "Servicio"}`,
+    `Tipo de auxilio: ${servicioEncontrado.tipoAuxilio || "No aplica"}`,
+    `Estado actual: ${obtenerEtiquetaEstado(estado)}`,
+    `Fecha de solicitud: ${formatearFechaServicio(servicioEncontrado)}`,
+    "",
+    "*DATOS DEL CLIENTE*",
+    `Nombre: ${cliente.nombre || perfilActual.nombre || "No registrado"}`,
+    `Teléfono: ${cliente.telefono || perfilActual.telefono || "No registrado"}`,
+    `Correo: ${cliente.correo || perfilActual.correo || "No registrado"}`,
+    `Membresía: ${perfilActual.tieneMembresia ? (perfilActual.numeroMiembro || "Pendiente") : "Sin membresía"}`,
+    "",
+    "*DATOS DEL VEHÍCULO*",
+    `Marca: ${vehiculo.marca || servicioEncontrado.marca || perfilActual.marca || "No registrada"}`,
+    `Submarca: ${vehiculo.subMarca || vehiculo.submarca || servicioEncontrado.subMarca || servicioEncontrado.submarca || perfilActual.subMarca || "No registrada"}`,
+    `Color: ${vehiculo.color || servicioEncontrado.color || perfilActual.color || "No registrado"}`,
+    `Placas: ${vehiculo.placas || servicioEncontrado.placas || perfilActual.placas || "No registradas"}`,
+    `Serie / VIN: ${vehiculo.serie || servicioEncontrado.serie || perfilActual.serie || "No registrada"}`,
+    "",
+    "Solicito la cancelación de este servicio."
+  ].join("\n");
+  const url =
+    `https://wa.me/${TELEFONO_CABINA}` +
+    `?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 function formatearFechaServicio(item) {
   const valor = item.creadoEn || item.fechaCreacion || item.fecha || "";
@@ -2039,6 +2119,8 @@ window.hablarAsesor =
   hablarAsesor;
 window.verDetalle =
   verDetalle;
+window.cancelarServicioWhatsApp =
+  cancelarServicioWhatsApp;
 window.verMembresia =
   verMembresia;
 window.agregarVehiculo =
