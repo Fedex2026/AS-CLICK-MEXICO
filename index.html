@@ -1,4569 +1,1158 @@
 <!DOCTYPE html>
-
- 
-
 <html lang="es">
-
- 
-
 <head>
-
- 
-
   <meta charset="UTF-8" />
-
- 
-
   <meta
-
- 
-
     name="viewport"
-
- 
-
     content="width=device-width, initial-scale=1.0"
-
- 
-
   />
-
- 
-
   <title>AS CLICK | Asistencia Vial</title>
-
- 
-
   <link rel="stylesheet" href="styles.css" />
-
- 
-
   <link rel="icon" type="image/png" href="./logo AS CLICK 2.png" />
-
- 
-
   <link rel="apple-touch-icon" href="./logo AS CLICK 2.png" />
-
   <link rel="manifest" href="./manifest.json" />
-
- 
-
   <meta name="theme-color" content="#052b5c" />
-
- 
-
   <style>
-
- 
-
     .vehiclesPage{padding:28px;max-width:1280px;margin:0 auto}.vehiclesList{display:grid;gap:16px;margin-top:20px}.savedVehicleCard{display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:center;background:#fff;border:1px solid #dce5f0;border-radius:12px;padding:18px;box-shadow:0 4px 16px rgba(5,43,92,.05)}.savedVehicleCard.principal{border-color:#1f6fe5;box-shadow:0 0 0 2px rgba(31,111,229,.08)}.savedVehicleIcon{width:68px;height:68px;border-radius:12px;background:#edf4fc;display:grid;place-items:center;font-size:34px}.savedVehicleData h3{margin:0 0 6px;color:#092b52}.savedVehicleData p,.savedVehicleData small{display:block;margin:3px 0;color:#62758c}.savedVehicleActions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}.savedVehicleActions button{border:1px solid #1f6fe5;background:#fff;color:#135fca;border-radius:7px;padding:9px 12px;font-weight:700;cursor:pointer}.savedVehicleActions .deleteVehicleButton{border-color:#efb1b6;color:#c82431}.principalVehicleBadge{background:#e8f8ef;color:#087a3e;border-radius:999px;padding:7px 11px;font-weight:700;font-size:12px}.vehiclesEmptyState{text-align:center;background:#fff;border:1px dashed #b9c8d9;border-radius:12px;padding:50px;color:#62758c}.vehiclesEmptyState span{display:block;font-size:42px;margin-bottom:10px}
-
- 
-
     .customOverlay{position:fixed;inset:0;background:rgba(6,25,48,.68);display:none;align-items:center;justify-content:center;z-index:3000;padding:18px}.customOverlay.active{display:flex}.customPanel{width:min(620px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(0,0,0,.3);position:relative}.customPanelHeader{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #e2e9f1}.customPanelHeader h2{margin:0;color:#092b52}.customClose{border:0;background:transparent;font-size:24px;color:#64778d;cursor:pointer}.notificationToolbar{display:flex;justify-content:flex-end;padding:12px 22px;border-bottom:1px solid #edf1f6}.notificationToolbar button{border:0;background:transparent;color:#1265d6;font-weight:700;cursor:pointer}.notificationToolbar button:disabled{opacity:.4;cursor:default}.notificationsList{padding:8px 14px 18px}.notificationItem{display:grid;grid-template-columns:48px 1fr;gap:10px;padding:12px 8px;border-bottom:1px solid #edf1f6}.notificationItem.unread{background:#f5f9ff;border-radius:10px}.notificationTypeIcon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#e7f0fd;font-size:20px}.notificationContent{border:0;background:transparent;text-align:left;cursor:pointer;padding:0;color:inherit}.notificationContent>div{display:flex;align-items:center;gap:8px}.notificationContent p{margin:5px 0;color:#536980;line-height:1.4}.notificationContent small{color:#8797a9}.unreadDot{width:8px;height:8px;border-radius:50%;background:#e9273f}.notificationsEmpty{text-align:center;padding:52px 20px;color:#62758c}.notificationsEmpty span{display:block;font-size:44px;margin-bottom:10px}
-
- 
-
     .vehicleForm{padding:20px 22px}.vehicleFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.vehicleForm label{display:flex;flex-direction:column;gap:6px;color:#536980;font-size:13px}.vehicleForm input{border:1px solid #cbd7e5;border-radius:8px;padding:12px;font:inherit}.vehicleForm .fullWidth{grid-column:1/-1}.vehiclePrincipalCheck{flex-direction:row!important;align-items:center;gap:9px!important;margin-top:4px}.vehiclePrincipalCheck input{width:auto}.vehicleFormError{min-height:20px;color:#c82431;margin:10px 0}.vehicleFormActions{display:flex;justify-content:flex-end;gap:10px}.vehicleFormActions button{border-radius:8px;padding:11px 18px;font-weight:700;cursor:pointer}.vehicleCancelButton{background:#fff;border:1px solid #cbd7e5}.vehicleSaveButton{background:#1f6fe5;color:#fff;border:1px solid #1f6fe5}
-
- 
-
     @media(max-width:700px){.vehiclesPage{padding:18px}.savedVehicleCard{grid-template-columns:60px 1fr}.savedVehicleActions{grid-column:1/-1;align-items:stretch}.vehicleFormGrid{grid-template-columns:1fr}.vehicleForm .fullWidth{grid-column:auto}}
-
- 
-
     /* SELECTOR DE AUXILIO VIAL */
-
- 
-
     .auxilioOptions {
-
- 
-
       display: grid;
-
- 
-
       gap: 12px;
-
- 
-
       margin: 8px 0 18px;
-
- 
-
     }
-
- 
-
     .auxilioOption {
-
- 
-
       display: flex;
-
- 
-
       align-items: center;
-
- 
-
       gap: 12px;
-
- 
-
       padding: 14px;
-
- 
-
       border: 1px solid #d8e2ef;
-
- 
-
       border-radius: 12px;
-
- 
-
       cursor: pointer;
-
- 
-
       background: #fff;
-
- 
-
     }
-
- 
-
     .auxilioOption:hover {
-
- 
-
       border-color: #1f6fde;
-
- 
-
       background: #f6f9ff;
-
- 
-
     }
-
- 
-
     .auxilioOption input {
-
- 
-
       width: 18px;
-
- 
-
       height: 18px;
-
- 
-
     }
-
- 
-
     .auxilioOption span {
-
- 
-
       font-size: 22px;
-
- 
-
     }
-
- 
-
     .auxilioOption b {
-
- 
-
       color: #102a4c;
-
- 
-
     }
-
- 
-
     .fuelNotice {
-
- 
-
       display: none;
-
- 
-
       padding: 14px;
-
- 
-
       margin-bottom: 16px;
-
- 
-
       border: 1px solid #f0c36c;
-
- 
-
       border-radius: 10px;
-
- 
-
       background: #fff8e7;
-
- 
-
       color: #674a00;
-
- 
-
       line-height: 1.5;
-
- 
-
     }
-
- 
-
     .fuelNotice.visible {
-
- 
-
       display: block;
-
- 
-
     }
-
- 
-
     .fuelAcceptance {
-
- 
-
       display: flex;
-
- 
-
       align-items: flex-start;
-
- 
-
       gap: 9px;
-
- 
-
       margin-top: 10px;
-
- 
-
       font-weight: 600;
-
- 
-
     }
-
- 
-
     .auxilioFormError {
-
- 
-
       min-height: 20px;
-
- 
-
       color: #c62828;
-
- 
-
       font-size: 13px;
-
- 
-
       margin: 0 0 8px;
-
- 
-
     }
-
- 
-
- 
-
     /* LOGOS AS CLICK */
-
- 
-
     .logoSidebar {
-
- 
-
       width: 190px;
-
- 
-
       max-width: 100%;
-
- 
-
       height: auto;
-
- 
-
       display: block;
-
- 
-
       margin: 0 auto;
-
- 
-
       object-fit: contain;
-
- 
-
     }
-
- 
-
     .logoTop {
-
- 
-
       width: 170px;
-
- 
-
       max-width: 100%;
-
- 
-
       height: auto;
-
- 
-
       display: block;
-
- 
-
       object-fit: contain;
-
- 
-
     }
-
- 
-
     .mobileLogo {
-
- 
-
       display: flex;
-
- 
-
       align-items: center;
-
- 
-
     }
-
- 
-
     .brandLogo {
-
- 
-
       display: flex;
-
- 
-
       justify-content: center;
-
- 
-
       align-items: center;
-
- 
-
       padding: 8px 0;
-
- 
-
     }
-
- 
-
   </style>
-
- 
-
 </head>
-
- 
-
 <body>
-
- 
-
   <div class="app">
-
- 
-
     <!-- MENÚ LATERAL DE ESCRITORIO -->
-
- 
-
     <aside class="sidebar" id="sidebar">
-
- 
-
       <div class="brand">
-
- 
-
         <div class="brandLogo">
-
- 
-
           <img src="./logo AS CLICK 1.png" alt="AS CLICK" class="logoSidebar" />
-
- 
-
         </div>
-
- 
-
         <small>
-
- 
-
           ASISTENCIA VIAL
-
- 
-
         </small>
-
- 
-
       </div>
-
- 
-
       <nav class="sidebarNav">
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem active"
-
- 
-
           data-section="inicio"
-
- 
-
           onclick="cambiarSeccion('inicio', this)"
-
- 
-
         >
-
- 
-
           <span>⌂</span>
-
- 
-
           Inicio
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem"
-
- 
-
           data-section="servicios"
-
- 
-
           onclick="cambiarSeccion('servicios', this)"
-
- 
-
         >
-
- 
-
           <span>⚒</span>
-
- 
-
           Mis servicios
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem"
-
- 
-
           data-section="vehiculos"
-
- 
-
           onclick="cambiarSeccion('vehiculos', this)"
-
- 
-
         >
-
- 
-
           <span>▣</span>
-
- 
-
           Vehículos
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem"
-
- 
-
           data-section="beneficios"
-
- 
-
           onclick="cambiarSeccion('beneficios', this)"
-
- 
-
         >
-
- 
-
           <span>％</span>
-
- 
-
           Beneficios
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem"
-
- 
-
           data-section="historial"
-
- 
-
           onclick="cambiarSeccion('historial', this)"
-
- 
-
         >
-
- 
-
           <span>◷</span>
-
- 
-
           Historial
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem"
-
- 
-
           data-section="perfil"
-
- 
-
           onclick="cambiarSeccion('perfil', this)"
-
- 
-
         >
-
- 
-
           <span>♙</span>
-
- 
-
           Perfil
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem"
-
- 
-
           data-section="ayuda"
-
- 
-
           onclick="cambiarSeccion('ayuda', this)"
-
- 
-
         >
-
- 
-
           <span>?</span>
-
- 
-
           Ayuda
-
- 
-
         </button>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="navItem logout"
-
- 
-
           onclick="cerrarSesion()"
-
- 
-
         >
-
- 
-
           <span>↪</span>
-
- 
-
           Cerrar sesión
-
- 
-
         </button>
-
- 
-
       </nav>
-
- 
-
       <div class="advisorCard">
-
- 
-
         <div class="advisorIcon">
-
- 
-
           ◖◗
-
- 
-
         </div>
-
- 
-
         <p>
-
- 
-
           ¿Necesitas ayuda?
-
- 
-
         </p>
-
- 
-
         <b>
-
- 
-
           Hablar con un asesor
-
- 
-
         </b>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           onclick="hablarAsesor()"
-
- 
-
         >
-
- 
-
           Iniciar chat
-
- 
-
         </button>
-
- 
-
         <small>
-
- 
-
           o llámanos
-
- 
-
         </small>
-
- 
-
         <strong>
-
- 
-
           55 1234 5678
-
- 
-
         </strong>
-
- 
-
         <small>
-
- 
-
           Atención 24/7
-
- 
-
         </small>
-
- 
-
       </div>
-
- 
-
     </aside>
-
- 
-
     <!-- CONTENIDO -->
-
- 
-
     <main class="mainContent">
-
- 
-
       <!-- BARRA SUPERIOR -->
-
- 
-
       <header class="topbar">
-
- 
-
         <div class="mobileBrand">
 
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             class="menuButton"
-
- 
-
             onclick="abrirMenuMovil()"
-
- 
-
             aria-label="Abrir menú"
-
- 
-
           >
-
- 
-
             ☰
-
- 
-
           </button>
-
- 
-
           <div class="mobileLogo">
-
- 
-
             <img src="./logo AS CLICK 1.png" alt="AS CLICK" class="logoTop" />
-
- 
-
           </div>
-
- 
-
         </div>
-
- 
-
         <nav class="topNavigation">
-
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             class="active"
-
- 
-
             onclick="cambiarSeccion('inicio')"
-
- 
-
           >
-
- 
-
             ⌂ Inicio
-
- 
-
           </button>
-
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             onclick="cambiarSeccion('servicios')"
-
- 
-
           >
-
- 
-
             ⚒ Mis servicios
-
- 
-
           </button>
-
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             onclick="cambiarSeccion('beneficios')"
-
- 
-
           >
-
- 
-
             ▣ Beneficios
-
- 
-
           </button>
-
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             onclick="abrirNotificaciones()"
-
- 
-
           >
-
- 
-
             ♧ Notificaciones
-
- 
-
             <span class="notificationCounter" id="notificationCounter" hidden>0</span>
-
- 
-
           </button>
-
- 
-
         </nav>
-
- 
-
         <div class="topActions">
-
- 
-
           <div
-
- 
-
             class="membershipBadge"
-
- 
-
             id="badgeMembresia"
-
- 
-
           >
-
- 
-
             Cargando cuenta...
-
- 
-
           </div>
-
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             class="userButton"
-
- 
-
             onclick="abrirMenuUsuario()"
-
- 
-
           >
-
- 
-
             <span
-
- 
-
               class="avatar"
-
- 
-
               id="avatarUsuario"
-
- 
-
             >
-
- 
-
               L
-
- 
-
             </span>
-
- 
-
             <span id="nombreUsuarioTop">
-
- 
-
               Usuario
-
- 
-
             </span>
-
- 
-
             <small>
-
- 
-
               ⌄
-
- 
-
             </small>
-
- 
-
           </button>
-
- 
-
         </div>
-
- 
-
       </header>
-
- 
-
       <!-- SECCIÓN INICIO -->
-
- 
-
       <section
-
- 
-
         class="pageSection active"
-
- 
-
         id="seccion-inicio"
-
- 
-
       >
-
- 
-
         <!-- BIENVENIDA -->
-
- 
-
         <section class="welcomeCard">
-
- 
-
           <div class="welcomeUser">
-
- 
-
             <div class="largeAvatar">
-
- 
-
               👤
-
- 
-
             </div>
-
- 
-
             <div>
-
- 
-
               <h1 id="nombreBienvenida">
-
- 
-
                 Cargando perfil...
-
- 
-
               </h1>
-
- 
-
               <p>
-
- 
-
                 Membresía:
-
- 
-
                 <b id="numeroMembresiaPrincipal">
-
- 
-
                   SIN MEMBRESÍA
-
- 
-
                 </b>
-
- 
-
                 <span
-
- 
-
                   class="activeStatus"
-
- 
-
                   id="estadoMembresiaPrincipal"
-
- 
-
                 >
-
- 
-
                   ACTIVA
-
- 
-
                 </span>
-
- 
-
               </p>
-
- 
-
               <p>
-
- 
-
                 Vigencia:
-
- 
-
                 <b id="vigenciaPrincipal">
-
- 
-
                   No aplica
-
- 
-
                 </b>
-
- 
-
               </p>
-
- 
-
               <p>
-
- 
-
                 Plan:
-
- 
-
                 <b id="planPrincipal">
-
- 
-
                   Público general
-
- 
-
                 </b>
-
- 
-
               </p>
-
- 
-
             </div>
-
- 
-
           </div>
-
- 
-
           <!-- VEHÍCULO PRINCIPAL -->
-
- 
-
           <div class="vehiclePreview">
-
- 
-
             <div class="vehicleHeader">
-
- 
-
               <span>
-
- 
-
                 Mi vehículo principal
-
- 
-
               </span>
-
- 
-
               <button
-
- 
-
                 type="button"
-
- 
-
                 onclick="cambiarSeccion('vehiculos')"
-
- 
-
               >
-
- 
-
                 Ver todos mis vehículos
-
- 
-
               </button>
-
- 
-
             </div>
-
- 
-
             <div class="vehicleBody">
-
- 
-
               <div class="vehicleImage">
-
- 
-
                 🚙
-
- 
-
               </div>
-
- 
-
               <div>
-
- 
-
                 <b>
-
- 
-
                   Vehículo sin registrar
-
- 
-
                 </b>
-
- 
-
                 <span>
-
- 
-
                   Placas: Sin registrar
-
- 
-
                 </span>
-
- 
-
                 <span>
-
- 
-
                   Color: Sin registrar
-
- 
-
                 </span>
-
- 
-
               </div>
-
- 
-
             </div>
-
- 
-
           </div>
-
- 
-
         </section>
-
- 
-
         <!-- SERVICIOS -->
-
- 
-
         <section class="servicesSection">
-
- 
-
           <h2>
-
- 
-
             ¿Qué servicio necesitas?
-
- 
-
           </h2>
-
- 
-
           <div class="serviceGrid">
-
- 
-
             <!-- AJUSTADOR -->
-
- 
-
             <article class="serviceCard blue">
-
- 
-
               <div class="serviceIcon">
-
- 
-
                 👤
-
- 
-
               </div>
-
- 
-
               <h3>
-
- 
-
                 Solicitar Ajustador
-
- 
-
               </h3>
-
- 
-
               <p>
-
- 
-
                 Atención en accidentes con ajustador profesional.
-
- 
-
               </p>
-
- 
-
               <button
-
- 
-
                 type="button"
-
- 
-
                 onclick="solicitarServicio('Ajustador')"
-
- 
-
               >
-
- 
-
                 Solicitar ahora
-
- 
-
               </button>
-
- 
-
             </article>
-
- 
-
             <!-- ABOGADO -->
-
- 
-
             <article class="serviceCard green">
-
- 
-
               <div class="serviceIcon">
-
- 
-
                 ⚖
-
- 
-
               </div>
-
- 
-
               <h3>
-
- 
-
                 Solicitar Abogado
-
- 
-
               </h3>
-
- 
-
               <p>
-
- 
-
                 Asesoría legal y defensa especializada.
-
- 
-
               </p>
-
- 
-
               <button
-
- 
-
                 type="button"
-
- 
-
                 onclick="solicitarServicio('Abogado')"
-
- 
-
               >
-
- 
-
                 Solicitar ahora
-
- 
-
               </button>
-
- 
-
             </article>
-
- 
-
             <!-- AUXILIO VIAL -->
-
- 
-
             <article class="serviceCard orange">
-
- 
-
               <div class="serviceIcon">
-
- 
-
                 🔧
-
- 
-
               </div>
-
- 
-
               <h3>
-
- 
-
                 Auxilio Vial
-
- 
-
               </h3>
-
- 
-
               <p>
-
- 
-
                 Paso de corriente, cambio de llanta, gasolina y más.
-
- 
-
               </p>
-
- 
-
               <button
-
- 
-
                 type="button"
-
- 
-
                 onclick="abrirAuxilioVial()"
-
- 
-
               >
-
- 
-
                 Solicitar ahora
-
- 
-
               </button>
-
- 
-
             </article>
-
- 
-
             <!-- GRÚA -->
-
- 
-
             <article class="serviceCard purple">
-
- 
-
               <div class="serviceIcon">
-
- 
-
                 🚛
-
- 
-
               </div>
-
- 
-
               <h3>
-
- 
-
                 Cotizar Grúa
-
- 
-
               </h3>
-
- 
-
               <p>
-
- 
-
                 Cotiza y solicita tu servicio de grúa al instante.
-
- 
-
               </p>
-
- 
-
               <button
-
- 
-
                 type="button"
-
- 
-
                 onclick="solicitarServicio('Grúa')"
-
- 
-
               >
-
- 
-
                 Cotizar ahora
-
- 
-
               </button>
-
- 
-
             </article>
-
- 
-
           </div>
-
- 
-
         </section>
-
- 
-
         <!-- EMERGENCIAS -->
 
- 
-
         <section class="emergencySection">
-
- 
-
           <div class="sectionHeading emergencyHeading">
-
- 
-
             ⚠ ALERTAS DE EMERGENCIA
-
- 
-
           </div>
-
- 
-
           <div class="emergencyGrid">
-
- 
-
             <!-- MONTACHOQUES -->
-
- 
-
             <article class="emergencyCard">
-
- 
-
               <div class="emergencyIcon">
-
- 
-
                 🚗
-
- 
-
               </div>
-
- 
-
               <div class="emergencyContent">
-
- 
-
                 <h3>
-
- 
-
                   ALERTA MONTACHOQUES
-
- 
-
                 </h3>
-
- 
-
                 <p>
-
- 
-
                   Envía tu ubicación a los miembros activos cercanos
-
- 
-
                   para recibir apoyo inmediato.
-
- 
-
                 </p>
-
- 
-
                 <button
-
- 
-
                   type="button"
-
- 
-
                   onclick="activarAlerta('Montachoques')"
-
- 
-
                 >
-
- 
-
                   Activar alerta
-
- 
-
                 </button>
-
- 
-
               </div>
-
- 
-
             </article>
-
- 
-
             <!-- ROBO -->
-
- 
-
             <article class="emergencyCard">
-
- 
-
               <div class="emergencyIcon">
-
- 
-
                 🥷
-
- 
-
               </div>
-
- 
-
               <div class="emergencyContent">
-
- 
-
                 <h3>
-
- 
-
                   ALERTA ROBO
-
- 
-
                 </h3>
-
- 
-
                 <p>
-
- 
-
                   Envía tu ubicación a los miembros activos cercanos
-
- 
-
                   y reporta el incidente.
-
- 
-
                 </p>
-
- 
-
                 <button
-
- 
-
                   type="button"
-
- 
-
                   onclick="activarAlerta('Robo')"
-
- 
-
                 >
-
- 
-
                   Activar alerta
-
- 
-
                 </button>
-
- 
-
               </div>
-
- 
-
             </article>
-
- 
-
             <!-- ADVERTENCIA -->
-
- 
-
             <article class="warningCard">
-
- 
-
               <div class="warningIcon">
-
- 
-
                 ⚠
-
- 
-
               </div>
-
- 
-
               <div>
-
- 
-
                 <h3>
-
- 
-
                   Importante
-
- 
-
                 </h3>
-
- 
-
                 <p>
-
- 
-
                   El uso falso o irresponsable de estas alertas puede
-
- 
-
                   generar sanciones o cancelación de la membresía.
-
- 
-
                 </p>
-
- 
-
                 <button
-
- 
-
                   type="button"
-
- 
-
                   onclick="mostrarTerminos()"
-
- 
-
                 >
-
- 
-
                   Ver términos y condiciones
-
- 
-
                 </button>
-
- 
-
               </div>
-
- 
-
             </article>
-
- 
-
           </div>
-
- 
-
         </section>
-
- 
-
         <!-- PARTE INFERIOR -->
-
- 
-
         <section class="dashboardBottom">
-
- 
-
           <!-- SERVICIOS RECIENTES -->
-
- 
-
           <div class="recentServices">
-
- 
-
             <h2>
-
- 
-
               Mis servicios recientes
-
- 
-
             </h2>
-
- 
-
             <div class="tableWrapper">
-
- 
-
               <table>
-
- 
-
                 <thead>
-
- 
-
                   <tr>
-
- 
-
                     <th>Folio</th>
-
- 
-
                     <th>Servicio</th>
-
- 
-
                     <th>Fecha</th>
-
- 
-
                     <th>Estado</th>
-
- 
-
                     <th>Acciones</th>
-
- 
-
                   </tr>
-
- 
-
                 </thead>
-
- 
-
                 <tbody id="recentServicesBody">
-
- 
-
                   <tr>
-
- 
-
                     <td colspan="5" style="text-align:center;">Cargando servicios...</td>
-
- 
-
                   </tr>
-
- 
-
                 </tbody>
-
- 
-
               </table>
-
- 
-
             </div>
-
- 
-
           </div>
-
- 
-
           <!-- INFORMACIÓN DE MEMBRESÍA -->
-
- 
-
           <aside class="membershipInfo">
-
- 
-
             <h2>
-
- 
-
               Información de tu membresía
-
- 
-
             </h2>
-
- 
-
             <div class="infoRow">
-
- 
-
               <span>
-
- 
-
                 ▣
-
- 
-
               </span>
-
- 
-
               <div>
-
- 
-
                 <small>
-
- 
-
                   Membresía
-
- 
-
                 </small>
-
- 
-
                 <b id="membresiaInformacion">
-
- 
-
                   Público general
-
- 
-
                 </b>
-
- 
-
               </div>
-
- 
-
             </div>
-
- 
-
             <div class="infoRow">
-
- 
-
               <span>
-
- 
-
                 ▱
-
- 
-
               </span>
-
- 
-
               <div>
-
- 
-
                 <small>
-
- 
-
                   Número
-
- 
-
                 </small>
-
- 
-
                 <b id="numeroMembresiaInformacion">
-
- 
-
                   SIN MEMBRESÍA
-
- 
-
                 </b>
-
- 
-
               </div>
-
- 
-
             </div>
-
- 
-
             <div class="infoRow">
-
- 
-
               <span>
-
- 
-
                 ◷
-
- 
-
               </span>
-
- 
-
               <div>
-
- 
-
                 <small>
-
- 
-
                   Vigencia
-
- 
-
                 </small>
-
- 
-
                 <b id="vigenciaInformacion">
-
- 
-
                   No aplica
-
- 
-
                 </b>
-
- 
-
               </div>
-
- 
-
             </div>
-
- 
-
             <button
-
- 
-
               type="button"
-
- 
-
               onclick="verMembresia()"
-
- 
-
             >
-
- 
-
               Ver beneficios incluidos
-
- 
-
             </button>
-
- 
-
           </aside>
-
- 
-
         </section>
-
- 
-
       </section>
-
- 
-
       <!-- MIS SERVICIOS -->
-
- 
-
-      <section
-
- 
-
-        class="pageSection"
-
- 
-
-        id="seccion-servicios"
-
- 
-
-      >
-
- 
-
-        <div class="placeholderPage">
-
- 
-
-          <div class="placeholderIcon">
-
- 
-
-            ⚒
-
- 
-
-          </div>
-
- 
-
-          <h2>
-
- 
-
-            Mis servicios
-
- 
-
-          </h2>
-
- 
-
-          <p>
-
- 
-
-            Aquí aparecerán todas las solicitudes de ajustador,
-
- 
-
-            abogado, auxilio vial y grúa.
-
- 
-
-          </p>
-
- 
-
-          <button
-
- 
-
-            type="button"
-
- 
-
-            onclick="cambiarSeccion('inicio')"
-
- 
-
-          >
-
- 
-
-            Regresar al inicio
-
- 
-
-          </button>
-
- 
-
-        </div>
-
- 
-
-      </section>
-
- 
-
-      <!-- VEHÍCULOS -->
-
- 
-
-      <section class="pageSection" id="seccion-vehiculos">
-
- 
-
-        <div class="vehiclesPage">
-
- 
-
+      <section class="pageSection" id="seccion-servicios">
+        <div class="historyPage">
           <div class="sectionTitleRow">
-
- 
-
             <div>
-
- 
-
-              <span class="sectionEyebrow">MI CUENTA</span>
-
- 
-
-              <h1>Mis vehículos</h1>
-
- 
-
-              <p>Administra los vehículos registrados y selecciona el principal para tus solicitudes.</p>
-
- 
-
+              <span class="sectionEyebrow">AS CLICK</span>
+              <h1>Mis servicios</h1>
+              <p>Consulta tus servicios activos y revisa su estado actual.</p>
             </div>
-
- 
-
-            <button type="button" class="primaryActionButton" onclick="agregarVehiculo()">
-
- 
-
-              + Agregar vehículo
-
- 
-
-            </button>
-
- 
-
+            <button type="button" class="primaryActionButton" onclick="cambiarSeccion('inicio')">+ Solicitar servicio</button>
           </div>
-
- 
-
-          <div class="vehiclesList" id="vehiclesList">
-
- 
-
-            <div class="vehiclesEmptyState">
-
- 
-
-              <span>🚙</span>
-
- 
-
-              <b>Cargando vehículos...</b>
-
- 
-
+          <div class="historyTableCard">
+            <div class="tableWrapper">
+              <table class="historyTable">
+                <thead>
+                  <tr>
+                    <th>Folio</th>
+                    <th>Servicio</th>
+                    <th>Vehículo</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="misServiciosBody">
+                  <tr>
+                    <td colspan="6" style="text-align:center;">Cargando servicios...</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-
- 
-
           </div>
-
- 
-
         </div>
-
- 
-
       </section>
-
- 
-
+      <!-- VEHÍCULOS -->
+      <section class="pageSection" id="seccion-vehiculos">
+        <div class="vehiclesPage">
+          <div class="sectionTitleRow">
+            <div>
+              <span class="sectionEyebrow">MI CUENTA</span>
+              <h1>Mis vehículos</h1>
+              <p>Administra los vehículos registrados y selecciona el principal para tus solicitudes.</p>
+            </div>
+            <button type="button" class="primaryActionButton" onclick="agregarVehiculo()">
+              + Agregar vehículo
+            </button>
+          </div>
+          <div class="vehiclesList" id="vehiclesList">
+            <div class="vehiclesEmptyState">
+              <span>🚙</span>
+              <b>Cargando vehículos...</b>
+            </div>
+          </div>
+        </div>
+      </section>
       <!-- BENEFICIOS -->
-
- 
-
       <section
-
- 
-
         class="pageSection"
-
- 
-
         id="seccion-beneficios"
-
- 
-
       >
-
- 
-
         <div class="beneficiosContainer">
-
- 
-
           <h1>Beneficios AS CLICK</h1>
-
- 
-
           <p class="beneficiosTexto">
-
- 
-
             Conoce las ventajas de ser Cliente Registrado y de convertirte en Miembro AS CLICK.
-
- 
-
           </p>
-
- 
-
           <div class="beneficiosGrid">
-
- 
-
             <div class="beneficioCard cliente">
-
- 
-
               <h2>🟢 Cliente Registrado</h2>
-
- 
-
               <ul>
-
- 
-
                 <li>✅ Solicitar Ajustador</li>
-
- 
-
                 <li>✅ Solicitar Abogado</li>
 
- 
-
                 <li>✅ Solicitar Auxilio Vial</li>
-
- 
-
                 <li>✅ Solicitar Grúa</li>
-
- 
-
                 <li>✅ Registrar varios vehículos</li>
-
- 
-
                 <li>✅ Historial de servicios</li>
-
- 
-
                 <li>✅ Seguimiento de solicitudes</li>
-
- 
-
                 <li>💲 Tarifas de público general</li>
-
- 
-
                 <li>❌ Botón de Robo</li>
-
- 
-
                 <li>❌ Botón de Montachoques</li>
-
- 
-
                 <li>❌ Descuentos exclusivos</li>
-
- 
-
                 <li>❌ Atención prioritaria</li>
-
- 
-
               </ul>
-
- 
-
             </div>
-
- 
-
             <div class="beneficioCard miembro">
-
- 
-
               <h2>⭐ Miembro AS CLICK</h2>
-
- 
-
               <ul>
-
- 
-
                 <li>✅ Todo lo incluido para Clientes Registrados</li>
-
- 
-
                 <li>💰 Tarifas preferenciales</li>
-
- 
-
                 <li>🚛 Descuentos exclusivos en servicios de grúa</li>
-
- 
-
                 <li>🚨 Botón de Robo</li>
-
- 
-
                 <li>🚨 Botón de Montachoques</li>
-
- 
-
                 <li>⚡ Atención prioritaria</li>
-
- 
-
                 <li>🎁 Promociones exclusivas</li>
-
- 
-
                 <li>📱 Notificaciones en tiempo real</li>
-
- 
-
                 <li>🚗 Administración de múltiples vehículos</li>
-
- 
-
                 <li>🤝 Convenios con talleres afiliados (Próximamente)</li>
-
- 
-
                 <li>🔧 Descuentos en servicios participantes (Próximamente)</li>
-
- 
-
               </ul>
-
- 
-
             </div>
-
- 
-
           </div>
-
- 
-
           <div class="beneficioInfo">
-
- 
-
             <h2>¿Por qué hacerte miembro?</h2>
-
- 
-
             <p>
-
- 
-
               Con tu membresía obtienes acceso a tarifas preferenciales, descuentos exclusivos en servicios de grúa,
-
- 
-
               atención prioritaria y a las alertas de Robo y Montachoques.
-
- 
-
             </p>
-
- 
-
             <button type="button" onclick="hablarAsesor()">
-
- 
-
               ⭐ Quiero hacerme miembro
-
- 
-
             </button>
-
- 
-
           </div>
-
- 
-
         </div>
-
- 
-
       </section>
-
- 
-
       <!-- HISTORIAL -->
-
- 
-
       <section
-
- 
-
         class="pageSection"
-
- 
-
         id="seccion-historial"
-
- 
-
       >
-
- 
-
         <div class="historyPage">
-
- 
-
           <div class="sectionTitleRow">
-
- 
-
             <div>
-
- 
-
               <span class="sectionEyebrow">AS CLICK</span>
-
- 
-
               <h1>Historial de servicios</h1>
-
- 
-
               <p>
-
- 
-
                 Consulta todas tus solicitudes, revisa su estado y abre el detalle de cada servicio.
-
- 
-
               </p>
-
- 
-
             </div>
-
- 
-
             <button
-
- 
-
               type="button"
-
- 
-
               class="primaryActionButton"
-
- 
-
               onclick="cambiarSeccion('inicio')"
-
- 
-
             >
-
- 
-
               + Solicitar servicio
-
- 
-
             </button>
-
- 
-
           </div>
-
- 
-
           <div class="historyStats">
-
- 
-
             <article class="historyStatCard">
-
- 
-
               <span>Servicios totales</span>
-
- 
-
               <strong id="historialTotal">0</strong>
-
- 
-
               <small>Solicitudes registradas</small>
-
- 
-
             </article>
-
- 
-
             <article class="historyStatCard">
-
- 
-
               <span>En proceso</span>
-
- 
-
               <strong id="historialProceso">0</strong>
-
- 
-
               <small>Servicios activos</small>
-
- 
-
             </article>
-
- 
-
             <article class="historyStatCard">
-
- 
-
               <span>Terminados</span>
-
- 
-
               <strong id="historialTerminados">0</strong>
-
- 
-
               <small>Servicios completados</small>
-
- 
-
             </article>
-
- 
-
             <article class="historyStatCard">
-
- 
-
               <span>Cancelados</span>
-
- 
-
               <strong id="historialCancelados">0</strong>
-
- 
-
               <small>Solicitudes canceladas</small>
-
- 
-
             </article>
-
- 
-
           </div>
-
- 
-
           <div class="historyFilters">
-
- 
-
             <label class="historySearch">
-
- 
-
               <span>⌕</span>
-
- 
-
               <input
-
- 
-
                 type="search"
-
- 
-
                 id="buscadorHistorial"
-
- 
-
                 placeholder="Buscar por folio, servicio, vehículo o placas"
-
- 
-
                 oninput="filtrarHistorial()"
-
- 
-
               />
-
- 
-
             </label>
-
- 
-
             <select
-
- 
-
               id="filtroEstadoHistorial"
-
- 
-
               onchange="filtrarHistorial()"
-
- 
-
               aria-label="Filtrar historial por estado"
-
- 
-
             >
-
- 
-
               <option value="todos">Todos los estados</option>
-
- 
-
               <option value="solicitado">Solicitado</option>
-
- 
-
               <option value="asignado">Asignado</option>
-
- 
-
               <option value="en_camino">En camino</option>
-
- 
-
               <option value="en_proceso">En proceso</option>
-
- 
-
               <option value="finalizado">Finalizado</option>
-
- 
-
               <option value="cancelado">Cancelado</option>
-
- 
-
             </select>
-
- 
-
             <select
-
- 
-
               id="filtroTipoHistorial"
-
- 
-
               onchange="filtrarHistorial()"
-
- 
-
               aria-label="Filtrar historial por tipo de servicio"
-
- 
-
             >
-
- 
-
               <option value="todos">Todos los servicios</option>
-
- 
-
               <option value="ajustador">Ajustador</option>
-
- 
-
               <option value="abogado">Abogado</option>
-
- 
-
               <option value="auxilio vial">Auxilio vial</option>
-
- 
-
               <option value="grúa">Grúa</option>
-
- 
-
             </select>
-
- 
-
           </div>
-
- 
-
           <div class="historyTableCard">
-
- 
-
             <div class="tableWrapper">
-
- 
-
               <table class="historyTable">
-
- 
-
                 <thead>
-
- 
-
                   <tr>
-
- 
-
                     <th>Folio</th>
-
- 
-
                     <th>Servicio</th>
-
- 
-
                     <th>Vehículo</th>
-
- 
-
                     <th>Fecha</th>
-
- 
-
                     <th>Estado</th>
-
- 
-
                     <th>Acciones</th>
-
- 
-
                   </tr>
-
- 
-
                 </thead>
-
- 
-
                 <tbody id="historialServiciosBody">
-
- 
-
                   <tr class="emptyHistoryRow">
-
- 
-
                     <td colspan="6">
-
- 
-
                       <div class="emptyHistory">
-
- 
-
                         <span>◷</span>
-
- 
-
                         <b>Aún no hay servicios en tu historial</b>
-
- 
-
                         <p>Cuando solicites un servicio aparecerá aquí.</p>
-
- 
-
                       </div>
-
- 
-
                     </td>
-
- 
-
                   </tr>
-
- 
-
                 </tbody>
-
- 
-
               </table>
-
- 
-
             </div>
-
- 
-
           </div>
-
- 
-
         </div>
-
- 
-
       </section>
-
- 
-
       <!-- PERFIL -->
-
- 
-
       <section
-
- 
-
         class="pageSection"
-
- 
-
         id="seccion-perfil"
-
- 
-
       >
-
- 
-
         <div class="profilePage">
-
- 
-
           <div class="sectionTitleRow">
-
- 
-
             <div>
-
- 
-
               <span class="sectionEyebrow">MI CUENTA</span>
-
- 
-
               <h1>Mi perfil</h1>
-
- 
-
               <p>Consulta tus datos personales, membresía y vehículo principal.</p>
-
- 
-
             </div>
-
- 
-
             <button
-
- 
-
               type="button"
-
- 
-
               class="secondaryActionButton"
-
- 
-
               onclick="hablarAsesor()"
-
- 
-
             >
-
- 
-
               Hablar con un asesor
-
- 
-
             </button>
-
- 
-
           </div>
-
- 
-
           <div class="profileLayout">
-
- 
-
             <aside class="profileSummaryCard">
-
- 
-
               <div class="profileAvatarLarge" id="perfilAvatar">
-
- 
-
                 U
-
- 
-
               </div>
-
- 
-
               <h2 id="perfilNombreResumen">Usuario</h2>
-
- 
-
               <p id="perfilCorreoResumen">Correo no registrado</p>
-
- 
-
               <span class="profileMembershipStatus" id="perfilEstadoMembresia">
-
- 
-
                 Cliente registrado
-
- 
-
               </span>
-
- 
-
               <div class="profileSummaryInfo">
-
- 
-
                 <div>
-
- 
-
                   <small>Número de membresía</small>
-
- 
-
                   <b id="perfilNumeroMembresia">No aplica</b>
-
- 
-
                 </div>
-
- 
-
                 <div>
-
- 
-
                   <small>Vigencia</small>
-
- 
-
                   <b id="perfilVigencia">No aplica</b>
-
- 
-
                 </div>
-
- 
-
                 <div>
-
- 
-
                   <small>Tipo de tarifa</small>
-
- 
-
                   <b id="perfilTarifa">Público general</b>
-
- 
-
                 </div>
-
- 
-
               </div>
-
- 
-
               <button
-
- 
-
                 type="button"
-
- 
-
                 class="profileBenefitsButton"
-
- 
-
                 onclick="cambiarSeccion('beneficios')"
-
- 
-
               >
-
- 
-
                 Ver beneficios
-
- 
-
               </button>
-
- 
-
             </aside>
-
- 
-
             <div class="profileContent">
-
- 
-
               <article class="profileInfoCard">
-
- 
-
                 <div class="profileCardHeader">
-
- 
-
                   <div>
-
- 
-
                     <span>👤</span>
-
- 
-
                     <div>
-
- 
-
                       <h2>Datos personales</h2>
-
- 
-
                       <p>Información registrada en tu cuenta.</p>
-
- 
-
                     </div>
-
- 
-
                   </div>
-
- 
-
                 </div>
-
- 
-
                 <div class="profileDataGrid">
-
- 
-
                   <div class="profileDataItem">
-
- 
-
                     <small>Nombre completo</small>
-
- 
-
                     <b id="perfilNombre">No registrado</b>
-
- 
-
                   </div>
-
- 
-
                   <div class="profileDataItem">
-
- 
-
                     <small>Teléfono</small>
-
- 
-
                     <b id="perfilTelefono">No registrado</b>
 
- 
-
                   </div>
-
- 
-
                   <div class="profileDataItem">
-
- 
-
                     <small>Correo electrónico</small>
-
- 
-
                     <b id="perfilCorreo">No registrado</b>
-
- 
-
                   </div>
-
- 
-
                   <div class="profileDataItem">
-
- 
-
                     <small>Tipo de cliente</small>
-
- 
-
                     <b id="perfilTipoCliente">Particular</b>
-
- 
-
                   </div>
-
- 
-
                 </div>
-
- 
-
                 <button
-
- 
-
                   type="button"
-
- 
-
                   class="outlineActionButton"
-
- 
-
                   onclick="hablarAsesor()"
-
- 
-
                 >
-
- 
-
                   Solicitar actualización de datos
-
- 
-
                 </button>
-
- 
-
               </article>
-
- 
-
               <article class="profileInfoCard">
-
- 
-
                 <div class="profileCardHeader">
-
- 
-
                   <div>
-
- 
-
                     <span>🚙</span>
-
- 
-
                     <div>
-
- 
-
                       <h2>Vehículo principal</h2>
-
- 
-
                       <p>Vehículo seleccionado para tus solicitudes.</p>
-
- 
-
                     </div>
-
- 
-
                   </div>
-
- 
-
                   <button
-
- 
-
                     type="button"
-
- 
-
                     onclick="cambiarSeccion('vehiculos')"
-
- 
-
                   >
-
- 
-
                     Ver vehículos
-
- 
-
                   </button>
-
- 
-
                 </div>
-
- 
-
                 <div class="profileVehicleCard">
-
- 
-
                   <div class="profileVehicleIcon">🚙</div>
-
- 
-
                   <div>
-
- 
-
                     <h3 id="perfilVehiculoNombre">Vehículo sin registrar</h3>
-
- 
-
                     <p id="perfilVehiculoPlacas">Placas: Sin registrar</p>
-
- 
-
                     <p id="perfilVehiculoColor">Color: Sin registrar</p>
-
- 
-
                     <small id="perfilVehiculoSerie">Serie: Sin registrar</small>
-
- 
-
                   </div>
-
- 
-
                 </div>
-
- 
-
               </article>
-
- 
-
               <article class="profileInfoCard profileSecurityCard">
-
- 
-
                 <div class="profileCardHeader">
-
- 
-
                   <div>
-
- 
-
                     <span>🔒</span>
-
- 
-
                     <div>
-
- 
-
                       <h2>Seguridad y acceso</h2>
-
- 
-
                       <p>Opciones relacionadas con tu cuenta.</p>
-
- 
-
                     </div>
-
- 
-
                   </div>
-
- 
-
                 </div>
-
- 
-
                 <div class="profileActions">
-
- 
-
                   <button
-
- 
-
                     type="button"
-
- 
-
                     onclick="mostrarModal('🔒', 'Cambiar contraseña', 'Para cambiar tu contraseña comunícate con un asesor o utiliza la opción de recuperación desde la pantalla de inicio de sesión.')"
-
- 
-
                   >
-
- 
-
                     Cambiar contraseña
-
- 
-
                   </button>
-
- 
-
                   <button
-
- 
-
                     type="button"
-
- 
-
                     onclick="hablarAsesor()"
-
- 
-
                   >
-
- 
-
                     Soporte de cuenta
-
- 
-
                   </button>
-
- 
-
                   <button
-
- 
-
                     type="button"
-
- 
-
                     class="dangerActionButton"
-
- 
-
                     onclick="cerrarSesion()"
-
- 
-
                   >
-
- 
-
                     Cerrar sesión
-
- 
-
                   </button>
-
- 
-
                 </div>
-
- 
-
               </article>
-
- 
-
             </div>
-
- 
-
           </div>
-
- 
-
         </div>
-
- 
-
       </section>
-
- 
-
       <!-- AYUDA -->
-
- 
-
       <section
-
- 
-
         class="pageSection"
-
- 
-
         id="seccion-ayuda"
-
- 
-
       >
-
- 
-
         <div class="placeholderPage">
-
- 
-
           <div class="placeholderIcon">
-
- 
-
             ◖◗
-
- 
-
           </div>
-
- 
-
           <h2>
-
- 
-
             Ayuda
-
- 
-
           </h2>
-
- 
-
           <p>
-
- 
-
             Habla con uno de nuestros asesores.
-
- 
-
           </p>
-
- 
-
           <button
-
- 
-
             type="button"
-
- 
-
             onclick="hablarAsesor()"
-
- 
-
           >
-
- 
-
             Hablar con un asesor
-
- 
-
           </button>
-
- 
-
         </div>
-
- 
-
       </section>
-
- 
-
     </main>
-
- 
-
     <!-- MENÚ INFERIOR MÓVIL -->
-
- 
-
     <nav class="mobileBottomNav">
-
- 
-
       <button
-
- 
-
         type="button"
-
- 
-
         class="active"
-
- 
-
         onclick="cambiarSeccion('inicio', this)"
-
- 
-
       >
-
- 
-
         <span>
-
- 
-
           ⌂
-
- 
-
         </span>
-
- 
-
         Inicio
-
- 
-
       </button>
-
- 
-
       <button
-
- 
-
         type="button"
-
- 
-
         onclick="cambiarSeccion('servicios', this)"
-
- 
-
       >
-
- 
-
         <span>
-
- 
-
           ⚒
-
- 
-
         </span>
-
- 
-
         Mis servicios
-
- 
-
       </button>
-
- 
-
       <button
-
- 
-
         type="button"
-
- 
-
         onclick="cambiarSeccion('beneficios', this)"
-
- 
-
       >
-
- 
-
         <span>
-
- 
-
           ▣
-
- 
-
         </span>
-
- 
-
         Beneficios
-
- 
-
       </button>
-
- 
-
       <button
-
- 
-
         type="button"
-
- 
-
         onclick="cambiarSeccion('perfil', this)"
-
- 
-
       >
-
- 
-
         <span>
-
- 
-
           ♙
-
- 
-
         </span>
-
- 
-
         Perfil
-
- 
-
       </button>
-
- 
-
     </nav>
-
- 
-
     <!-- FONDO MENÚ MÓVIL -->
-
- 
-
     <div
-
- 
-
       class="menuOverlay"
-
- 
-
       id="menuOverlay"
-
- 
-
       onclick="cerrarMenuMovil()"
-
- 
-
     ></div>
-
- 
-
     <!-- PANEL DE NOTIFICACIONES -->
-
- 
-
     <div class="customOverlay" id="notificationsOverlay" aria-hidden="true" onclick="cerrarNotificaciones(event)">
-
- 
-
       <section class="customPanel" role="dialog" aria-modal="true" aria-labelledby="notificationsTitle">
-
- 
-
         <header class="customPanelHeader">
-
- 
-
           <h2 id="notificationsTitle">🔔 Notificaciones</h2>
-
- 
-
           <button type="button" class="customClose" onclick="cerrarNotificaciones()" aria-label="Cerrar">✕</button>
-
- 
-
         </header>
-
- 
-
         <div class="notificationToolbar">
-
- 
-
           <button type="button" id="markAllNotificationsButton" onclick="marcarTodasNotificacionesLeidas()">Marcar todas como leídas</button>
-
- 
-
         </div>
-
- 
-
         <div class="notificationsList" id="notificationsList">
-
- 
-
           <div class="notificationsEmpty"><span>🔔</span><b>Cargando notificaciones...</b></div>
-
- 
-
         </div>
-
- 
-
       </section>
-
- 
-
     </div>
-
- 
-
     <!-- FORMULARIO PARA AGREGAR VEHÍCULO -->
-
- 
-
     <div class="customOverlay" id="vehicleModalOverlay" aria-hidden="true" onclick="cerrarModalVehiculo(event)">
-
- 
-
       <section class="customPanel" role="dialog" aria-modal="true" aria-labelledby="vehicleModalTitle">
-
- 
-
         <header class="customPanelHeader">
-
- 
-
           <h2 id="vehicleModalTitle">🚙 Agregar vehículo</h2>
-
- 
-
           <button type="button" class="customClose" onclick="cerrarModalVehiculo()" aria-label="Cerrar">✕</button>
-
- 
-
         </header>
-
- 
-
         <form class="vehicleForm" id="vehicleForm" onsubmit="guardarNuevoVehiculo(event)">
-
- 
-
           <div class="vehicleFormGrid">
-
- 
-
             <label>Marca<input id="nuevoVehiculoMarca" maxlength="40" required placeholder="Ej. Chevrolet"></label>
-
- 
-
             <label>Submarca / modelo<input id="nuevoVehiculoSubMarca" maxlength="50" required placeholder="Ej. Tahoe 2021"></label>
-
- 
-
             <label>Color<input id="nuevoVehiculoColor" maxlength="30" required placeholder="Ej. Negro"></label>
-
- 
-
             <label>Placas<input id="nuevoVehiculoPlacas" maxlength="12" required placeholder="ABC-123-A"></label>
-
- 
-
             <label class="fullWidth">Número de serie / VIN<input id="nuevoVehiculoSerie" maxlength="17" required placeholder="Número de serie"></label>
-
- 
-
             <label class="vehiclePrincipalCheck fullWidth"><input type="checkbox" id="nuevoVehiculoPrincipal"> Usar como vehículo principal</label>
-
- 
-
           </div>
-
- 
-
           <p class="vehicleFormError" id="vehicleFormError"></p>
-
- 
-
           <div class="vehicleFormActions">
-
- 
-
             <button type="button" class="vehicleCancelButton" onclick="cerrarModalVehiculo()">Cancelar</button>
-
- 
-
             <button type="submit" class="vehicleSaveButton" id="guardarVehiculoButton">Guardar vehículo</button>
-
- 
-
           </div>
-
- 
-
         </form>
-
- 
-
       </section>
-
- 
-
     </div>
-
- 
-
     <!-- SELECTOR DE AUXILIO VIAL -->
-
- 
-
     <div class="customOverlay" id="auxilioModalOverlay" aria-hidden="true" onclick="cerrarAuxilioVial(event)">
-
- 
-
       <section class="customPanel" role="dialog" aria-modal="true" aria-labelledby="auxilioModalTitle">
-
- 
-
         <header class="customPanelHeader">
-
- 
-
           <h2 id="auxilioModalTitle">🔧 Auxilio vial</h2>
-
- 
-
           <button type="button" class="customClose" onclick="cerrarAuxilioVial()" aria-label="Cerrar">✕</button>
-
- 
-
         </header>
-
- 
-
         <form id="auxilioForm" onsubmit="confirmarAuxilioVial(event)">
-
- 
-
           <p>Selecciona el tipo de auxilio que necesitas:</p>
-
- 
-
           <div class="auxilioOptions">
-
- 
-
             <label class="auxilioOption">
-
- 
-
               <input type="radio" name="tipoAuxilio" value="Paso de corriente" onchange="actualizarAvisoCombustible()">
-
- 
-
               <span>🔋</span>
-
- 
-
               <b>Paso de corriente</b>
-
- 
-
             </label>
-
- 
-
             <label class="auxilioOption">
-
- 
-
               <input type="radio" name="tipoAuxilio" value="Cambio de llanta" onchange="actualizarAvisoCombustible()">
-
- 
-
               <span>🛞</span>
-
- 
-
               <b>Cambio de llanta</b>
-
- 
-
             </label>
-
- 
-
             <label class="auxilioOption">
-
- 
-
               <input type="radio" name="tipoAuxilio" value="Surtir gasolina" onchange="actualizarAvisoCombustible()">
-
- 
-
               <span>⛽</span>
-
- 
-
               <b>Surtir gasolina</b>
-
- 
-
             </label>
-
- 
-
           </div>
-
- 
-
           <div class="fuelNotice" id="fuelNotice">
-
- 
-
             <b>⚠️ Aviso importante</b>
-
- 
-
             <p>El costo del combustible corre por cuenta del cliente. AS CLICK únicamente proporciona el servicio para llevar el combustible hasta tu ubicación.</p>
-
- 
-
             <label class="fuelAcceptance">
-
- 
-
               <input type="checkbox" id="aceptaCostoCombustible">
 
- 
-
               <span>He leído y acepto que el costo del combustible será cubierto por mí.</span>
-
- 
-
             </label>
-
- 
-
           </div>
-
- 
-
           <p class="auxilioFormError" id="auxilioFormError"></p>
-
- 
-
           <div class="vehicleFormActions">
-
- 
-
             <button type="button" class="vehicleCancelButton" onclick="cerrarAuxilioVial()">Cancelar</button>
-
- 
-
             <button type="submit" class="vehicleSaveButton">Solicitar servicio</button>
-
- 
-
           </div>
-
- 
-
         </form>
-
- 
-
       </section>
-
- 
-
     </div>
-
- 
-
     <!-- MODAL -->
-
- 
-
     <div
-
- 
-
       class="modalOverlay"
-
- 
-
       id="modalOverlay"
-
- 
-
       onclick="cerrarModal(event)"
-
- 
-
     >
-
- 
-
       <div
-
- 
-
         class="modal"
-
- 
-
         id="modal"
-
- 
-
       >
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="modalClose"
-
- 
-
           onclick="cerrarModal()"
-
- 
-
           aria-label="Cerrar modal"
-
- 
-
         >
-
- 
-
           ✕
-
- 
-
         </button>
-
- 
-
         <div
-
- 
-
           class="modalIcon"
-
- 
-
           id="modalIcon"
-
- 
-
         >
-
- 
-
           ✓
-
- 
-
         </div>
-
- 
-
         <h2 id="modalTitle">
-
- 
-
           Solicitud enviada
-
- 
-
         </h2>
-
- 
-
         <p id="modalText">
-
- 
-
           Tu solicitud fue registrada correctamente.
-
- 
-
         </p>
-
- 
-
         <button
-
- 
-
           type="button"
-
- 
-
           class="modalMainButton"
-
- 
-
           onclick="cerrarModal()"
-
- 
-
         >
-
- 
-
           Entendido
-
- 
-
         </button>
-
- 
-
       </div>
-
- 
-
     </div>
-
- 
-
   </div>
-
- 
-
   <script src="./app.js" defer></script>
-
- 
-
 </body>
