@@ -270,10 +270,6 @@ registerForm?.addEventListener(
         con el correo y contraseña elegidos por el cliente.
       */
 
-      if (datos.tieneMembresia) {
-        await validarMembresiaAntesDeCrearCuenta(datos.numeroMembresia);
-      }
-
       const credencial =
         await createUserWithEmailAndPassword(
           auth,
@@ -282,6 +278,12 @@ registerForm?.addEventListener(
         );
 
       usuarioCreado = credencial.user;
+
+      if (datos.tieneMembresia) {
+        await validarMembresiaAntesDeCrearCuenta(
+          datos.numeroMembresia
+        );
+      }
 
       await updateProfile(
         usuarioCreado,
