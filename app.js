@@ -1218,7 +1218,7 @@ function renderizarHistorial(servicios) {
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
         <td>
           <button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>
-          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
+          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#087a3e;border-color:#087a3e" onclick="terminarServicio('${escaparAtributo(item.folio || item.id)}')">Terminar servicio</button><button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
         </td>
       </tr>
     `;
@@ -1280,7 +1280,7 @@ function renderizarMisServicios(servicios) {
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
         <td>
           <button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>
-          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
+          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#087a3e;border-color:#087a3e" onclick="terminarServicio('${escaparAtributo(item.folio || item.id)}')">Terminar servicio</button><button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
         </td>
       </tr>
     `;
@@ -1309,7 +1309,7 @@ function renderizarServiciosRecientes(servicios) {
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
         <td>
           <button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>
-          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
+          ${esEstadoServicioActivo(estado) ? `<button type="button" class="detailButton" style="margin-left:6px;color:#087a3e;border-color:#087a3e" onclick="terminarServicio('${escaparAtributo(item.folio || item.id)}')">Terminar servicio</button><button type="button" class="detailButton" style="margin-left:6px;color:#c62828;border-color:#c62828" onclick="cancelarServicioWhatsApp('${escaparAtributo(item.folio || item.id)}')">Cancelar servicio</button>` : ""}
         </td>
       </tr>
     `;
@@ -1326,6 +1326,52 @@ function esEstadoServicioActivo(estado) {
     "en_proceso",
     "corralon"
   ].includes(normalizarEstadoServicio(estado));
+}
+async function terminarServicio(folioOId) {
+  const servicioEncontrado = historialServicios.find(item =>
+    String(item.folio || item.id) === String(folioOId)
+  );
+  if (!servicioEncontrado) {
+    mostrarModal(
+      "⚠",
+      "Servicio no encontrado",
+      "No fue posible localizar los datos del servicio. Actualiza la página e inténtalo nuevamente."
+    );
+    return;
+  }
+  const estado = normalizarEstadoServicio(servicioEncontrado.estado);
+  if (!esEstadoServicioActivo(estado)) {
+    mostrarModal(
+      "⚠",
+      "El servicio ya está cerrado",
+      "Este servicio ya está finalizado o cancelado."
+    );
+    return;
+  }
+  if (!confirm("¿Confirmas que este servicio ya terminó?")) return;
+  try {
+    await firestoreUpdateDoc(
+      firestoreDoc(db, "servicios", servicioEncontrado.id),
+      {
+        estado: "finalizado",
+        finalizadoEn: firestoreServerTimestamp(),
+        fechaFinalizacion: new Date().toISOString()
+      }
+    );
+    await cargarHistorialServicios();
+    mostrarModal(
+      "✓",
+      "Servicio terminado",
+      "El servicio fue marcado como finalizado correctamente."
+    );
+  } catch (error) {
+    console.error("No fue posible terminar el servicio:", error);
+    mostrarModal(
+      "⚠",
+      "No fue posible terminar el servicio",
+      "Revisa tu conexión e inténtalo nuevamente."
+    );
+  }
 }
 function cancelarServicioWhatsApp(folioOId) {
   const servicioEncontrado = historialServicios.find(item =>
@@ -2133,6 +2179,8 @@ window.hablarAsesor =
   hablarAsesor;
 window.verDetalle =
   verDetalle;
+window.terminarServicio =
+  terminarServicio;
 window.cancelarServicioWhatsApp =
   cancelarServicioWhatsApp;
 window.verMembresia =
