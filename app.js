@@ -868,6 +868,7 @@ async function solicitarServicio(servicio, detalleServicio = "") {
     );
     return;
   }
+  const ventanaWhatsApp = window.open("about:blank", "_blank");
   const tipoTarifa =
     perfilActual.tieneMembresia &&
     perfilActual.estadoMembresia === "activa"
@@ -891,7 +892,12 @@ async function solicitarServicio(servicio, detalleServicio = "") {
   const url =
     `https://wa.me/${TELEFONO_CABINA}` +
     `?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, "_blank", "noopener,noreferrer");
+  if (ventanaWhatsApp) {
+    ventanaWhatsApp.opener = null;
+    ventanaWhatsApp.location.href = url;
+  } else {
+    window.location.href = url;
+  }
 }
 function abrirAuxilioVial() {
   crearInterfazAuxilioVial();
@@ -1490,6 +1496,7 @@ async function activarAlerta(tipo) {
     `¿Confirmas que deseas activar la alerta de ${tipo}? Esta función debe utilizarse únicamente en una emergencia real.`
   );
   if (!confirmar) return;
+  const ventanaWhatsApp = window.open("about:blank", "_blank");
   const ubicacion =
     await obtenerUbicacion();
   const mensaje = [
@@ -1514,11 +1521,12 @@ async function activarAlerta(tipo) {
   const url =
     `https://wa.me/${TELEFONO_EMERGENCIAS}` +
     `?text=${encodeURIComponent(mensaje)}`;
-  window.open(
-    url,
-    "_blank",
-    "noopener,noreferrer"
-  );
+  if (ventanaWhatsApp) {
+    ventanaWhatsApp.opener = null;
+    ventanaWhatsApp.location.href = url;
+  } else {
+    window.location.href = url;
+  }
 }
 /* =========================================
    WHATSAPP ASESOR
