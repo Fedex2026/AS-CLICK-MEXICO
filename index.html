@@ -99,6 +99,9 @@
       align-items: center;
       padding: 8px 0;
     }
+  
+    /* INFORMACIÓN LEGAL AS CLICK */
+    .legalPage{padding:28px;max-width:1100px;margin:0 auto}.legalIntro{background:#fff;border:1px solid #dce5f0;border-radius:14px;padding:22px;margin:18px 0;line-height:1.6;color:#536980}.legalIntro h2{margin-top:0;color:#092b52}.legalDocuments{display:grid;gap:14px}.legalDocument{background:#fff;border:1px solid #dce5f0;border-radius:12px;padding:0 20px}.legalDocument summary{cursor:pointer;padding:18px 0;font-weight:800;color:#092b52}.legalDocumentContent{padding:0 0 20px;color:#536980;line-height:1.65}.legalDocumentContent h3{color:#092b52;margin-top:20px}.legalFooter{padding:24px 18px 100px;text-align:center;color:#62758c;font-size:13px}.legalFooter button{border:0;background:transparent;color:#1265d6;font-weight:700;cursor:pointer;margin:4px 8px}.serviceLegalNotice{margin-top:16px;padding:12px 14px;border-radius:10px;background:#f5f9ff;border:1px solid #d8e5f5;color:#536980;font-size:13px;line-height:1.5}@media(max-width:700px){.legalPage{padding:18px}}
   </style>
 </head>
 <body>
@@ -167,6 +170,15 @@
         >
           <span>♙</span>
           Perfil
+        </button>
+        <button
+          type="button"
+          class="navItem"
+          data-section="legal"
+          onclick="cambiarSeccion('legal', this)"
+        >
+          <span>§</span>
+          Información legal
         </button>
         <button
           type="button"
@@ -436,6 +448,10 @@
                 Cotizar ahora
               </button>
             </article>
+          </div>
+          <div class="serviceLegalNotice">
+            Al solicitar un servicio aceptas los Términos y Condiciones y la Política de Cancelación de AS CLICK. Las cancelaciones realizadas después de 15 minutos pueden generar un cargo del 50% del costo del servicio.
+            <button type="button" onclick="cambiarSeccion('legal')" style="border:0;background:transparent;color:#1265d6;font-weight:700;cursor:pointer;padding:0 4px;">Consultar información legal</button>
           </div>
         </section>
         <!-- EMERGENCIAS -->
@@ -962,6 +978,100 @@
           </div>
         </div>
       </section>
+      <!-- INFORMACIÓN LEGAL -->
+      <section class="pageSection" id="seccion-legal">
+        <div class="legalPage">
+          <div class="sectionTitleRow">
+            <div>
+              <span class="sectionEyebrow">AS CLICK MÉXICO</span>
+              <h1>Información legal</h1>
+              <p>Consulta los documentos aplicables al uso de la plataforma y a la contratación de servicios.</p>
+            </div>
+          </div>
+          <div class="legalIntro">
+            <h2>Datos del responsable</h2>
+            <p><b>Responsable:</b> AS CLICK México</p>
+            <p><b>Correo electrónico:</b> asclickmexico4@gmail.com</p>
+            <p><b>Domicilio:</b> Camino a la Purísima S/N, San Mateo Cuautepec, Tultitlán, Estado de México.</p>
+          </div>
+          <div class="legalDocuments">
+            <details class="legalDocument" open>
+              <summary>Aviso de Privacidad</summary>
+              <div class="legalDocumentContent">
+                <p>AS CLICK México es responsable del tratamiento de los datos personales proporcionados por los usuarios mediante la plataforma, formularios, WhatsApp, correo electrónico o durante la prestación de los servicios.</p>
+                <h3>Datos que pueden recabarse</h3>
+                <p>Nombre, teléfono, correo electrónico, datos de cuenta, información de membresía, placas, marca, modelo, color, número de serie o VIN, ubicación y geolocalización, historial de solicitudes y datos necesarios para atender el servicio.</p>
+                <h3>Finalidades</h3>
+                <p>Registrar y administrar cuentas; verificar membresías; atender solicitudes de ajustador, abogado, auxilio vial o grúa; ubicar al usuario y al proveedor; generar folios; dar seguimiento; enviar avisos; prevenir usos indebidos; atender aclaraciones y cumplir obligaciones legales.</p>
+                <h3>Geolocalización</h3>
+                <p>La ubicación se solicita únicamente cuando resulta necesaria para brindar un servicio o activar una alerta. El usuario puede negar el permiso, aunque algunas funciones podrían no operar correctamente.</p>
+                <h3>Transferencias y encargados</h3>
+                <p>Los datos estrictamente necesarios podrán compartirse con operadores, ajustadores, abogados, proveedores de auxilio vial, grúas, aseguradoras o autoridades cuando sea indispensable para prestar el servicio, atender una emergencia o cumplir una obligación legal.</p>
+                <h3>Derechos ARCO</h3>
+                <p>El titular puede solicitar acceso, rectificación, cancelación u oposición, así como revocar su consentimiento, escribiendo a asclickmexico4@gmail.com e indicando su nombre, medio de contacto y solicitud.</p>
+                <h3>Seguridad y conservación</h3>
+                <p>AS CLICK México aplicará medidas razonables para proteger la información y conservará los datos durante el tiempo necesario para las finalidades señaladas y las obligaciones aplicables.</p>
+              </div>
+            </details>
+            <details class="legalDocument">
+              <summary>Términos y Condiciones</summary>
+              <div class="legalDocumentContent">
+                <p>Al registrarse, iniciar sesión o solicitar un servicio, el usuario acepta estos Términos y Condiciones.</p>
+                <h3>Naturaleza de la plataforma</h3>
+                <p>AS CLICK México coordina y facilita la solicitud de asistencia vial y servicios relacionados. La disponibilidad, tiempo de llegada y costo dependen del tipo de servicio, ubicación, tráfico, condiciones de seguridad y disponibilidad de proveedores.</p>
+                <h3>Obligaciones del usuario</h3>
+                <p>El usuario deberá proporcionar información verdadera, mantener sus datos actualizados, describir correctamente el incidente, permitir el acceso seguro al vehículo y utilizar la plataforma de forma responsable.</p>
+                <h3>Cotizaciones y pagos</h3>
+                <p>Los precios pueden variar según distancia, maniobras, tipo y peso del vehículo, horario, casetas, corralón, materiales, combustible y circunstancias especiales. El precio definitivo deberá confirmarse antes o durante la prestación del servicio.</p>
+                <h3>Servicios y seguridad</h3>
+                <p>El servicio puede suspenderse o rechazarse cuando existan riesgos para el usuario, terceros, operadores o unidades, cuando la información sea falsa o cuando se soliciten maniobras fuera de capacidad.</p>
+                <h3>Uso de cuenta</h3>
+                <p>El usuario es responsable de la confidencialidad de su acceso y de las solicitudes realizadas desde su cuenta. Deberá reportar cualquier uso no autorizado.</p>
+                <h3>Limitación de responsabilidad</h3>
+                <p>AS CLICK México no será responsable por retrasos derivados de tráfico, clima, bloqueos, actos de autoridad, fallas de comunicación, zonas inseguras, información incorrecta del usuario o causas fuera de control razonable.</p>
+                <h3>Modificaciones</h3>
+                <p>Los presentes términos podrán actualizarse. La versión disponible dentro de la plataforma será la aplicable desde su publicación.</p>
+              </div>
+            </details>
+            <details class="legalDocument">
+              <summary>Política de Cancelación</summary>
+              <div class="legalDocumentContent">
+                <p>El usuario puede solicitar la cancelación mediante el botón correspondiente o por los canales de atención de AS CLICK México.</p>
+                <p><b>Cancelación dentro de los primeros 15 minutos:</b> podrá realizarse sin cargo, salvo que el proveedor ya haya llegado, iniciado maniobras o generado gastos comprobables.</p>
+                <p><b>Cancelación después de 15 minutos:</b> podrá generar un cargo equivalente al 50% del costo del servicio.</p>
+                <p><b>Servicio iniciado o unidad en sitio:</b> podrán cobrarse desplazamiento, maniobras, espera, casetas, combustible, materiales y demás gastos generados.</p>
+                <p>AS CLICK México podrá cancelar sin penalización para el usuario cuando no exista disponibilidad, la zona sea insegura, los datos sean insuficientes o el servicio no pueda realizarse con seguridad.</p>
+              </div>
+            </details>
+            <details class="legalDocument">
+              <summary>Política de Membresías</summary>
+              <div class="legalDocumentContent">
+                <p>La membresía tiene la vigencia indicada al momento de la contratación. Sus beneficios son personales y dependen del plan activo.</p>
+                <p>Los miembros activos podrán acceder a tarifas preferenciales y a las alertas de robo y montachoques. Los usuarios sin membresía también pueden solicitar servicios con tarifas de público general, pero no tienen acceso a dichas alertas.</p>
+                <p>La membresía podrá suspenderse o cancelarse por falta de pago, fraude, información falsa, abuso de beneficios, alertas falsas o incumplimiento de estos términos.</p>
+              </div>
+            </details>
+            <details class="legalDocument">
+              <summary>Política de Alertas de Emergencia</summary>
+              <div class="legalDocumentContent">
+                <p>Las alertas de robo y montachoques son exclusivas para miembros activos y deben utilizarse únicamente ante situaciones reales.</p>
+                <p>Al activarlas, el usuario autoriza el uso de su ubicación y el envío de información necesaria para solicitar apoyo. Una alerta no sustituye la llamada a los servicios públicos de emergencia ni la denuncia ante las autoridades.</p>
+                <p>El uso falso, de prueba, engañoso o irresponsable podrá generar advertencias, suspensión o cancelación de la membresía y el cobro de gastos ocasionados.</p>
+              </div>
+            </details>
+            <details class="legalDocument">
+              <summary>Contacto y atención</summary>
+              <div class="legalDocumentContent">
+                <p><b>AS CLICK México</b></p>
+                <p>Correo: asclickmexico4@gmail.com</p>
+                <p>Domicilio: Camino a la Purísima S/N, San Mateo Cuautepec, Tultitlán, Estado de México.</p>
+                <p>Para dudas, aclaraciones, ejercicio de derechos o solicitudes relacionadas con estos documentos, utiliza el correo señalado o el botón para hablar con un asesor.</p>
+                <button type="button" class="primaryActionButton" onclick="hablarAsesor()">Hablar con un asesor</button>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
       <!-- AYUDA -->
       <section
         class="pageSection"
@@ -985,6 +1095,13 @@
           </button>
         </div>
       </section>
+      <footer class="legalFooter">
+        <div>© 2026 AS CLICK México</div>
+        <button type="button" onclick="cambiarSeccion('legal')">Aviso de Privacidad</button>
+        <button type="button" onclick="cambiarSeccion('legal')">Términos y Condiciones</button>
+        <button type="button" onclick="cambiarSeccion('legal')">Política de Cancelación</button>
+        <button type="button" onclick="cambiarSeccion('legal')">Contacto</button>
+      </footer>
     </main>
     <!-- MENÚ INFERIOR MÓVIL -->
     <nav class="mobileBottomNav">
