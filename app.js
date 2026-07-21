@@ -1568,7 +1568,7 @@ const DOCUMENTOS_LEGALES = {
     contenido: `
       <p class="legalWarning"><b>Campos pendientes antes de publicar:</b> razón social o nombre completo del responsable, domicilio y correo exclusivo para privacidad.</p>
       <h3>1. Responsable</h3>
-      <p><b>AS CLICK [RAZÓN SOCIAL O NOMBRE DEL RESPONSABLE]</b>, con domicilio en <b>[DOMICILIO COMPLETO]</b> y correo de privacidad <b>[CORREO DE PRIVACIDAD]</b>, es responsable del tratamiento y protección de los datos personales recabados mediante esta plataforma, WhatsApp y los canales de atención.</p>
+      <p><b>AS CLICK AS CLICK México</b>, con domicilio en <b>Camino a la Purísima s/n, San Mateo Cuautepec, Tultitlán, Estado de México</b> y correo de privacidad <b>asclickmexico4@gmail.com</b>, es responsable del tratamiento y protección de los datos personales recabados mediante esta plataforma, WhatsApp y los canales de atención.</p>
       <h3>2. Datos personales recabados</h3>
       <p>Podemos tratar nombre, teléfono, correo electrónico, datos de acceso, tipo de cliente, número y estado de membresía, datos del vehículo —incluidos marca, submarca, color, placas y número de serie o VIN—, historial y folios de servicio, comunicaciones, ubicación aproximada o precisa y datos necesarios para atender solicitudes, aclaraciones o emergencias.</p>
       <p>AS CLICK no solicita datos personales sensibles como requisito ordinario. Evita enviar información médica, financiera o de otra naturaleza sensible que no sea indispensable para la atención del servicio.</p>
@@ -1583,7 +1583,7 @@ const DOCUMENTOS_LEGALES = {
       <h3>7. Conservación y seguridad</h3>
       <p>Los datos se conservarán durante el tiempo necesario para prestar los servicios, atender reclamaciones y cumplir obligaciones legales. Se aplicarán medidas administrativas, técnicas y físicas razonables; ningún sistema puede garantizar seguridad absoluta.</p>
       <h3>8. Derechos de acceso, rectificación, cancelación y oposición</h3>
-      <p>El titular puede ejercer sus derechos de acceso, rectificación, cancelación u oposición, revocar su consentimiento o limitar el uso de sus datos mediante solicitud enviada a <b>[CORREO DE PRIVACIDAD]</b> o por el canal de atención de AS CLICK. La solicitud deberá identificar al titular, describir el derecho que desea ejercer y proporcionar información suficiente para localizar sus datos.</p>
+      <p>El titular puede ejercer sus derechos de acceso, rectificación, cancelación u oposición, revocar su consentimiento o limitar el uso de sus datos mediante solicitud enviada a <b>asclickmexico4@gmail.com</b> o por el canal de atención de AS CLICK. La solicitud deberá identificar al titular, describir el derecho que desea ejercer y proporcionar información suficiente para localizar sus datos.</p>
       <h3>9. Cambios al aviso</h3>
       <p>Las modificaciones se publicarán en la sección “Información legal” de la plataforma. La versión vigente será la disponible al momento de utilizar el servicio.</p>
       <h3>10. Consentimiento</h3>
@@ -1663,8 +1663,8 @@ const DOCUMENTOS_LEGALES = {
     contenido: `
       <h3>Cabina y solicitudes</h3><p>WhatsApp: <b>55 1975 0497</b>.</p>
       <h3>Emergencias AS CLICK</h3><p>Canal de alertas: <b>55 8537 3051</b>. Ante riesgo inmediato llama también al <b>911</b>.</p>
-      <h3>Privacidad</h3><p>Correo para derechos de datos personales: <b>[CORREO DE PRIVACIDAD]</b>.</p>
-      <h3>Domicilio</h3><p><b>[DOMICILIO COMPLETO DEL RESPONSABLE]</b>.</p>
+      <h3>Privacidad</h3><p>Correo para derechos de datos personales: <b>asclickmexico4@gmail.com</b>.</p>
+      <h3>Domicilio</h3><p><b>Camino a la Purísima s/n, San Mateo Cuautepec, Tultitlán, Estado de México</b>.</p>
       <h3>Aclaraciones</h3><p>Incluye nombre, teléfono, folio, fecha, servicio y una descripción clara. No envíes contraseñas ni información sensible innecesaria.</p>`
   }
 };
@@ -2312,4 +2312,4 @@ window.cerrarNotificaciones = cerrarNotificaciones;
 window.marcarNotificacionLeida = marcarNotificacionLeida;
 window.marcarTodasNotificacionesLeidas = marcarTodasNotificacionesLeidas;
 window.mostrarModal = mostrarModal;
-iniciarFirebase();
+iniciarFireba
