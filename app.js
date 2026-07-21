@@ -868,10 +868,6 @@ async function solicitarServicio(servicio, detalleServicio = "") {
     );
     return;
   }
-  const aceptaCondiciones = confirm(
-    "Antes de continuar confirma que aceptas los Términos y Condiciones y la Política de Cancelación de AS CLICK.\n\nDespués de 15 minutos de haber solicitado el servicio podrá cobrarse el 50% del costo."
-  );
-  if (!aceptaCondiciones) return;
   const ventanaWhatsApp = window.open("about:blank", "_blank");
   const tipoTarifa =
     perfilActual.tieneMembresia &&
@@ -1560,151 +1556,6 @@ function hablarAsesor() {
   );
 }
 /* =========================================
-   INFORMACIÓN LEGAL
-========================================= */
-const DOCUMENTOS_LEGALES = {
-  privacidad: {
-    titulo: "Aviso de Privacidad Integral",
-    contenido: `
-      <p class="legalWarning"><b>Campos pendientes antes de publicar:</b> razón social o nombre completo del responsable, domicilio y correo exclusivo para privacidad.</p>
-      <h3>1. Responsable</h3>
-      <p><b>AS CLICK AS CLICK México</b>, con domicilio en <b>Camino a la Purísima s/n, San Mateo Cuautepec, Tultitlán, Estado de México</b> y correo de privacidad <b>asclickmexico4@gmail.com</b>, es responsable del tratamiento y protección de los datos personales recabados mediante esta plataforma, WhatsApp y los canales de atención.</p>
-      <h3>2. Datos personales recabados</h3>
-      <p>Podemos tratar nombre, teléfono, correo electrónico, datos de acceso, tipo de cliente, número y estado de membresía, datos del vehículo —incluidos marca, submarca, color, placas y número de serie o VIN—, historial y folios de servicio, comunicaciones, ubicación aproximada o precisa y datos necesarios para atender solicitudes, aclaraciones o emergencias.</p>
-      <p>AS CLICK no solicita datos personales sensibles como requisito ordinario. Evita enviar información médica, financiera o de otra naturaleza sensible que no sea indispensable para la atención del servicio.</p>
-      <h3>3. Finalidades primarias</h3>
-      <ul><li>Crear, autenticar y administrar la cuenta.</li><li>Registrar vehículos, membresías y beneficios.</li><li>Cotizar, coordinar, asignar, dar seguimiento y documentar servicios de ajustador, abogado, auxilio vial y grúa.</li><li>Compartir con el proveedor asignado los datos estrictamente necesarios para atender la solicitud.</li><li>Atender alertas de robo o montachoques cuando el usuario tenga acceso a esa función.</li><li>Contactar al usuario, prevenir fraude, investigar usos indebidos, atender aclaraciones y cumplir obligaciones legales.</li></ul>
-      <h3>4. Finalidades secundarias</h3>
-      <p>Con autorización del titular, los datos de contacto podrán utilizarse para encuestas, promociones, beneficios, novedades y comunicaciones comerciales. El titular puede solicitar dejar de recibirlas sin afectar los servicios contratados.</p>
-      <h3>5. Geolocalización</h3>
-      <p>La ubicación se solicita cuando el usuario pide un servicio o activa una alerta. Se utiliza para localizarlo, compartir el punto con cabina o con el proveedor asignado, calcular rutas y documentar la atención. El usuario puede negar el permiso; en ese caso deberá compartir manualmente su ubicación y algunas funciones podrían no operar correctamente.</p>
-      <h3>6. Transferencias</h3>
-      <p>Los datos necesarios podrán comunicarse a operadores de grúa, ajustadores, abogados, proveedores de auxilio, aseguradoras, autoridades competentes y prestadores tecnológicos que apoyen la operación. Cuando una transferencia requiera consentimiento, éste será solicitado conforme a la legislación aplicable.</p>
-      <h3>7. Conservación y seguridad</h3>
-      <p>Los datos se conservarán durante el tiempo necesario para prestar los servicios, atender reclamaciones y cumplir obligaciones legales. Se aplicarán medidas administrativas, técnicas y físicas razonables; ningún sistema puede garantizar seguridad absoluta.</p>
-      <h3>8. Derechos de acceso, rectificación, cancelación y oposición</h3>
-      <p>El titular puede ejercer sus derechos de acceso, rectificación, cancelación u oposición, revocar su consentimiento o limitar el uso de sus datos mediante solicitud enviada a <b>asclickmexico4@gmail.com</b> o por el canal de atención de AS CLICK. La solicitud deberá identificar al titular, describir el derecho que desea ejercer y proporcionar información suficiente para localizar sus datos.</p>
-      <h3>9. Cambios al aviso</h3>
-      <p>Las modificaciones se publicarán en la sección “Información legal” de la plataforma. La versión vigente será la disponible al momento de utilizar el servicio.</p>
-      <h3>10. Consentimiento</h3>
-      <p>Al crear una cuenta, registrar información, solicitar un servicio o activar una alerta, el titular reconoce haber tenido acceso a este aviso. Los consentimientos específicos se solicitarán cuando sean legalmente necesarios.</p>`
-  },
-  terminos: {
-    titulo: "Términos y Condiciones de Uso",
-    contenido: `
-      <h3>1. Aceptación</h3><p>El acceso y uso de AS CLICK implica la aceptación de estos términos. Quien no esté de acuerdo deberá abstenerse de utilizar la plataforma o solicitar servicios.</p>
-      <h3>2. Naturaleza de la plataforma</h3><p>AS CLICK facilita la solicitud, coordinación y seguimiento de servicios de asistencia vial, ajustador, asesoría legal, auxilio vial y grúa. Algunos servicios pueden ser ejecutados por proveedores independientes o terceros asignados.</p>
-      <h3>3. Registro y cuenta</h3><p>El usuario debe proporcionar información verdadera, completa y actualizada, proteger sus credenciales y responder por las actividades realizadas desde su cuenta. Está prohibido suplantar identidades, registrar vehículos sin autorización o utilizar la plataforma con fines ilícitos.</p>
-      <h3>4. Solicitud y confirmación</h3><p>Una solicitud se considera recibida cuando se genera un folio y se envía a cabina. La disponibilidad, tiempo estimado, tarifa y condiciones podrán confirmarse por WhatsApp o por el canal de atención. Una cotización no equivale a precio definitivo cuando cambien distancia, maniobras, tipo o peso del vehículo, condiciones del lugar, casetas, horarios, resguardo u otros factores no informados inicialmente.</p>
-      <h3>5. Tarifas y pagos</h3><p>Los miembros activos pueden recibir tarifas preferenciales conforme a su plan. Los clientes sin membresía pagan tarifa de público general. El usuario deberá cubrir los importes confirmados, costos adicionales autorizados y cargos de cancelación aplicables. El combustible suministrado corre por cuenta del cliente.</p>
-      <h3>6. Obligaciones del usuario</h3><ul><li>Dar datos correctos del vehículo, ubicación y situación.</li><li>Permanecer localizable y facilitar el acceso seguro.</li><li>Informar riesgos, daños, modificaciones, carga, bloqueo de ruedas o condiciones especiales.</li><li>No solicitar maniobras ilegales, peligrosas o contrarias a indicaciones del proveedor.</li><li>Revisar el vehículo y reportar cualquier inconformidad al concluir el servicio.</li></ul>
-      <h3>7. Tiempos de atención</h3><p>Los tiempos son estimados y pueden variar por tráfico, clima, cierres, disponibilidad, distancia, autoridad, seguridad o fuerza mayor. AS CLICK no garantiza un tiempo exacto de llegada salvo acuerdo escrito.</p>
-      <h3>8. Seguridad y emergencias</h3><p>AS CLICK no sustituye al 911, autoridades, policía, bomberos, protección civil ni servicios médicos. Ante peligro inmediato, lesiones, incendio, violencia o delito en curso, el usuario debe contactar primero a las autoridades.</p>
-      <h3>9. Proveedores y responsabilidad</h3><p>AS CLICK realizará esfuerzos razonables para coordinar proveedores aptos. Cada proveedor es responsable de ejecutar la maniobra con cuidado y conforme a sus obligaciones. La responsabilidad de AS CLICK se determinará según su participación directa y la legislación aplicable; ninguna disposición limita derechos irrenunciables del consumidor.</p>
-      <h3>10. Uso prohibido</h3><p>Se prohíben solicitudes falsas, alertas simuladas, amenazas, fraude, acoso, manipulación de la plataforma, interferencia técnica, uso automatizado no autorizado y cualquier conducta que ponga en riesgo a usuarios, operadores o terceros.</p>
-      <h3>11. Suspensión</h3><p>AS CLICK puede restringir o suspender cuentas ante fraude, falta de pago, datos falsos, abuso, riesgos de seguridad o incumplimiento, sin perjuicio de los derechos del usuario y de las obligaciones ya generadas.</p>
-      <h3>12. Propiedad intelectual</h3><p>La marca, logotipos, diseño, textos, software y contenidos de AS CLICK pertenecen a sus titulares. No pueden copiarse, explotarse ni modificarse sin autorización.</p>
-      <h3>13. Modificaciones</h3><p>Los términos pueden actualizarse. La versión vigente se publicará en la plataforma y aplicará a solicitudes posteriores a su publicación, salvo disposición legal distinta.</p>
-      <h3>14. Legislación y atención de controversias</h3><p>Estos términos se interpretan conforme a las leyes mexicanas. El usuario conserva los derechos y mecanismos que le correspondan como consumidor. Antes de iniciar una controversia, las partes procurarán resolverla mediante los canales de atención de AS CLICK.</p>`
-  },
-  cancelaciones: {
-    titulo: "Política de Cancelación y Reembolsos",
-    contenido: `
-      <h3>1. Cancelación dentro de los primeros 15 minutos</h3><p>El usuario puede solicitar la cancelación durante los primeros 15 minutos contados desde el registro de la solicitud. Podrá no generarse cargo cuando el proveedor aún no haya sido movilizado y no existan gastos comprobables.</p>
-      <h3>2. Cancelación después de 15 minutos</h3><p>Después de 15 minutos podrá cobrarse el <b>50% del costo del servicio</b>, debido a la movilización, reserva y costos operativos del proveedor.</p>
-      <h3>3. Servicio iniciado o unidad en el lugar</h3><p>Cuando el proveedor haya llegado, iniciado maniobras, realizado traslados, suministrado materiales o incurrido en casetas, estacionamientos, combustible u otros gastos, podrán cobrarse los conceptos efectivamente generados y hasta el importe total confirmado.</p>
-      <h3>4. Cancelación sin cargo atribuible a AS CLICK</h3><p>No deberá aplicarse cargo cuando AS CLICK o el proveedor cancelen sin causa imputable al usuario, no puedan prestar el servicio confirmado o exista un error atribuible a la operación. Cualquier devolución procedente se realizará por el medio acordado y dentro del plazo informado.</p>
-      <h3>5. Imposibilidad o riesgo</h3><p>El servicio puede cancelarse o modificarse cuando la maniobra sea ilegal, insegura, materialmente distinta a la reportada o requiera equipo no disponible. Se informarán los costos generados antes de continuar cuando sea posible.</p>
-      <h3>6. Cómo cancelar</h3><p>La cancelación debe solicitarse desde el botón “Cancelar servicio” o mediante WhatsApp a cabina, indicando folio, nombre y motivo. El envío de la solicitud no elimina automáticamente los cargos ya generados.</p>
-      <h3>7. Aclaraciones</h3><p>Las aclaraciones deberán presentarse con folio y comprobantes mediante los canales de atención. AS CLICK revisará la hora de solicitud, asignación, movilización y demás circunstancias del caso.</p>`
-  },
-  membresias: {
-    titulo: "Política de Membresías",
-    contenido: `
-      <h3>1. Activación</h3><p>La membresía se activa después de validar el registro y el pago correspondiente. Hasta entonces la cuenta operará como cliente registrado con tarifa de público general.</p>
-      <h3>2. Vigencia</h3><p>La vigencia será la indicada en la confirmación de compra o en el perfil. Salvo promoción distinta, la membresía es personal, no transferible y asociada al titular y a los vehículos autorizados.</p>
-      <h3>3. Beneficios</h3><p>Los beneficios pueden incluir tarifas preferenciales, atención prioritaria, promociones y acceso a alertas de robo y montachoques. Están sujetos a disponibilidad, cobertura, límites del plan y condiciones particulares informadas.</p>
-      <h3>4. Exclusiones</h3><p>La membresía no significa que todos los servicios sean gratuitos. Pueden existir deducibles, materiales, combustible, casetas, maniobras especiales, excedentes, distancias adicionales o servicios fuera de cobertura.</p>
-      <h3>5. Renovación</h3><p>La renovación no será automática salvo autorización expresa. AS CLICK podrá informar la fecha de vencimiento y las opciones de renovación.</p>
-      <h3>6. Suspensión o cancelación</h3><p>La membresía puede suspenderse por falta de pago, fraude, uso de datos falsos, alertas falsas, amenazas, reventa, cesión no autorizada o incumplimiento grave. Antes de una cancelación definitiva se revisarán las circunstancias, salvo riesgo urgente de seguridad.</p>
-      <h3>7. Cambios de plan</h3><p>Los precios y beneficios futuros pueden modificarse; los cambios se informarán antes de la renovación y no afectarán derechos ya adquiridos durante una vigencia pagada, salvo causa legal o de seguridad.</p>`
-  },
-  alertas: {
-    titulo: "Política de Alertas de Robo y Montachoques",
-    contenido: `
-      <h3>1. Acceso</h3><p>Las alertas están disponibles únicamente para miembros activos y para situaciones reales relacionadas con el vehículo registrado o la seguridad inmediata del titular.</p>
-      <h3>2. Funcionamiento</h3><p>Al activar una alerta, la plataforma puede compartir nombre, teléfono, membresía, datos del vehículo y ubicación con cabina, proveedores, miembros habilitados o autoridades cuando resulte necesario para atender el evento.</p>
-      <h3>3. No sustituyen a las autoridades</h3><p>Las alertas no sustituyen una denuncia ni los servicios de emergencia. Ante delito, violencia o riesgo inmediato, llama al 911 y sigue las indicaciones de la autoridad.</p>
-      <h3>4. Uso responsable</h3><p>Está prohibido activar alertas como prueba, broma, engaño, amenaza, seguimiento de terceros o para obtener ventajas indebidas. El usuario debe cancelar o actualizar la alerta cuando el riesgo haya terminado.</p>
-      <h3>5. Sanciones</h3><p>El uso falso o irresponsable puede provocar advertencia, cobro de costos generados, suspensión o cancelación de la membresía, bloqueo de la cuenta y, cuando corresponda, aviso a las autoridades.</p>
-      <h3>6. Limitaciones</h3><p>La recepción y atención dependen de conexión, permisos de ubicación, cobertura, disponibilidad y condiciones de seguridad. AS CLICK no garantiza que terceros cercanos respondan ni que una alerta evite daños o delitos.</p>`
-  },
-  geolocalizacion: {
-    titulo: "Consentimiento para Geolocalización",
-    contenido: `
-      <h3>1. Cuándo se solicita</h3><p>La ubicación se solicita al pedir un servicio o activar una alerta. El navegador o dispositivo mostrará el permiso correspondiente.</p>
-      <h3>2. Para qué se usa</h3><p>Se utiliza para ubicar al usuario, enviar el punto a cabina o al proveedor, facilitar rutas, estimar atención, documentar el servicio y apoyar una alerta.</p>
-      <h3>3. Elección del usuario</h3><p>El usuario puede negar o revocar el permiso desde la configuración del dispositivo. En ese caso deberá enviar su ubicación manualmente por WhatsApp y algunas funciones podrían ser menos precisas.</p>
-      <h3>4. Precisión y seguridad</h3><p>La precisión depende del dispositivo, señal y permisos. El usuario debe verificar el punto antes de enviarlo y evitar compartir ubicaciones de terceros sin autorización.</p>
-      <h3>5. Conservación</h3><p>La ubicación asociada a una solicitud podrá conservarse junto con el folio durante el tiempo necesario para operación, seguridad, aclaraciones y cumplimiento legal.</p>`
-  },
-  responsabilidad: {
-    titulo: "Responsabilidad, Seguridad y Alcance del Servicio",
-    contenido: `
-      <h3>1. Coordinación</h3><p>AS CLICK coordina la atención y puede apoyarse en proveedores independientes. La asignación depende de cobertura, disponibilidad, equipo requerido y condiciones de seguridad.</p>
-      <h3>2. Información correcta</h3><p>El usuario es responsable de informar con precisión tipo, peso, estado y ubicación del vehículo, así como riesgos, carga, bloqueo, daños previos y cualquier condición especial.</p>
-      <h3>3. Maniobras</h3><p>El operador podrá rechazar o detener una maniobra que represente riesgo, sea ilegal, exceda la capacidad del equipo o difiera sustancialmente de lo solicitado. Podrá proponerse otro equipo o una nueva cotización.</p>
-      <h3>4. Pertenencias y daños previos</h3><p>Antes del servicio, el usuario debe retirar objetos de valor y reportar daños existentes. Cuando sea posible, se recomienda documentar el estado del vehículo.</p>
-      <h3>5. Fuerza mayor</h3><p>AS CLICK no será responsable por retrasos o imposibilidad derivados de tráfico extraordinario, clima, bloqueos, autoridad, fallas de telecomunicaciones, desastres, violencia o hechos fuera de control razonable, sin perjuicio de los derechos legales del usuario.</p>
-      <h3>6. Derechos del consumidor</h3><p>Nada en estas políticas pretende excluir garantías, responsabilidades o derechos que legalmente no puedan renunciarse.</p>`
-  },
-  contacto: {
-    titulo: "Contacto y Atención",
-    contenido: `
-      <h3>Cabina y solicitudes</h3><p>WhatsApp: <b>55 1975 0497</b>.</p>
-      <h3>Emergencias AS CLICK</h3><p>Canal de alertas: <b>55 8537 3051</b>. Ante riesgo inmediato llama también al <b>911</b>.</p>
-      <h3>Privacidad</h3><p>Correo para derechos de datos personales: <b>asclickmexico4@gmail.com</b>.</p>
-      <h3>Domicilio</h3><p><b>Camino a la Purísima s/n, San Mateo Cuautepec, Tultitlán, Estado de México</b>.</p>
-      <h3>Aclaraciones</h3><p>Incluye nombre, teléfono, folio, fecha, servicio y una descripción clara. No envíes contraseñas ni información sensible innecesaria.</p>`
-  }
-};
-function crearInterfazLegal() {
-  if (document.getElementById("legalDocumentOverlay")) return;
-  const overlay = document.createElement("div");
-  overlay.id = "legalDocumentOverlay";
-  overlay.className = "customOverlay";
-  overlay.setAttribute("aria-hidden", "true");
-  overlay.addEventListener("click", cerrarDocumentoLegal);
-  overlay.innerHTML = `
-    <section class="customPanel legalDocumentModal" role="dialog" aria-modal="true" aria-labelledby="legalDocumentTitle">
-      <header class="customPanelHeader">
-        <h2 id="legalDocumentTitle">Información legal</h2>
-        <button type="button" class="customClose" onclick="cerrarDocumentoLegal()" aria-label="Cerrar">✕</button>
-      </header>
-      <div id="legalDocumentBody" class="legalDocumentBody"></div>
-    </section>`;
-  document.body.appendChild(overlay);
-}
-function mostrarDocumentoLegal(tipo) {
-  const documento = DOCUMENTOS_LEGALES[tipo];
-  if (!documento) return;
-  crearInterfazLegal();
-  actualizarTexto("legalDocumentTitle", documento.titulo);
-  const cuerpo = document.getElementById("legalDocumentBody");
-  if (cuerpo) cuerpo.innerHTML = documento.contenido;
-  const overlay = document.getElementById("legalDocumentOverlay");
-  overlay?.classList.add("active");
-  overlay?.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-}
-function cerrarDocumentoLegal(event = null) {
-  if (event && event.target.id !== "legalDocumentOverlay") return;
-  const overlay = document.getElementById("legalDocumentOverlay");
-  overlay?.classList.remove("active");
-  overlay?.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-}
-/* =========================================
    OTRAS FUNCIONES
 ========================================= */
 function verDetalle(folio) {
@@ -1968,7 +1819,11 @@ async function eliminarVehiculo(idVehiculo) {
   }
 }
 function mostrarTerminos() {
-  mostrarDocumentoLegal("alertas");
+  mostrarModal(
+    "⚠",
+    "Términos de las alertas",
+    "Las alertas de robo y montachoques son exclusivas para miembros activos. Deben utilizarse únicamente en situaciones reales. El uso falso o irresponsable puede ocasionar sanciones o cancelación de la membresía."
+  );
 }
 function iniciarEscuchaNotificaciones(uidUsuario) {
   if (!firestoreOnSnapshot || !uidUsuario) return;
@@ -2250,7 +2105,6 @@ document.addEventListener(
     if (event.key === "Escape") {
       cerrarMenuMovil();
       cerrarModal();
-      cerrarDocumentoLegal();
     }
   }
 );
@@ -2291,9 +2145,6 @@ window.establecerVehiculoPrincipal = establecerVehiculoPrincipal;
 window.eliminarVehiculo = eliminarVehiculo;
 window.mostrarTerminos =
   mostrarTerminos;
-window.mostrarDocumentoLegal = mostrarDocumentoLegal;
-window.cerrarDocumentoLegal = cerrarDocumentoLegal;
-
 window.abrirNotificaciones =
   abrirNotificaciones;
 window.abrirMenuUsuario =
@@ -2312,4 +2163,4 @@ window.cerrarNotificaciones = cerrarNotificaciones;
 window.marcarNotificacionLeida = marcarNotificacionLeida;
 window.marcarTodasNotificacionesLeidas = marcarTodasNotificacionesLeidas;
 window.mostrarModal = mostrarModal;
-iniciarFireba
+iniciarFirebase();
