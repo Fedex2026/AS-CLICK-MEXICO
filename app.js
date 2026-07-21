@@ -3182,9 +3182,7 @@ async function activarAlerta(tipo) {
 
       "⚠ Esta alerta fue enviada desde el botón de emergencia de AS CLICK."
 
-    ].join("
-
-");
+    ].join("\n");
 
  
 
