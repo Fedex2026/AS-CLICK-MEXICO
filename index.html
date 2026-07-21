@@ -99,6 +99,10 @@
       align-items: center;
       padding: 8px 0;
     }
+
+    /* INFORMACIÓN LEGAL AS CLICK */
+    .legalPage{padding:28px;max-width:1180px;margin:0 auto}.legalHeader{margin-bottom:22px}.legalHeader h1{margin:4px 0 8px;color:#092b52}.legalHeader p{margin:0;color:#62758c;line-height:1.55}.legalPendingNotice{margin:16px 0;padding:14px 16px;border:1px solid #f0c36c;border-radius:10px;background:#fff8e7;color:#674a00;line-height:1.5}.legalGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.legalCard{display:flex;align-items:flex-start;gap:14px;text-align:left;width:100%;border:1px solid #dce5f0;border-radius:12px;background:#fff;padding:18px;cursor:pointer;box-shadow:0 4px 16px rgba(5,43,92,.05)}.legalCard:hover{border-color:#1f6fe5;background:#f7faff}.legalCardIcon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#edf4fc;display:grid;place-items:center;font-size:23px}.legalCard h3{margin:0 0 5px;color:#092b52}.legalCard p{margin:0;color:#62758c;line-height:1.45}.legalFooter{padding:22px 28px 100px;text-align:center;color:#71849a;font-size:13px}.legalFooter button{border:0;background:transparent;color:#1265d6;font:inherit;font-weight:700;cursor:pointer;padding:5px}.legalDocumentModal{width:min(780px,100%)}.legalDocumentBody{padding:20px 22px 24px;color:#314b68;line-height:1.6}.legalDocumentBody h3{margin:22px 0 7px;color:#092b52}.legalDocumentBody h3:first-child{margin-top:0}.legalDocumentBody p{margin:7px 0}.legalDocumentBody ul{padding-left:21px}.legalDocumentBody li{margin:6px 0}.legalDocumentBody .legalWarning{padding:12px;border:1px solid #f0c36c;border-radius:9px;background:#fff8e7;color:#674a00}.legalServiceNotice{margin:10px 0 0;color:#71849a;font-size:12px;line-height:1.45}.legalServiceNotice button{border:0;background:transparent;color:#1265d6;font:inherit;font-weight:700;cursor:pointer;padding:0}.legalAcceptanceText{font-size:13px;color:#536980;line-height:1.45}
+    @media(max-width:700px){.legalPage{padding:18px}.legalGrid{grid-template-columns:1fr}.legalFooter{padding:18px 18px 90px}.legalDocumentBody{padding:16px}}
   </style>
 </head>
 <body>
@@ -167,6 +171,15 @@
         >
           <span>♙</span>
           Perfil
+        </button>
+        <button
+          type="button"
+          class="navItem"
+          data-section="legal"
+          onclick="cambiarSeccion('legal', this)"
+        >
+          <span>§</span>
+          Información legal
         </button>
         <button
           type="button"
@@ -437,6 +450,12 @@
               </button>
             </article>
           </div>
+          <p class="legalServiceNotice">
+            Al solicitar un servicio aceptas los
+            <button type="button" onclick="mostrarDocumentoLegal('terminos')">Términos y Condiciones</button>
+            y la
+            <button type="button" onclick="mostrarDocumentoLegal('cancelaciones')">Política de Cancelación</button>.
+          </p>
         </section>
         <!-- EMERGENCIAS -->
 
@@ -962,6 +981,29 @@
           </div>
         </div>
       </section>
+      <!-- INFORMACIÓN LEGAL -->
+      <section class="pageSection" id="seccion-legal">
+        <div class="legalPage">
+          <div class="legalHeader">
+            <span class="sectionEyebrow">AS CLICK</span>
+            <h1>Información legal</h1>
+            <p>Consulta las reglas aplicables al uso de la plataforma, los servicios, las membresías, las alertas y el tratamiento de datos personales.</p>
+          </div>
+          <div class="legalPendingNotice">
+            <b>Antes de publicar:</b> incorpora la razón social o nombre completo del responsable, domicilio y correo específico de privacidad en los espacios indicados dentro del Aviso de Privacidad.
+          </div>
+          <div class="legalGrid">
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('privacidad')"><span class="legalCardIcon">🔒</span><span><h3>Aviso de Privacidad</h3><p>Datos personales, vehículos, ubicación, finalidades y derechos de los titulares.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('terminos')"><span class="legalCardIcon">📄</span><span><h3>Términos y Condiciones</h3><p>Reglas de registro, solicitudes, tarifas, proveedores, responsabilidades y uso permitido.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('cancelaciones')"><span class="legalCardIcon">↩</span><span><h3>Política de Cancelación</h3><p>Cargo del 50% después de 15 minutos y supuestos aplicables.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('membresias')"><span class="legalCardIcon">⭐</span><span><h3>Política de Membresías</h3><p>Vigencia, beneficios, renovación, suspensión y terminación.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('alertas')"><span class="legalCardIcon">🚨</span><span><h3>Política de Alertas</h3><p>Uso de alertas de robo y montachoques, ubicación y sanciones por uso indebido.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('geolocalizacion')"><span class="legalCardIcon">📍</span><span><h3>Geolocalización</h3><p>Consentimiento y uso de ubicación para atender servicios y alertas.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('responsabilidad')"><span class="legalCardIcon">⚠</span><span><h3>Responsabilidad y seguridad</h3><p>Alcances de coordinación, tiempos estimados, emergencias y proveedores.</p></span></button>
+            <button type="button" class="legalCard" onclick="mostrarDocumentoLegal('contacto')"><span class="legalCardIcon">☎</span><span><h3>Contacto</h3><p>Canales para soporte, aclaraciones, derechos de privacidad y quejas.</p></span></button>
+          </div>
+        </div>
+      </section>
       <!-- AYUDA -->
       <section
         class="pageSection"
@@ -985,6 +1027,13 @@
           </button>
         </div>
       </section>
+      <footer class="legalFooter">
+        © 2026 AS CLICK ·
+        <button type="button" onclick="mostrarDocumentoLegal('privacidad')">Aviso de Privacidad</button> ·
+        <button type="button" onclick="mostrarDocumentoLegal('terminos')">Términos y Condiciones</button> ·
+        <button type="button" onclick="mostrarDocumentoLegal('cancelaciones')">Cancelaciones</button> ·
+        <button type="button" onclick="cambiarSeccion('legal')">Información legal</button>
+      </footer>
     </main>
     <!-- MENÚ INFERIOR MÓVIL -->
     <nav class="mobileBottomNav">
