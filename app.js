@@ -1720,7 +1720,7 @@ function cerrarMenuMovil() {
 
 ========================================= */
 
-async function solicitarServicio(servicio, detalleServicio = "") {
+async function solicitarServicio(servicio, detalleServicio = "", confirmacionAbogado = false) {
 
   if (!usuarioActual) {
 
@@ -1733,6 +1733,24 @@ async function solicitarServicio(servicio, detalleServicio = "") {
       "Inicia sesión nuevamente para solicitar el servicio."
 
     );
+
+    return;
+
+  }
+
+  const servicioNormalizado = String(servicio || "")
+
+    .trim()
+
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(/[\u0300-\u036f]/g, "");
+
+  if (servicioNormalizado === "abogado" && !confirmacionAbogado) {
+
+    abrirAvisoAbogado();
 
     return;
 
@@ -1813,6 +1831,126 @@ async function solicitarServicio(servicio, detalleServicio = "") {
     );
 
   }
+
+}
+
+function abrirAvisoAbogado() {
+
+  crearInterfazAvisoAbogado();
+
+  const overlay = document.getElementById("avisoAbogadoOverlay");
+
+  const aceptar = document.getElementById("aceptarCondicionesAbogado");
+
+  const confirmar = document.getElementById("confirmarSolicitudAbogado");
+
+  if (!overlay) return;
+
+  if (aceptar) aceptar.checked = false;
+
+  if (confirmar) confirmar.disabled = true;
+
+  overlay.classList.add("active");
+
+  document.body.style.overflow = "hidden";
+
+}
+
+function actualizarAceptacionAbogado() {
+
+  const aceptar = document.getElementById("aceptarCondicionesAbogado");
+
+  const confirmar = document.getElementById("confirmarSolicitudAbogado");
+
+  if (confirmar) {
+
+    confirmar.disabled = aceptar?.checked !== true;
+
+  }
+
+}
+
+async function confirmarAvisoAbogado() {
+
+  const aceptar = document.getElementById("aceptarCondicionesAbogado");
+
+  if (aceptar?.checked !== true) return;
+
+  cerrarAvisoAbogado();
+
+  await solicitarServicio("Abogado", "", true);
+
+}
+
+function cerrarAvisoAbogado(event = null) {
+
+  if (event && event.target.id !== "avisoAbogadoOverlay") return;
+
+  document
+
+    .getElementById("avisoAbogadoOverlay")
+
+    ?.classList.remove("active");
+
+  document.body.style.overflow = "";
+
+}
+
+function crearInterfazAvisoAbogado() {
+
+  if (document.getElementById("avisoAbogadoOverlay")) return;
+
+  agregarEstilosFuncionesNuevas();
+
+  const overlay = document.createElement("div");
+
+  overlay.id = "avisoAbogadoOverlay";
+
+  overlay.className = "asClickCustomOverlay";
+
+  overlay.addEventListener("click", cerrarAvisoAbogado);
+
+  overlay.innerHTML = `
+
+    <section class="asClickCustomModal" role="dialog" aria-modal="true" aria-labelledby="avisoAbogadoTitulo">
+
+      <button type="button" class="asClickCustomClose" onclick="cerrarAvisoAbogado()" aria-label="Cerrar">✕</button>
+
+      <div class="asClickCustomIcon">⚖️</div>
+
+      <h2 id="avisoAbogadoTitulo">Servicio de Abogado</h2>
+
+      <p class="asClickCustomIntro">Lee y acepta las condiciones antes de solicitar el servicio.</p>
+
+      <div class="asClickFuelNotice">
+
+        <b>⚠ Aviso importante</b>
+
+        <p>El servicio de abogado de AS CLICK cubre únicamente la primera atención. No incluye el seguimiento ni todo el proceso legal; cualquier gestión posterior tendrá un costo adicional.</p>
+
+        <label>
+
+          <input id="aceptarCondicionesAbogado" type="checkbox" onchange="actualizarAceptacionAbogado()">
+
+          He leído y acepto que el servicio cubre únicamente la primera atención y que el resto del proceso tendrá un costo aparte.
+
+        </label>
+
+      </div>
+
+      <div class="asClickCustomActions">
+
+        <button type="button" class="asClickSecondaryButton" onclick="cerrarAvisoAbogado()">Cancelar</button>
+
+        <button type="button" id="confirmarSolicitudAbogado" class="asClickPrimaryButton" onclick="confirmarAvisoAbogado()" disabled>Aceptar y solicitar abogado</button>
+
+      </div>
+
+    </section>
+
+  `;
+
+  document.body.appendChild(overlay);
 
 }
 
@@ -2004,6 +2142,76 @@ function crearInterfazAuxilioVial() {
 
 }
 
+function obtenerCostoServicio(servicio) {
+
+  const servicioNormalizado = String(servicio || "")
+
+    .trim()
+
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(/[\u0300-\u036f]/g, "");
+
+  const esMiembroActivo =
+
+    perfilActual.tieneMembresia === true &&
+
+    perfilActual.estadoMembresia === "activa";
+
+  if (servicioNormalizado === "grua") {
+
+    return "A cotizar";
+
+  }
+
+  if (!esMiembroActivo) {
+
+    const costosSinMembresia = {
+
+      ajustador: "$1,800",
+
+      abogado: "$2,400",
+
+      "auxilio vial": "$380"
+
+    };
+
+    return costosSinMembresia[servicioNormalizado] || "A cotizar";
+
+  }
+
+  if (perfilActual.tipoCliente === "servicio_publico") {
+
+    const costosServicioPublico = {
+
+      ajustador: "$500",
+
+      abogado: "$850",
+
+      "auxilio vial": "$120"
+
+    };
+
+    return costosServicioPublico[servicioNormalizado] || "A cotizar";
+
+  }
+
+  const costosParticular = {
+
+    ajustador: "$750",
+
+    abogado: "$900",
+
+    "auxilio vial": "$190"
+
+  };
+
+  return costosParticular[servicioNormalizado] || "A cotizar";
+
+}
+
 function construirMensajeServicio(
 
   servicio,
@@ -2032,6 +2240,18 @@ function construirMensajeServicio(
 
       : "Sin membresía";
 
+  const servicioNormalizado = String(servicio || "")
+
+    .trim()
+
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(/[\u0300-\u036f]/g, "");
+
+  const costoServicio = obtenerCostoServicio(servicio);
+
   return [
 
     `*SOLICITUD AS CLICK - ${servicio.toUpperCase()}*`,
@@ -2048,67 +2268,19 @@ function construirMensajeServicio(
 
     `Estado: ${obtenerTextoEstado(perfilActual)}`,
 
-    ...(perfilActual.tieneMembresia &&
+    "",
 
-    perfilActual.estadoMembresia === "activa"
+    "*COSTO DEL SERVICIO*",
 
-      ? perfilActual.tipoCliente === "servicio_publico"
+    `Costo: ${costoServicio}`,
 
-        ? [
-
-            "",
-
-            "*COSTOS*",
-
-            "• Ajustador: $500",
-
-            "• Abogado: $850",
-
-            "• Auxilio vial: $120",
-
-            "• Grúa: A cotizar"
-
-          ]
-
-        : [
-
-            "",
-
-            "*COSTOS*",
-
-            "• Ajustador: $750",
-
-            "• Abogado: $900",
-
-            "• Auxilio vial: $190",
-
-            "• Grúa: A cotizar"
-
-          ]
-
-      : [
-
-          "",
-
-          "*COSTOS*",
-
-          "• Ajustador: $1,800",
-
-          "• Abogado: $2,400",
-
-          "• Auxilio vial: $380",
-
-          "• Grúa: A cotizar"
-
-        ]),
-
-    ...(String(servicio || "").trim().toLowerCase() === "abogado"
+    ...(servicioNormalizado === "abogado"
 
       ? [
 
           "",
 
-          "⚠ El servicio de abogado es únicamente para la primera atención."
+          "⚠ El servicio de abogado cubre únicamente la primera atención. El seguimiento y el resto del proceso tendrán un costo adicional."
 
         ]
 
