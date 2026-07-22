@@ -2048,6 +2048,72 @@ function construirMensajeServicio(
 
     `Estado: ${obtenerTextoEstado(perfilActual)}`,
 
+    ...(perfilActual.tieneMembresia &&
+
+    perfilActual.estadoMembresia === "activa"
+
+      ? perfilActual.tipoCliente === "servicio_publico"
+
+        ? [
+
+            "",
+
+            "*COSTOS*",
+
+            "• Ajustador: $500",
+
+            "• Abogado: $850",
+
+            "• Auxilio vial: $120",
+
+            "• Grúa: A cotizar"
+
+          ]
+
+        : [
+
+            "",
+
+            "*COSTOS*",
+
+            "• Ajustador: $750",
+
+            "• Abogado: $900",
+
+            "• Auxilio vial: $190",
+
+            "• Grúa: A cotizar"
+
+          ]
+
+      : [
+
+          "",
+
+          "*COSTOS*",
+
+          "• Ajustador: $1,800",
+
+          "• Abogado: $2,400",
+
+          "• Auxilio vial: $380",
+
+          "• Grúa: A cotizar"
+
+        ]),
+
+    ...(String(servicio || "").trim().toLowerCase() === "abogado"
+
+      ? [
+
+          "",
+
+          "⚠ El servicio de abogado es únicamente para la primera atención."
+
+        ]
+
+      : []),
+
     "",
 
     "*DATOS DEL CLIENTE*",
