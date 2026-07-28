@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Seguimiento de emergencia | AS CLICK</title>
+
+  <meta
+    name="description"
+    content="Seguimiento en tiempo real de alertas de emergencia AS CLICK."
+  />
+
+  <meta name="theme-color" content="#052b5c" />
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="./logo AS CLICK 2.png"
+  />
+
+  <link
+    rel="apple-touch-icon"
+    href="./logo AS CLICK 2.png"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./seguimiento.css"
+  />
+</head>
+
+<body>
+  <main class="trackingPage">
+
+    <!-- ENCABEZADO -->
+    <header class="trackingHeader">
+      <div class="brandBlock">
+        <img
+          src="./logo AS CLICK 1.png"
+          alt="AS CLICK"
+          class="trackingLogo"
+        />
+
+        <div>
+          <span class="brandEyebrow">
+            ASISTENCIAS Y EMERGENCIAS
+          </span>
+
+          <h1>
+            Seguimiento del caso
+          </h1>
+        </div>
+      </div>
+
+      <span
+        class="connectionStatus"
+        id="connectionStatus"
+      >
+        Conectando...
+      </span>
+    </header>
+
+    <!-- ESTADO DE CARGA -->
+    <section
+      class="statusPanel"
+      id="loadingPanel"
+    >
+      <div class="loadingSpinner"></div>
+
+      <h2>
+        Cargando información
+      </h2>
+
+      <p>
+        Estamos consultando el caso de emergencia.
+      </p>
+    </section>
+
+    <!-- ERROR -->
+    <section
+      class="statusPanel errorPanel"
+      id="errorPanel"
+      hidden
+    >
+      <div class="statusIcon">
+        ⚠️
+      </div>
+
+      <h2 id="errorTitle">
+        No fue posible abrir el seguimiento
+      </h2>
+
+      <p id="errorMessage">
+        Revisa que el enlace sea correcto e inténtalo nuevamente.
+      </p>
+    </section>
+
+    <!-- CONTENIDO DEL CASO -->
+    <section
+      class="trackingContent"
+      id="trackingContent"
+      hidden
+    >
+
+      <!-- RESUMEN PRINCIPAL -->
+      <article class="caseHero">
+        <div>
+          <span class="caseLabel">
+            FOLIO
+          </span>
+
+          <strong id="caseFolio">
+            ASC-EM-PENDIENTE
+          </strong>
+        </div>
+
+        <div
+          class="caseStatus"
+          id="caseStatus"
+        >
+          EN SEGUIMIENTO
+        </div>
+      </article>
+
+      <!-- DATOS GENERALES -->
+      <section class="trackingGrid">
+
+        <!-- ALERTA -->
+        <article class="trackingCard">
+          <div class="cardHeading">
+            <span class="cardIcon">
+              🚨
+            </span>
+
+            <div>
+              <small>
+                TIPO DE EMERGENCIA
+              </small>
+
+              <h2 id="alertType">
+                Alerta
+              </h2>
+            </div>
+          </div>
+
+          <div class="detailList">
+            <div>
+              <span>Hora de activación</span>
+              <b id="createdAt">Pendiente</b>
+            </div>
+
+            <div>
+              <span>Última actualización</span>
+              <b id="updatedAt">Pendiente</b>
+            </div>
+          </div>
+        </article>
+
+        <!-- VEHÍCULO -->
+        <article class="trackingCard">
+          <div class="cardHeading">
+            <span class="cardIcon">
+              🚙
+            </span>
+
+            <div>
+              <small>
+                VEHÍCULO
+              </small>
+
+              <h2 id="vehicleName">
+                Vehículo no registrado
+              </h2>
+            </div>
+          </div>
+
+          <div class="detailList">
+            <div>
+              <span>Placas</span>
+              <b id="vehiclePlates">Sin registrar</b>
+            </div>
+
+            <div>
+              <span>Color</span>
+              <b id="vehicleColor">Sin registrar</b>
+            </div>
+
+            <div>
+              <span>Serie / VIN</span>
+              <b id="vehicleVin">Sin registrar</b>
+            </div>
+          </div>
+        </article>
+
+        <!-- MIEMBRO -->
+        <article class="trackingCard">
+          <div class="cardHeading">
+            <span class="cardIcon">
+              👤
+            </span>
+
+            <div>
+              <small>
+                MIEMBRO AS CLICK
+              </small>
+
+              <h2 id="memberName">
+                Miembro
+              </h2>
+            </div>
+          </div>
+
+          <div class="detailList">
+            <div>
+              <span>Membresía</span>
+              <b id="membershipNumber">Pendiente</b>
+            </div>
+
+            <div>
+              <span>Teléfono</span>
+              <b id="memberPhone">No disponible</b>
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- UBICACIÓN -->
+      <article class="trackingCard locationCard">
+        <div class="cardHeading">
+          <span class="cardIcon">
+            📍
+          </span>
+
+          <div>
+            <small>
+              UBICACIÓN REPORTADA
+            </small>
+
+            <h2>
+              Ubicación de la emergencia
+            </h2>
+          </div>
+        </div>
+
+        <div class="locationPlaceholder" id="locationPlaceholder">
+          <span>
+            🗺️
+          </span>
+
+          <p>
+            La ubicación aparecerá aquí.
+          </p>
+        </div>
+
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="locationButton"
+          id="openLocationButton"
+        >
+          Ver ubicación en Google Maps
+        </a>
+      </article>
+
+      <!-- BOTONES DE ACTUALIZACIÓN -->
+      <article class="trackingCard updateCard">
+        <div class="cardHeading">
+          <span class="cardIcon">
+            🤝
+          </span>
+
+          <div>
+            <small>
+              ¿PUEDES AYUDAR?
+            </small>
+
+            <h2>
+              Registra una actualización
+            </h2>
+          </div>
+        </div>
+
+        <p class="updateIntro">
+          Selecciona únicamente la opción que corresponda con lo que estás viendo.
+        </p>
+
+        <div class="actionGrid">
+          <button
+            type="button"
+            class="caseActionButton green"
+            data-action="voy_para_alla"
+          >
+            <span>🚗</span>
+            Voy para allá
+          </button>
+
+          <button
+            type="button"
+            class="caseActionButton blue"
+            data-action="llego_policia"
+          >
+            <span>👮</span>
+            Llegó la policía
+          </button>
+
+          <button
+            type="button"
+            class="caseActionButton teal"
+            data-action="cliente_esta_bien"
+          >
+            <span>✅</span>
+            Cliente está bien
+          </button>
+
+          <button
+            type="button"
+            class="caseActionButton orange"
+            data-action="vehiculo_localizado"
+          >
+            <span>🔎</span>
+            Vehículo localizado
+          </button>
+
+          <button
+            type="button"
+            class="caseActionButton purple"
+            data-action="vehiculo_recuperado"
+          >
+            <span>🏁</span>
+            Vehículo recuperado
+          </button>
+        </div>
+
+        <div
+          class="actionFeedback"
+          id="actionFeedback"
+          hidden
+        ></div>
+      </article>
+
+      <!-- EVIDENCIA -->
+      <article class="trackingCard">
+        <div class="cardHeading">
+          <span class="cardIcon">
+            📷
+          </span>
+
+          <div>
+            <small>
+              EVIDENCIA OPCIONAL
+            </small>
+
+            <h2>
+              Foto, video o comentario
+            </h2>
+          </div>
+        </div>
+
+        <form id="evidenceForm">
+          <label class="formField">
+            <span>
+              Archivo
+            </span>
+
+            <input
+              type="file"
+              id="evidenceFile"
+              accept="image/*,video/*"
+            />
+          </label>
+
+          <label class="formField">
+            <span>
+              Comentario
+            </span>
+
+            <textarea
+              id="evidenceComment"
+              rows="4"
+              maxlength="500"
+              placeholder="Escribe una observación útil para el seguimiento..."
+            ></textarea>
+          </label>
+
+          <button
+            type="submit"
+            class="submitEvidenceButton"
+          >
+            Enviar actualización
+          </button>
+        </form>
+      </article>
+
+      <!-- HISTORIAL -->
+      <article class="trackingCard">
+        <div class="cardHeading">
+          <span class="cardIcon">
+            🕒
+          </span>
+
+          <div>
+            <small>
+              SEGUIMIENTO
+            </small>
+
+            <h2>
+              Actualizaciones recibidas
+            </h2>
+          </div>
+        </div>
+
+        <div
+          class="timeline"
+          id="updatesTimeline"
+        >
+          <div class="timelineEmpty">
+            Todavía no hay actualizaciones registradas.
+          </div>
+        </div>
+      </article>
+
+      <!-- AVISO -->
+      <aside class="securityNotice">
+        <b>
+          🔒 Importante
+        </b>
+
+        <p>
+          No publiques información falsa. Cada actualización queda registrada
+          para mantener un seguimiento confiable del caso.
+        </p>
+      </aside>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL DE CONFIRMACIÓN -->
+  <div
+    class="confirmationOverlay"
+    id="confirmationOverlay"
+    hidden
+  >
+    <section
+      class="confirmationModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirmationTitle"
+    >
+      <div
+        class="confirmationIcon"
+        id="confirmationIcon"
+      >
+        ✓
+      </div>
+
+      <h2 id="confirmationTitle">
+        Confirmar actualización
+      </h2>
+
+      <p id="confirmationMessage">
+        ¿Deseas registrar esta actualización?
+      </p>
+
+      <div class="confirmationActions">
+        <button
+          type="button"
+          class="secondaryButton"
+          id="cancelConfirmationButton"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="primaryButton"
+          id="confirmActionButton"
+        >
+          Confirmar
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script
+    type="module"
+    src="./seguimiento.js"
+  ></script>
+</body>
+</html>
