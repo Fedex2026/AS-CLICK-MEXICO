@@ -1,6 +1,5 @@
 import {
-  db,
-  storage
+  db
 } from "./firebase-config.js";
 
 import {
@@ -16,11 +15,6 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
 /* ============================================================
    CONFIGURACIÓN
@@ -29,6 +23,12 @@ import {
 const COLECCION_ALERTAS = "alertasEmergencia";
 const SUBCOLECCION_ACTUALIZACIONES = "actualizaciones";
 const LIMITE_ARCHIVO = 25 * 1024 * 1024; // 25 MB
+
+// Cloudinary: carga pública mediante preset Unsigned.
+const CLOUDINARY_CLOUD_NAME = "dxcyy6jyv";
+const CLOUDINARY_UPLOAD_PRESET = "as_click_evidencias";
+const CLOUDINARY_UPLOAD_URL =
+  `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
 const ACCIONES = {
   voy_para_alla: {
@@ -828,41 +828,42 @@ async function enviarEvidencia(evento) {
   try {
     let archivoUrl = "";
     let archivoRuta = "";
+    let cloudinaryPublicId = "";
+    let cloudinaryResourceType = "";
+    let cloudinaryVersion = null;
 
     if (archivo) {
-      const extension =
-        obtenerExtensionSegura(archivo.name);
-
-      const nombreGenerado =
-        `${Date.now()}_${crearIdSeguro()}${extension}`;
-
-      archivoRuta =
-        `alertasEmergencia/${alertaId}/evidencias/${nombreGenerado}`;
-
-      const referenciaStorage = ref(
-        storage,
-        archivoRuta
-      );
-
-      const tarea = uploadBytesResumable(
-        referenciaStorage,
-        archivo,
-        {
-          contentType: archivo.type,
-          customMetadata: {
-            alertaId,
-            visitanteId,
-            origen: "seguimiento_web"
+      const resultadoCloudinary =
+        await subirArchivoACloudinary(
+          archivo,
+          progreso => {
+            actualizarProgresoEvidencia(progreso);
           }
-        }
-      );
+        );
 
-      archivoUrl = await esperarCarga(
-        tarea,
-        progreso => {
-          actualizarProgresoEvidencia(progreso);
-        }
-      );
+      archivoUrl =
+        resultadoCloudinary.secure_url ||
+        resultadoCloudinary.url ||
+        "";
+
+      cloudinaryPublicId =
+        resultadoCloudinary.public_id || "";
+
+      cloudinaryResourceType =
+        resultadoCloudinary.resource_type || "";
+
+      cloudinaryVersion =
+        resultadoCloudinary.version || null;
+
+      // Se conserva este campo para no alterar la estructura
+      // que ya utiliza el historial.
+      archivoRuta = cloudinaryPublicId;
+
+      if (!archivoUrl) {
+        throw new Error(
+          "Cloudinary no devolvió una URL válida."
+        );
+      }
     }
 
     await addDoc(
@@ -884,6 +885,21 @@ async function enviarEvidencia(evento) {
         archivoNombre: archivo?.name || "",
         archivoTipo: archivo?.type || "",
         archivoTamano: archivo?.size || 0,
+
+        // Datos necesarios para identificar y eliminar
+        // posteriormente el recurso desde un servidor seguro.
+        cloudinaryPublicId,
+        cloudinaryResourceType,
+        cloudinaryVersion,
+        proveedorArchivo: archivo
+          ? "cloudinary"
+          : "",
+        fechaExpiracion: archivo
+          ? new Date(
+              Date.now() + 24 * 60 * 60 * 1000
+            )
+          : null,
+
         fecha: serverTimestamp(),
         visitanteId,
         origen: "seguimiento_web"
@@ -913,11 +929,10 @@ async function enviarEvidencia(evento) {
     );
 
     mostrarRetroalimentacion(
-      error?.code === "storage/unauthorized"
-        ? "Firebase Storage no permitió subir el archivo."
-        : error?.code === "permission-denied"
-          ? "Firestore no permitió guardar la evidencia."
-          : "No fue posible enviar la evidencia.",
+      error?.code === "permission-denied"
+        ? "Firestore no permitió guardar la evidencia."
+        : error?.message ||
+          "No fue posible enviar la evidencia.",
       "error"
     );
   } finally {
@@ -926,35 +941,94 @@ async function enviarEvidencia(evento) {
   }
 }
 
-function esperarCarga(tarea, alProgresar) {
+function subirArchivoACloudinary(
+  archivo,
+  alProgresar
+) {
   return new Promise((resolve, reject) => {
-    tarea.on(
-      "state_changed",
-      captura => {
-        const progreso = captura.totalBytes
-          ? Math.round(
-              (
-                captura.bytesTransferred /
-                captura.totalBytes
-              ) * 100
-            )
-          : 0;
+    const formulario = new FormData();
+
+    formulario.append("file", archivo);
+    formulario.append(
+      "upload_preset",
+      CLOUDINARY_UPLOAD_PRESET
+    );
+    formulario.append(
+      "context",
+      `alerta_id=${alertaId}|visitante_id=${visitanteId}|origen=seguimiento_web`
+    );
+    formulario.append(
+      "tags",
+      `as_click_evidencia,alerta_${alertaId}`
+    );
+
+    const solicitud = new XMLHttpRequest();
+    solicitud.open(
+      "POST",
+      CLOUDINARY_UPLOAD_URL,
+      true
+    );
+    solicitud.responseType = "json";
+    solicitud.timeout = 120000;
+
+    solicitud.upload.addEventListener(
+      "progress",
+      evento => {
+        if (!evento.lengthComputable) {
+          return;
+        }
+
+        const progreso = Math.round(
+          (evento.loaded / evento.total) * 100
+        );
 
         alProgresar(progreso);
-      },
-      reject,
-      async () => {
-        try {
-          resolve(
-            await getDownloadURL(
-              tarea.snapshot.ref
-            )
-          );
-        } catch (error) {
-          reject(error);
-        }
       }
     );
+
+    solicitud.addEventListener("load", () => {
+      const respuesta =
+        solicitud.response || {};
+
+      if (
+        solicitud.status >= 200 &&
+        solicitud.status < 300
+      ) {
+        alProgresar(100);
+        resolve(respuesta);
+        return;
+      }
+
+      const mensaje =
+        respuesta?.error?.message ||
+        `Cloudinary rechazó la carga (${solicitud.status}).`;
+
+      reject(new Error(mensaje));
+    });
+
+    solicitud.addEventListener("error", () => {
+      reject(
+        new Error(
+          "No fue posible conectar con Cloudinary."
+        )
+      );
+    });
+
+    solicitud.addEventListener("timeout", () => {
+      reject(
+        new Error(
+          "La carga tardó demasiado y fue cancelada."
+        )
+      );
+    });
+
+    solicitud.addEventListener("abort", () => {
+      reject(
+        new Error("La carga fue cancelada.")
+      );
+    });
+
+    solicitud.send(formulario);
   });
 }
 
@@ -1343,16 +1417,6 @@ function crearIdSeguro() {
       .toString(36)
       .slice(2, 12)
   );
-}
-
-function obtenerExtensionSegura(nombre) {
-  const coincidencia = String(
-    nombre || ""
-  ).match(/\.[a-zA-Z0-9]{1,8}$/);
-
-  return coincidencia
-    ? coincidencia[0].toLowerCase()
-    : "";
 }
 
 function esTipoEvidenciaPermitido(tipoMime) {
