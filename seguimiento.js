@@ -1,6 +1,3 @@
-// seguimiento.js - AS CLICK
-// Página pública de seguimiento para alertas de Robo y Montachoques.
-
 import {
   db,
   storage
@@ -8,7 +5,6 @@ import {
 
 import {
   doc,
-  getDoc,
   onSnapshot,
   collection,
   addDoc,
@@ -18,58 +14,58 @@ import {
   updateDoc,
   increment,
   limit
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 import {
   ref,
   uploadBytesResumable,
   getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
-// ============================================================
-// CONFIGURACIÓN GENERAL
-// ============================================================
+/* ============================================================
+   CONFIGURACIÓN
+============================================================ */
 
-const COLLECTION_ALERTS = "alertasEmergencia";
-const SUBCOLLECTION_UPDATES = "actualizaciones";
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+const COLECCION_ALERTAS = "alertasEmergencia";
+const SUBCOLECCION_ACTUALIZACIONES = "actualizaciones";
+const LIMITE_ARCHIVO = 25 * 1024 * 1024; // 25 MB
 
-const ACTIONS = {
+const ACCIONES = {
   voy_para_alla: {
-    label: "Voy para allá",
-    icon: "🚗",
-    status: "apoyo_en_camino",
-    statusLabel: "APOYO EN CAMINO"
+    etiqueta: "Voy para allá",
+    icono: "🚗",
+    estado: "apoyo_en_camino",
+    estadoTexto: "APOYO EN CAMINO"
   },
   llego_policia: {
-    label: "Llegó la policía",
-    icon: "👮",
-    status: "policia_en_sitio",
-    statusLabel: "POLICÍA EN SITIO"
+    etiqueta: "Llegó la policía",
+    icono: "👮",
+    estado: "policia_en_sitio",
+    estadoTexto: "POLICÍA EN SITIO"
   },
   cliente_esta_bien: {
-    label: "Cliente está bien",
-    icon: "✅",
-    status: "cliente_seguro",
-    statusLabel: "CLIENTE ESTÁ BIEN"
+    etiqueta: "Cliente está bien",
+    icono: "✅",
+    estado: "cliente_seguro",
+    estadoTexto: "CLIENTE ESTÁ BIEN"
   },
   vehiculo_localizado: {
-    label: "Vehículo localizado",
-    icon: "🔎",
-    status: "vehiculo_localizado",
-    statusLabel: "VEHÍCULO LOCALIZADO"
+    etiqueta: "Vehículo localizado",
+    icono: "🔎",
+    estado: "vehiculo_localizado",
+    estadoTexto: "VEHÍCULO LOCALIZADO"
   },
   vehiculo_recuperado: {
-    label: "Vehículo recuperado",
-    icon: "🏁",
-    status: "vehiculo_recuperado",
-    statusLabel: "VEHÍCULO RECUPERADO"
+    etiqueta: "Vehículo recuperado",
+    icono: "🏁",
+    estado: "vehiculo_recuperado",
+    estadoTexto: "VEHÍCULO RECUPERADO"
   }
 };
 
-// ============================================================
-// REFERENCIAS DEL DOM
-// ============================================================
+/* ============================================================
+   ELEMENTOS DE LA PÁGINA
+============================================================ */
 
 const ui = {
   loadingPanel: document.getElementById("loadingPanel"),
@@ -97,621 +93,863 @@ const ui = {
   locationPlaceholder: document.getElementById("locationPlaceholder"),
   openLocationButton: document.getElementById("openLocationButton"),
 
-  actionButtons: [...document.querySelectorAll(".caseActionButton")],
+  actionButtons: Array.from(
+    document.querySelectorAll(".caseActionButton")
+  ),
   actionFeedback: document.getElementById("actionFeedback"),
 
   evidenceForm: document.getElementById("evidenceForm"),
   evidenceFile: document.getElementById("evidenceFile"),
   evidenceComment: document.getElementById("evidenceComment"),
-  evidenceSubmitButton: document.querySelector(".submitEvidenceButton"),
+  evidenceSubmitButton: document.querySelector(
+    ".submitEvidenceButton"
+  ),
 
   updatesTimeline: document.getElementById("updatesTimeline"),
 
-  confirmationOverlay: document.getElementById("confirmationOverlay"),
+  confirmationOverlay: document.getElementById(
+    "confirmationOverlay"
+  ),
   confirmationIcon: document.getElementById("confirmationIcon"),
-  confirmationTitle: document.getElementById("confirmationTitle"),
-  confirmationMessage: document.getElementById("confirmationMessage"),
-  cancelConfirmationButton: document.getElementById("cancelConfirmationButton"),
-  confirmActionButton: document.getElementById("confirmActionButton")
+  confirmationTitle: document.getElementById(
+    "confirmationTitle"
+  ),
+  confirmationMessage: document.getElementById(
+    "confirmationMessage"
+  ),
+  cancelConfirmationButton: document.getElementById(
+    "cancelConfirmationButton"
+  ),
+  confirmActionButton: document.getElementById(
+    "confirmActionButton"
+  )
 };
 
-// ============================================================
-// ESTADO DE LA PÁGINA
-// ============================================================
+/* ============================================================
+   ESTADO
+============================================================ */
 
-let alertId = "";
-let alertRef = null;
-let alertData = null;
-let pendingAction = null;
-let unsubscribeAlert = null;
-let unsubscribeUpdates = null;
-let actionInProgress = false;
-let evidenceInProgress = false;
+let alertaId = "";
+let referenciaAlerta = null;
+let datosAlerta = null;
+let accionPendiente = null;
+let cancelarEscuchaAlerta = null;
+let cancelarEscuchaActualizaciones = null;
+let accionEnProceso = false;
+let evidenciaEnProceso = false;
+let temporizadorCarga = null;
 
-// Identificador local para distinguir actualizaciones del mismo dispositivo.
-const visitorId = getOrCreateVisitorId();
+const visitanteId = obtenerOCrearIdVisitante();
 
-// ============================================================
-// INICIO
-// ============================================================
+/* ============================================================
+   INICIO
+============================================================ */
 
-document.addEventListener("DOMContentLoaded", initializeTrackingPage);
+iniciarSeguimiento();
 
-async function initializeTrackingPage() {
-  bindEvents();
+function iniciarSeguimiento() {
+  console.log("AS CLICK: seguimiento.js iniciado");
 
-  alertId = new URLSearchParams(window.location.search).get("id")?.trim() || "";
+  enlazarEventos();
 
-  if (!alertId) {
-    showFatalError(
+  alertaId =
+    new URLSearchParams(window.location.search)
+      .get("id")
+      ?.trim() || "";
+
+  if (!alertaId) {
+    mostrarErrorFatal(
       "Enlace incompleto",
-      "El enlace no contiene el identificador del caso. Solicita nuevamente el enlace de seguimiento."
+      "El enlace no contiene el identificador del caso."
     );
     return;
   }
 
-  alertRef = doc(db, COLLECTION_ALERTS, alertId);
+  referenciaAlerta = doc(
+    db,
+    COLECCION_ALERTAS,
+    alertaId
+  );
 
-  try {
-    const initialSnapshot = await getDoc(alertRef);
-
-    if (!initialSnapshot.exists()) {
-      showFatalError(
-        "Caso no encontrado",
-        "La alerta no existe, fue eliminada o el enlace ya no es válido."
+  temporizadorCarga = window.setTimeout(() => {
+    if (!datosAlerta) {
+      mostrarErrorFatal(
+        "La consulta está tardando demasiado",
+        "Revisa tu conexión y vuelve a abrir el enlace."
       );
-      return;
     }
+  }, 15000);
 
-    alertData = {
-      id: initialSnapshot.id,
-      ...initialSnapshot.data()
-    };
-
-    renderAlert(alertData);
-    showTrackingContent();
-    startRealtimeListeners();
-  } catch (error) {
-    console.error("Error al abrir la alerta:", error);
-
-    if (error?.code === "permission-denied") {
-      showFatalError(
-        "Acceso no autorizado",
-        "Firestore no permitió consultar este caso. Será necesario habilitar las reglas de lectura para el enlace de seguimiento."
-      );
-      return;
-    }
-
-    showFatalError(
-      "No fue posible abrir el seguimiento",
-      "Verifica tu conexión a internet e inténtalo nuevamente."
-    );
-  }
+  iniciarEscuchaAlerta();
+  iniciarEscuchaActualizaciones();
 }
 
-function bindEvents() {
-  ui.actionButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const actionKey = button.dataset.action;
-      openActionConfirmation(actionKey);
+function enlazarEventos() {
+  ui.actionButtons.forEach(boton => {
+    boton.addEventListener("click", () => {
+      abrirConfirmacionAccion(
+        boton.dataset.action || ""
+      );
     });
   });
 
-  ui.cancelConfirmationButton?.addEventListener("click", closeActionConfirmation);
-  ui.confirmActionButton?.addEventListener("click", confirmPendingAction);
-  ui.evidenceForm?.addEventListener("submit", submitEvidence);
+  ui.cancelConfirmationButton?.addEventListener(
+    "click",
+    cerrarConfirmacionAccion
+  );
 
-  ui.confirmationOverlay?.addEventListener("click", (event) => {
-    if (event.target === ui.confirmationOverlay) {
-      closeActionConfirmation();
+  ui.confirmActionButton?.addEventListener(
+    "click",
+    confirmarAccion
+  );
+
+  ui.evidenceForm?.addEventListener(
+    "submit",
+    enviarEvidencia
+  );
+
+  ui.confirmationOverlay?.addEventListener(
+    "click",
+    evento => {
+      if (evento.target === ui.confirmationOverlay) {
+        cerrarConfirmacionAccion();
+      }
+    }
+  );
+
+  document.addEventListener("keydown", evento => {
+    if (evento.key === "Escape") {
+      cerrarConfirmacionAccion();
     }
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeActionConfirmation();
-    }
+  window.addEventListener("online", () => {
+    actualizarEstadoConexion(true);
   });
 
-  window.addEventListener("online", () => setConnectionStatus(true));
-  window.addEventListener("offline", () => setConnectionStatus(false));
-  window.addEventListener("beforeunload", stopRealtimeListeners);
+  window.addEventListener("offline", () => {
+    actualizarEstadoConexion(false);
+  });
+
+  window.addEventListener(
+    "beforeunload",
+    detenerEscuchas
+  );
 }
 
-// ============================================================
-// ESCUCHAS EN TIEMPO REAL
-// ============================================================
+/* ============================================================
+   FIRESTORE EN TIEMPO REAL
+============================================================ */
 
-function startRealtimeListeners() {
-  stopRealtimeListeners();
+function iniciarEscuchaAlerta() {
+  cancelarEscuchaAlerta = onSnapshot(
+    referenciaAlerta,
+    documento => {
+      window.clearTimeout(temporizadorCarga);
+      actualizarEstadoConexion(true);
 
-  unsubscribeAlert = onSnapshot(
-    alertRef,
-    (snapshot) => {
-      setConnectionStatus(true);
-
-      if (!snapshot.exists()) {
-        showFatalError(
-          "Caso no disponible",
-          "Esta alerta ya no se encuentra disponible."
+      if (!documento.exists()) {
+        mostrarErrorFatal(
+          "Caso no encontrado",
+          "La alerta no existe o el enlace ya no es válido."
         );
         return;
       }
 
-      alertData = {
-        id: snapshot.id,
-        ...snapshot.data()
+      datosAlerta = {
+        id: documento.id,
+        ...documento.data()
       };
 
-      renderAlert(alertData);
+      mostrarAlerta(datosAlerta);
+      mostrarContenido();
     },
-    (error) => {
-      console.error("Error en tiempo real de la alerta:", error);
-      setConnectionStatus(false);
+    error => {
+      window.clearTimeout(temporizadorCarga);
+      console.error(
+        "Error al consultar la alerta:",
+        error
+      );
+
+      const esPermiso =
+        error?.code === "permission-denied";
+
+      mostrarErrorFatal(
+        esPermiso
+          ? "Acceso no autorizado"
+          : "No fue posible abrir el seguimiento",
+        esPermiso
+          ? "Las reglas de Firestore no permiten consultar este caso."
+          : "Revisa tu conexión e inténtalo nuevamente."
+      );
     }
   );
+}
 
-  const updatesRef = collection(alertRef, SUBCOLLECTION_UPDATES);
-  const updatesQuery = query(
-    updatesRef,
+function iniciarEscuchaActualizaciones() {
+  const referenciaActualizaciones = collection(
+    referenciaAlerta,
+    SUBCOLECCION_ACTUALIZACIONES
+  );
+
+  const consulta = query(
+    referenciaActualizaciones,
     orderBy("fecha", "desc"),
     limit(100)
   );
 
-  unsubscribeUpdates = onSnapshot(
-    updatesQuery,
-    (snapshot) => {
-      const updates = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...item.data()
-      }));
+  cancelarEscuchaActualizaciones = onSnapshot(
+    consulta,
+    resultado => {
+      const actualizaciones = resultado.docs.map(
+        documento => ({
+          id: documento.id,
+          ...documento.data()
+        })
+      );
 
-      renderUpdates(updates);
+      mostrarActualizaciones(actualizaciones);
     },
-    (error) => {
-      console.error("Error al leer actualizaciones:", error);
+    error => {
+      console.error(
+        "Error al consultar actualizaciones:",
+        error
+      );
 
-      if (error?.code === "permission-denied") {
-        renderTimelineMessage(
-          "Las reglas de Firestore todavía no permiten consultar las actualizaciones."
-        );
-      } else {
-        renderTimelineMessage(
-          "No fue posible cargar el historial en este momento."
-        );
-      }
+      mostrarMensajeHistorial(
+        error?.code === "permission-denied"
+          ? "Las reglas de Firestore no permiten consultar el historial."
+          : "No fue posible cargar el historial."
+      );
     }
   );
 }
 
-function stopRealtimeListeners() {
-  if (typeof unsubscribeAlert === "function") {
-    unsubscribeAlert();
+function detenerEscuchas() {
+  if (typeof cancelarEscuchaAlerta === "function") {
+    cancelarEscuchaAlerta();
   }
 
-  if (typeof unsubscribeUpdates === "function") {
-    unsubscribeUpdates();
+  if (
+    typeof cancelarEscuchaActualizaciones ===
+    "function"
+  ) {
+    cancelarEscuchaActualizaciones();
   }
 
-  unsubscribeAlert = null;
-  unsubscribeUpdates = null;
+  cancelarEscuchaAlerta = null;
+  cancelarEscuchaActualizaciones = null;
 }
 
-// ============================================================
-// RENDER DE LA ALERTA
-// ============================================================
+/* ============================================================
+   MOSTRAR DATOS REALES DE LA ALERTA
+============================================================ */
 
-function renderAlert(data) {
-  const member = data.miembro || data.usuario || {};
-  const vehicle = data.vehiculo || {};
+function mostrarAlerta(data) {
+  const cliente = data.cliente || {};
+  const vehiculo = data.vehiculo || {};
 
-  setText(ui.caseFolio, firstValue(data.folio, data.numeroFolio, alertId));
-  setText(ui.alertType, formatAlertType(firstValue(data.tipo, data.tipoAlerta)));
-
-  const status = normalizeStatus(firstValue(data.estado, data.estadoActual, "activa"));
-  setText(ui.caseStatus, status.label);
-  ui.caseStatus.dataset.status = status.key;
-
-  setText(ui.createdAt, formatTimestamp(firstValue(data.fechaCreacion, data.createdAt)));
-  setText(ui.updatedAt, formatTimestamp(firstValue(data.ultimaActualizacion, data.updatedAt, data.fechaCreacion)));
-
-  const brand = firstValue(vehicle.marca, data.marca, data.marcaRegistro);
-  const model = firstValue(
-    vehicle.subMarca,
-    vehicle.submarca,
-    vehicle.modelo,
-    data.subMarca,
-    data.submarca,
-    data.modelo,
-    data.subMarcaRegistro
+  colocarTexto(
+    ui.caseFolio,
+    primerValor(
+      data.folio,
+      data.numeroFolio,
+      data.idAlerta,
+      alertaId
+    )
   );
 
-  setText(
+  colocarTexto(
+    ui.alertType,
+    formatearTipoAlerta(
+      primerValor(
+        data.tipo,
+        data.tipoAlerta,
+        "Alerta"
+      )
+    )
+  );
+
+  const estado = normalizarEstado(
+    primerValor(
+      data.estado,
+      data.estadoActual,
+      "en_seguimiento"
+    )
+  );
+
+  colocarTexto(ui.caseStatus, estado.etiqueta);
+
+  if (ui.caseStatus) {
+    ui.caseStatus.dataset.status = estado.clave;
+  }
+
+  colocarTexto(
+    ui.createdAt,
+    formatearFecha(
+      primerValor(
+        data.creadoEn,
+        data.fechaCreacion,
+        data.createdAt
+      )
+    )
+  );
+
+  colocarTexto(
+    ui.updatedAt,
+    formatearFecha(
+      primerValor(
+        data.actualizadoEn,
+        data.ultimaActualizacion,
+        data.updatedAt,
+        data.creadoEn,
+        data.fechaCreacion
+      )
+    )
+  );
+
+  colocarTexto(
     ui.vehicleName,
-    [brand, model].filter(Boolean).join(" ") || "Vehículo no registrado"
+    [
+      primerValor(
+        vehiculo.marca,
+        data.marca,
+        data.marcaRegistro
+      ),
+      primerValor(
+        vehiculo.subMarca,
+        vehiculo.submarca,
+        vehiculo.modelo,
+        data.subMarca,
+        data.submarca,
+        data.subMarcaRegistro
+      )
+    ]
+      .filter(Boolean)
+      .join(" ") || "Vehículo no registrado"
   );
 
-  setText(
+  colocarTexto(
     ui.vehiclePlates,
-    firstValue(vehicle.placas, data.placas, data.placasRegistro, "Sin registrar")
+    primerValor(
+      vehiculo.placas,
+      data.placas,
+      data.placasRegistro,
+      "Sin registrar"
+    )
   );
 
-  setText(
+  colocarTexto(
     ui.vehicleColor,
-    firstValue(vehicle.color, data.color, data.colorRegistro, "Sin registrar")
+    primerValor(
+      vehiculo.color,
+      data.color,
+      data.colorRegistro,
+      "Sin registrar"
+    )
   );
 
-  setText(
+  colocarTexto(
     ui.vehicleVin,
-    firstValue(vehicle.serie, vehicle.vin, data.serie, data.vin, data.serieRegistro, "Sin registrar")
+    primerValor(
+      vehiculo.serie,
+      vehiculo.vin,
+      data.serie,
+      data.vin,
+      data.serieRegistro,
+      "Sin registrar"
+    )
   );
 
-  setText(
+  colocarTexto(
     ui.memberName,
-    firstValue(
-      member.nombre,
-      member.nombreCompleto,
+    primerValor(
+      cliente.nombre,
+      cliente.nombreCompleto,
       data.nombre,
-      data.nombreUsuario,
       data.nombreRegistro,
       "Miembro AS CLICK"
     )
   );
 
-  setText(
+  colocarTexto(
     ui.membershipNumber,
-    firstValue(
-      member.numeroMembresia,
+    primerValor(
       data.numeroMembresia,
-      data.membresia,
+      data.numeroMiembro,
+      cliente.numeroMembresia,
       "No registrada"
     )
   );
 
-  setText(
+  colocarTexto(
     ui.memberPhone,
-    firstValue(
-      member.telefono,
+    primerValor(
+      cliente.telefono,
       data.telefono,
       data.telefonoRegistro,
       "No disponible"
     )
   );
 
-  renderLocation(data);
-  updateActionAvailability(status.key);
+  mostrarUbicacion(data);
+  actualizarDisponibilidadAcciones(estado.clave);
 }
 
-function renderLocation(data) {
-  const location = data.ubicacion || data.location || {};
+function mostrarUbicacion(data) {
+  const ubicacionObjeto =
+    data.ubicacion &&
+    typeof data.ubicacion === "object"
+      ? data.ubicacion
+      : {};
 
-  const latitude = toNumber(
-    firstValue(
-      location.latitud,
-      location.latitude,
-      location.lat,
+  const latitud = convertirNumero(
+    primerValor(
+      ubicacionObjeto.latitud,
+      ubicacionObjeto.latitude,
+      ubicacionObjeto.lat,
       data.latitud,
       data.latitude,
       data.lat
     )
   );
 
-  const longitude = toNumber(
-    firstValue(
-      location.longitud,
-      location.longitude,
-      location.lng,
+  const longitud = convertirNumero(
+    primerValor(
+      ubicacionObjeto.longitud,
+      ubicacionObjeto.longitude,
+      ubicacionObjeto.lng,
       data.longitud,
       data.longitude,
       data.lng
     )
   );
 
-  const directUrl = firstValue(
-    location.url,
-    location.enlace,
+  const enlaceDirecto = primerValor(
+    data.ubicacionActual,
+    data.ubicacionInicial,
+    ubicacionObjeto.url,
+    ubicacionObjeto.enlace,
     data.enlaceUbicacion,
     data.urlUbicacion,
     data.googleMapsUrl
   );
 
-  let mapsUrl = "";
+  let enlaceMapa = "";
 
-  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
-    mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+  if (
+    Number.isFinite(latitud) &&
+    Number.isFinite(longitud)
+  ) {
+    enlaceMapa =
+      `https://maps.google.com/?q=${latitud},${longitud}`;
 
-    ui.locationPlaceholder.innerHTML = `
-      <span aria-hidden="true">📍</span>
-      <p><strong>Coordenadas registradas</strong></p>
-      <p>${escapeHtml(latitude.toFixed(6))}, ${escapeHtml(longitude.toFixed(6))}</p>
-    `;
-  } else if (directUrl) {
-    mapsUrl = directUrl;
+    if (ui.locationPlaceholder) {
+      ui.locationPlaceholder.innerHTML = `
+        <span aria-hidden="true">📍</span>
+        <p><strong>Coordenadas registradas</strong></p>
+        <p>${escaparHtml(latitud.toFixed(6))}, ${escaparHtml(longitud.toFixed(6))}</p>
+      `;
+    }
+  } else if (
+    enlaceDirecto &&
+    esUrlHttpSegura(enlaceDirecto)
+  ) {
+    enlaceMapa = enlaceDirecto;
 
-    ui.locationPlaceholder.innerHTML = `
-      <span aria-hidden="true">🗺️</span>
-      <p><strong>Ubicación disponible</strong></p>
-      <p>Abre el mapa para consultar el punto reportado.</p>
-    `;
+    if (ui.locationPlaceholder) {
+      ui.locationPlaceholder.innerHTML = `
+        <span aria-hidden="true">🗺️</span>
+        <p><strong>Ubicación disponible</strong></p>
+        <p>Presiona el botón para abrir Google Maps.</p>
+      `;
+    }
   } else {
-    ui.locationPlaceholder.innerHTML = `
-      <span aria-hidden="true">📍</span>
-      <p>La alerta todavía no contiene coordenadas válidas.</p>
-    `;
+    if (ui.locationPlaceholder) {
+      ui.locationPlaceholder.innerHTML = `
+        <span aria-hidden="true">📍</span>
+        <p>La alerta no contiene una ubicación válida.</p>
+      `;
+    }
   }
 
-  if (mapsUrl && isSafeHttpUrl(mapsUrl)) {
-    ui.openLocationButton.href = mapsUrl;
+  if (
+    ui.openLocationButton &&
+    enlaceMapa
+  ) {
+    ui.openLocationButton.href = enlaceMapa;
     ui.openLocationButton.hidden = false;
-  } else {
+  } else if (ui.openLocationButton) {
     ui.openLocationButton.removeAttribute("href");
     ui.openLocationButton.hidden = true;
   }
 }
 
-// ============================================================
-// REGISTRO DE ACCIONES
-// ============================================================
+/* ============================================================
+   ACCIONES DE SEGUIMIENTO
+============================================================ */
 
-function openActionConfirmation(actionKey) {
-  if (actionInProgress) {
+function abrirConfirmacionAccion(claveAccion) {
+  if (accionEnProceso) return;
+
+  const accion = ACCIONES[claveAccion];
+
+  if (!accion) {
+    mostrarRetroalimentacion(
+      "La acción seleccionada no es válida.",
+      "error"
+    );
     return;
   }
 
-  const action = ACTIONS[actionKey];
+  accionPendiente = claveAccion;
 
-  if (!action) {
-    showFeedback("Acción no válida.", "error");
-    return;
-  }
-
-  pendingAction = actionKey;
-  setText(ui.confirmationIcon, action.icon);
-  setText(ui.confirmationTitle, "Confirmar actualización");
-  setText(
-    ui.confirmationMessage,
-    `¿Confirmas que deseas registrar: “${action.label}”?`
+  colocarTexto(
+    ui.confirmationIcon,
+    accion.icono
   );
 
-  ui.confirmationOverlay.hidden = false;
+  colocarTexto(
+    ui.confirmationTitle,
+    "Confirmar actualización"
+  );
+
+  colocarTexto(
+    ui.confirmationMessage,
+    `¿Confirmas que deseas registrar: “${accion.etiqueta}”?`
+  );
+
+  if (ui.confirmationOverlay) {
+    ui.confirmationOverlay.hidden = false;
+  }
+
   document.body.style.overflow = "hidden";
   ui.confirmActionButton?.focus();
 }
 
-function closeActionConfirmation() {
-  if (actionInProgress) {
-    return;
+function cerrarConfirmacionAccion() {
+  if (accionEnProceso) return;
+
+  accionPendiente = null;
+
+  if (ui.confirmationOverlay) {
+    ui.confirmationOverlay.hidden = true;
   }
 
-  pendingAction = null;
-  ui.confirmationOverlay.hidden = true;
   document.body.style.overflow = "";
 }
 
-async function confirmPendingAction() {
-  if (!pendingAction || actionInProgress || !alertRef) {
+async function confirmarAccion() {
+  if (
+    !accionPendiente ||
+    accionEnProceso ||
+    !referenciaAlerta
+  ) {
     return;
   }
 
-  const actionKey = pendingAction;
-  const action = ACTIONS[actionKey];
+  const claveAccion = accionPendiente;
+  const accion = ACCIONES[claveAccion];
 
-  actionInProgress = true;
-  setActionButtonsDisabled(true);
-  setConfirmationBusy(true);
+  accionEnProceso = true;
+  deshabilitarAcciones(true);
+  marcarConfirmacionOcupada(true);
 
   try {
-    await addDoc(collection(alertRef, SUBCOLLECTION_UPDATES), {
-      tipo: "accion",
-      accion: actionKey,
-      titulo: action.label,
-      mensaje: action.label,
-      estadoResultante: action.status,
-      fecha: serverTimestamp(),
-      visitanteId: visitorId,
-      origen: "seguimiento_web",
-      userAgent: navigator.userAgent.slice(0, 300)
-    });
+    await addDoc(
+      collection(
+        referenciaAlerta,
+        SUBCOLECCION_ACTUALIZACIONES
+      ),
+      {
+        tipo: "accion",
+        accion: claveAccion,
+        titulo: accion.etiqueta,
+        mensaje: accion.etiqueta,
+        estadoResultante: accion.estado,
+        fecha: serverTimestamp(),
+        visitanteId,
+        origen: "seguimiento_web",
+        userAgent:
+          navigator.userAgent.slice(0, 300)
+      }
+    );
 
-    await updateDoc(alertRef, {
-      estado: action.status,
-      estadoTexto: action.statusLabel,
+    await updateDoc(referenciaAlerta, {
+      estado: accion.estado,
+      estadoTexto: accion.estadoTexto,
       ultimaActualizacion: serverTimestamp(),
+      actualizadoEn: serverTimestamp(),
       totalActualizaciones: increment(1),
-      ultimaAccion: actionKey,
-      ultimaAccionTexto: action.label
+      ultimaAccion: claveAccion,
+      ultimaAccionTexto: accion.etiqueta
     });
 
-    closeActionConfirmationForce();
-    showFeedback(`Actualización registrada: ${action.label}.`, "success");
-  } catch (error) {
-    console.error("Error al registrar la acción:", error);
+    cerrarConfirmacionForzada();
 
-    if (error?.code === "permission-denied") {
-      showFeedback(
-        "Firestore no permitió guardar la actualización. Deben habilitarse las reglas de escritura para participantes.",
-        "error"
+    mostrarRetroalimentacion(
+      `Actualización registrada: ${accion.etiqueta}.`,
+      "success"
+    );
+  } catch (error) {
+    console.error(
+      "Error al registrar la acción:",
+      error
+    );
+
+    mostrarRetroalimentacion(
+      error?.code === "permission-denied"
+        ? "Firestore no permitió guardar la actualización."
+        : "No fue posible registrar la actualización.",
+      "error"
+    );
+  } finally {
+    accionEnProceso = false;
+    deshabilitarAcciones(false);
+    marcarConfirmacionOcupada(false);
+
+    if (datosAlerta) {
+      const estadoActual = normalizarEstado(
+        datosAlerta.estado
       );
-    } else {
-      showFeedback(
-        "No fue posible registrar la actualización. Revisa tu conexión e inténtalo nuevamente.",
-        "error"
+
+      actualizarDisponibilidadAcciones(
+        estadoActual.clave
       );
     }
-  } finally {
-    actionInProgress = false;
-    setActionButtonsDisabled(false);
-    setConfirmationBusy(false);
   }
 }
 
-function closeActionConfirmationForce() {
-  pendingAction = null;
-  ui.confirmationOverlay.hidden = true;
+function cerrarConfirmacionForzada() {
+  accionPendiente = null;
+
+  if (ui.confirmationOverlay) {
+    ui.confirmationOverlay.hidden = true;
+  }
+
   document.body.style.overflow = "";
 }
 
-function setConfirmationBusy(isBusy) {
-  if (!ui.confirmActionButton || !ui.cancelConfirmationButton) {
+function marcarConfirmacionOcupada(ocupada) {
+  if (
+    !ui.confirmActionButton ||
+    !ui.cancelConfirmationButton
+  ) {
     return;
   }
 
-  ui.confirmActionButton.disabled = isBusy;
-  ui.cancelConfirmationButton.disabled = isBusy;
-  ui.confirmActionButton.textContent = isBusy ? "Guardando..." : "Confirmar";
+  ui.confirmActionButton.disabled = ocupada;
+  ui.cancelConfirmationButton.disabled = ocupada;
+
+  ui.confirmActionButton.textContent =
+    ocupada ? "Guardando..." : "Confirmar";
 }
 
-function setActionButtonsDisabled(disabled) {
-  ui.actionButtons.forEach((button) => {
-    button.disabled = disabled;
+function deshabilitarAcciones(deshabilitadas) {
+  ui.actionButtons.forEach(boton => {
+    boton.disabled = deshabilitadas;
   });
 }
 
-function updateActionAvailability(statusKey) {
-  const isClosed = [
+function actualizarDisponibilidadAcciones(estado) {
+  const casoCerrado = [
     "vehiculo_recuperado",
     "cerrada",
     "finalizada",
     "cancelada"
-  ].includes(statusKey);
+  ].includes(estado);
 
-  ui.actionButtons.forEach((button) => {
-    button.disabled = isClosed || actionInProgress;
+  ui.actionButtons.forEach(boton => {
+    boton.disabled =
+      casoCerrado || accionEnProceso;
   });
 
-  if (isClosed) {
-    showFeedback(
-      "El caso se encuentra cerrado. Ya no se aceptan nuevas acciones.",
+  if (casoCerrado) {
+    mostrarRetroalimentacion(
+      "El caso está cerrado y ya no acepta nuevas acciones.",
       "info"
     );
   }
 }
 
-// ============================================================
-// EVIDENCIA: ARCHIVO Y/O COMENTARIO
-// ============================================================
+/* ============================================================
+   EVIDENCIA
+============================================================ */
 
-async function submitEvidence(event) {
-  event.preventDefault();
+async function enviarEvidencia(evento) {
+  evento.preventDefault();
 
-  if (evidenceInProgress || !alertRef) {
+  if (
+    evidenciaEnProceso ||
+    !referenciaAlerta
+  ) {
     return;
   }
 
-  const file = ui.evidenceFile?.files?.[0] || null;
-  const comment = ui.evidenceComment?.value?.trim() || "";
+  const archivo =
+    ui.evidenceFile?.files?.[0] || null;
 
-  if (!file && !comment) {
-    showFeedback(
+  const comentario =
+    ui.evidenceComment?.value?.trim() || "";
+
+  if (!archivo && !comentario) {
+    mostrarRetroalimentacion(
       "Selecciona una foto o video, o escribe un comentario.",
       "error"
     );
     return;
   }
 
-  if (file && file.size > MAX_FILE_SIZE) {
-    showFeedback(
+  if (
+    archivo &&
+    archivo.size > LIMITE_ARCHIVO
+  ) {
+    mostrarRetroalimentacion(
       "El archivo supera el límite de 25 MB.",
       "error"
     );
     return;
   }
 
-  if (file && !isAllowedEvidenceType(file.type)) {
-    showFeedback(
+  if (
+    archivo &&
+    !esTipoEvidenciaPermitido(archivo.type)
+  ) {
+    mostrarRetroalimentacion(
       "Solo se permiten imágenes o videos.",
       "error"
     );
     return;
   }
 
-  evidenceInProgress = true;
-  setEvidenceBusy(true);
+  evidenciaEnProceso = true;
+  marcarEvidenciaOcupada(true);
 
   try {
-    let evidenceUrl = "";
-    let storagePath = "";
+    let archivoUrl = "";
+    let archivoRuta = "";
 
-    if (file) {
-      const extension = getSafeFileExtension(file.name);
-      const generatedName = `${Date.now()}_${cryptoSafeId()}${extension}`;
-      storagePath = `alertasEmergencia/${alertId}/evidencias/${generatedName}`;
+    if (archivo) {
+      const extension =
+        obtenerExtensionSegura(archivo.name);
 
-      const storageReference = ref(storage, storagePath);
-      const uploadTask = uploadBytesResumable(storageReference, file, {
-        contentType: file.type,
-        customMetadata: {
-          alertaId: alertId,
-          visitanteId: visitorId,
-          origen: "seguimiento_web"
+      const nombreGenerado =
+        `${Date.now()}_${crearIdSeguro()}${extension}`;
+
+      archivoRuta =
+        `alertasEmergencia/${alertaId}/evidencias/${nombreGenerado}`;
+
+      const referenciaStorage = ref(
+        storage,
+        archivoRuta
+      );
+
+      const tarea = uploadBytesResumable(
+        referenciaStorage,
+        archivo,
+        {
+          contentType: archivo.type,
+          customMetadata: {
+            alertaId,
+            visitanteId,
+            origen: "seguimiento_web"
+          }
         }
-      });
+      );
 
-      evidenceUrl = await waitForUpload(uploadTask, (progress) => {
-        updateEvidenceProgress(progress);
-      });
+      archivoUrl = await esperarCarga(
+        tarea,
+        progreso => {
+          actualizarProgresoEvidencia(progreso);
+        }
+      );
     }
 
-    await addDoc(collection(alertRef, SUBCOLLECTION_UPDATES), {
-      tipo: "evidencia",
-      titulo: file ? "Evidencia recibida" : "Comentario recibido",
-      mensaje: comment || "Se agregó un archivo como evidencia.",
-      comentario: comment,
-      archivoUrl: evidenceUrl,
-      archivoRuta: storagePath,
-      archivoNombre: file?.name || "",
-      archivoTipo: file?.type || "",
-      archivoTamano: file?.size || 0,
-      fecha: serverTimestamp(),
-      visitanteId: visitorId,
-      origen: "seguimiento_web"
-    });
+    await addDoc(
+      collection(
+        referenciaAlerta,
+        SUBCOLECCION_ACTUALIZACIONES
+      ),
+      {
+        tipo: "evidencia",
+        titulo: archivo
+          ? "Evidencia recibida"
+          : "Comentario recibido",
+        mensaje:
+          comentario ||
+          "Se agregó un archivo como evidencia.",
+        comentario,
+        archivoUrl,
+        archivoRuta,
+        archivoNombre: archivo?.name || "",
+        archivoTipo: archivo?.type || "",
+        archivoTamano: archivo?.size || 0,
+        fecha: serverTimestamp(),
+        visitanteId,
+        origen: "seguimiento_web"
+      }
+    );
 
-    await updateDoc(alertRef, {
+    await updateDoc(referenciaAlerta, {
       ultimaActualizacion: serverTimestamp(),
+      actualizadoEn: serverTimestamp(),
       totalActualizaciones: increment(1),
       ultimaAccion: "evidencia",
-      ultimaAccionTexto: file ? "Evidencia recibida" : "Comentario recibido"
+      ultimaAccionTexto: archivo
+        ? "Evidencia recibida"
+        : "Comentario recibido"
     });
 
-    ui.evidenceForm.reset();
-    showFeedback("La actualización fue enviada correctamente.", "success");
-  } catch (error) {
-    console.error("Error al enviar evidencia:", error);
+    ui.evidenceForm?.reset();
 
-    if (error?.code === "storage/unauthorized" || error?.code === "permission-denied") {
-      showFeedback(
-        "Firebase no permitió guardar la evidencia. Será necesario actualizar las reglas de Firestore o Storage.",
-        "error"
-      );
-    } else {
-      showFeedback(
-        "No fue posible enviar la evidencia. Revisa tu conexión e inténtalo nuevamente.",
-        "error"
-      );
-    }
+    mostrarRetroalimentacion(
+      "La actualización fue enviada correctamente.",
+      "success"
+    );
+  } catch (error) {
+    console.error(
+      "Error al enviar evidencia:",
+      error
+    );
+
+    mostrarRetroalimentacion(
+      error?.code === "storage/unauthorized"
+        ? "Firebase Storage no permitió subir el archivo."
+        : error?.code === "permission-denied"
+          ? "Firestore no permitió guardar la evidencia."
+          : "No fue posible enviar la evidencia.",
+      "error"
+    );
   } finally {
-    evidenceInProgress = false;
-    setEvidenceBusy(false);
+    evidenciaEnProceso = false;
+    marcarEvidenciaOcupada(false);
   }
 }
 
-function waitForUpload(uploadTask, onProgress) {
+function esperarCarga(tarea, alProgresar) {
   return new Promise((resolve, reject) => {
-    uploadTask.on(
+    tarea.on(
       "state_changed",
-      (snapshot) => {
-        const progress = snapshot.totalBytes
-          ? Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+      captura => {
+        const progreso = captura.totalBytes
+          ? Math.round(
+              (
+                captura.bytesTransferred /
+                captura.totalBytes
+              ) * 100
+            )
           : 0;
 
-        onProgress(progress);
+        alProgresar(progreso);
       },
       reject,
       async () => {
         try {
-          const url = await getDownloadURL(uploadTask.snapshot.ref);
-          resolve(url);
+          resolve(
+            await getDownloadURL(
+              tarea.snapshot.ref
+            )
+          );
         } catch (error) {
           reject(error);
         }
@@ -720,185 +958,291 @@ function waitForUpload(uploadTask, onProgress) {
   });
 }
 
-function setEvidenceBusy(isBusy) {
-  if (!ui.evidenceSubmitButton) {
-    return;
+function marcarEvidenciaOcupada(ocupada) {
+  if (!ui.evidenceSubmitButton) return;
+
+  ui.evidenceSubmitButton.disabled = ocupada;
+
+  if (ui.evidenceFile) {
+    ui.evidenceFile.disabled = ocupada;
   }
 
-  ui.evidenceSubmitButton.disabled = isBusy;
-  ui.evidenceFile.disabled = isBusy;
-  ui.evidenceComment.disabled = isBusy;
-  ui.evidenceSubmitButton.textContent = isBusy
-    ? "Enviando... 0%"
-    : "Enviar actualización";
+  if (ui.evidenceComment) {
+    ui.evidenceComment.disabled = ocupada;
+  }
+
+  ui.evidenceSubmitButton.textContent =
+    ocupada
+      ? "Enviando... 0%"
+      : "Enviar actualización";
 }
 
-function updateEvidenceProgress(progress) {
-  if (ui.evidenceSubmitButton && evidenceInProgress) {
-    ui.evidenceSubmitButton.textContent = `Enviando... ${progress}%`;
+function actualizarProgresoEvidencia(progreso) {
+  if (
+    evidenciaEnProceso &&
+    ui.evidenceSubmitButton
+  ) {
+    ui.evidenceSubmitButton.textContent =
+      `Enviando... ${progreso}%`;
   }
 }
 
-// ============================================================
-// HISTORIAL
-// ============================================================
+/* ============================================================
+   HISTORIAL
+============================================================ */
 
-function renderUpdates(updates) {
-  if (!ui.updatesTimeline) {
+function mostrarActualizaciones(actualizaciones) {
+  if (!ui.updatesTimeline) return;
+
+  if (!actualizaciones.length) {
+    mostrarMensajeHistorial(
+      "Todavía no hay actualizaciones registradas."
+    );
     return;
   }
 
-  if (!updates.length) {
-    renderTimelineMessage("Todavía no hay actualizaciones registradas.");
-    return;
-  }
+  ui.updatesTimeline.innerHTML =
+    actualizaciones
+      .map(actualizacion => {
+        const accion =
+          ACCIONES[actualizacion.accion];
 
-  ui.updatesTimeline.innerHTML = updates
-    .map((update) => {
-      const action = ACTIONS[update.accion];
-      const icon = action?.icon || (update.tipo === "evidencia" ? "📷" : "🕒");
-      const title = firstValue(update.titulo, action?.label, "Actualización");
-      const message = firstValue(update.mensaje, update.comentario, "");
-      const date = formatTimestamp(update.fecha);
+        const icono =
+          accion?.icono ||
+          (
+            actualizacion.tipo === "evidencia"
+              ? "📷"
+              : "🕒"
+          );
 
-      const evidenceLink = update.archivoUrl && isSafeHttpUrl(update.archivoUrl)
-        ? `<a href="${escapeAttribute(update.archivoUrl)}" target="_blank" rel="noopener noreferrer">Ver evidencia</a>`
-        : "";
+        const titulo = primerValor(
+          actualizacion.titulo,
+          accion?.etiqueta,
+          "Actualización"
+        );
 
-      return `
-        <article class="timelineItem">
-          <div class="timelineItemHeader">
-            <span class="timelineItemIcon" aria-hidden="true">${escapeHtml(icon)}</span>
-            <div>
-              <strong>${escapeHtml(title)}</strong>
-              <small>${escapeHtml(date)}</small>
+        const mensaje = primerValor(
+          actualizacion.mensaje,
+          actualizacion.comentario,
+          ""
+        );
+
+        const fecha = formatearFecha(
+          actualizacion.fecha
+        );
+
+        const enlaceEvidencia =
+          actualizacion.archivoUrl &&
+          esUrlHttpSegura(
+            actualizacion.archivoUrl
+          )
+            ? `
+              <a
+                href="${escaparAtributo(actualizacion.archivoUrl)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver evidencia
+              </a>
+            `
+            : "";
+
+        return `
+          <article class="timelineItem">
+            <div class="timelineItemHeader">
+              <span
+                class="timelineItemIcon"
+                aria-hidden="true"
+              >
+                ${escaparHtml(icono)}
+              </span>
+
+              <div>
+                <strong>
+                  ${escaparHtml(titulo)}
+                </strong>
+
+                <small>
+                  ${escaparHtml(fecha)}
+                </small>
+              </div>
             </div>
-          </div>
-          ${message ? `<p>${escapeHtml(message)}</p>` : ""}
-          ${evidenceLink}
-        </article>
-      `;
-    })
-    .join("");
+
+            ${
+              mensaje
+                ? `<p>${escaparHtml(mensaje)}</p>`
+                : ""
+            }
+
+            ${enlaceEvidencia}
+          </article>
+        `;
+      })
+      .join("");
 }
 
-function renderTimelineMessage(message) {
-  if (!ui.updatesTimeline) {
-    return;
-  }
+function mostrarMensajeHistorial(mensaje) {
+  if (!ui.updatesTimeline) return;
 
   ui.updatesTimeline.innerHTML = `
-    <div class="timelineEmpty">${escapeHtml(message)}</div>
+    <div class="timelineEmpty">
+      ${escaparHtml(mensaje)}
+    </div>
   `;
 }
 
-// ============================================================
-// MENSAJES Y ESTADOS VISUALES
-// ============================================================
+/* ============================================================
+   ESTADOS VISUALES
+============================================================ */
 
-function showTrackingContent() {
-  ui.loadingPanel.hidden = true;
-  ui.errorPanel.hidden = true;
-  ui.trackingContent.hidden = false;
-  setConnectionStatus(navigator.onLine);
-}
-
-function showFatalError(title, message) {
-  stopRealtimeListeners();
-  ui.loadingPanel.hidden = true;
-  ui.trackingContent.hidden = true;
-  ui.errorPanel.hidden = false;
-  setText(ui.errorTitle, title);
-  setText(ui.errorMessage, message);
-  setConnectionStatus(false);
-}
-
-function showFeedback(message, type = "info") {
-  if (!ui.actionFeedback) {
-    return;
+function mostrarContenido() {
+  if (ui.loadingPanel) {
+    ui.loadingPanel.hidden = true;
   }
+
+  if (ui.errorPanel) {
+    ui.errorPanel.hidden = true;
+  }
+
+  if (ui.trackingContent) {
+    ui.trackingContent.hidden = false;
+  }
+
+  actualizarEstadoConexion(
+    navigator.onLine
+  );
+}
+
+function mostrarErrorFatal(titulo, mensaje) {
+  detenerEscuchas();
+
+  if (ui.loadingPanel) {
+    ui.loadingPanel.hidden = true;
+  }
+
+  if (ui.trackingContent) {
+    ui.trackingContent.hidden = true;
+  }
+
+  if (ui.errorPanel) {
+    ui.errorPanel.hidden = false;
+  }
+
+  colocarTexto(ui.errorTitle, titulo);
+  colocarTexto(ui.errorMessage, mensaje);
+  actualizarEstadoConexion(false);
+}
+
+function mostrarRetroalimentacion(
+  mensaje,
+  tipo = "info"
+) {
+  if (!ui.actionFeedback) return;
 
   ui.actionFeedback.hidden = false;
-  ui.actionFeedback.className = `actionFeedback ${type}`;
-  ui.actionFeedback.textContent = message;
+  ui.actionFeedback.className =
+    `actionFeedback ${tipo}`;
+  ui.actionFeedback.textContent = mensaje;
 
-  window.clearTimeout(showFeedback.timeoutId);
-  showFeedback.timeoutId = window.setTimeout(() => {
-    ui.actionFeedback.hidden = true;
-  }, 6500);
+  window.clearTimeout(
+    mostrarRetroalimentacion.temporizador
+  );
+
+  mostrarRetroalimentacion.temporizador =
+    window.setTimeout(() => {
+      ui.actionFeedback.hidden = true;
+    }, 6500);
 }
 
-function setConnectionStatus(isOnline) {
-  if (!ui.connectionStatus) {
-    return;
-  }
+function actualizarEstadoConexion(conectado) {
+  if (!ui.connectionStatus) return;
 
-  ui.connectionStatus.textContent = isOnline ? "Conectado en tiempo real" : "Sin conexión";
-  ui.connectionStatus.dataset.online = String(Boolean(isOnline));
+  ui.connectionStatus.textContent = conectado
+    ? "Conectado en tiempo real"
+    : "Sin conexión";
+
+  ui.connectionStatus.dataset.online =
+    String(Boolean(conectado));
 }
 
-// ============================================================
-// UTILIDADES DE DATOS
-// ============================================================
+/* ============================================================
+   UTILIDADES
+============================================================ */
 
-function firstValue(...values) {
-  return values.find((value) => {
-    if (value === null || value === undefined) {
+function primerValor(...valores) {
+  return valores.find(valor => {
+    if (
+      valor === null ||
+      valor === undefined
+    ) {
       return false;
     }
 
-    if (typeof value === "string") {
-      return value.trim() !== "";
+    if (typeof valor === "string") {
+      return valor.trim() !== "";
     }
 
     return true;
   });
 }
 
-function setText(element, value) {
-  if (element) {
-    element.textContent = String(value ?? "");
+function colocarTexto(elemento, valor) {
+  if (elemento) {
+    elemento.textContent =
+      String(valor ?? "");
   }
 }
 
-function toNumber(value) {
-  if (typeof value === "number") {
-    return value;
+function convertirNumero(valor) {
+  if (typeof valor === "number") {
+    return valor;
   }
 
-  if (typeof value === "string" && value.trim() !== "") {
-    return Number(value.replace(",", "."));
+  if (
+    typeof valor === "string" &&
+    valor.trim() !== ""
+  ) {
+    return Number(
+      valor.replace(",", ".")
+    );
   }
 
   return Number.NaN;
 }
 
-function formatAlertType(value) {
-  const normalized = String(value || "Alerta")
+function formatearTipoAlerta(valor) {
+  const normalizado = String(
+    valor || "Alerta"
+  )
     .trim()
     .toLowerCase();
 
-  if (normalized.includes("robo")) {
+  if (normalizado.includes("robo")) {
     return "Robo de vehículo";
   }
 
-  if (normalized.includes("monta")) {
+  if (normalizado.includes("monta")) {
     return "Montachoques";
   }
 
-  return capitalizeWords(normalized || "alerta");
+  return capitalizarPalabras(
+    normalizado || "alerta"
+  );
 }
 
-function normalizeStatus(value) {
-  const key = String(value || "activa")
+function normalizarEstado(valor) {
+  const clave = String(
+    valor || "en_seguimiento"
+  )
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, "_")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "_");
 
-  const labels = {
+  const etiquetas = {
     activa: "ALERTA ACTIVA",
+    en_seguimiento: "EN SEGUIMIENTO",
     pendiente: "PENDIENTE DE VERIFICACIÓN",
     verificada: "ALERTA VERIFICADA",
     publicada: "ALERTA PUBLICADA",
@@ -913,86 +1257,129 @@ function normalizeStatus(value) {
   };
 
   return {
-    key,
-    label: labels[key] || capitalizeWords(key.replace(/_/g, " ")).toUpperCase()
+    clave,
+    etiqueta:
+      etiquetas[clave] ||
+      capitalizarPalabras(
+        clave.replace(/_/g, " ")
+      ).toUpperCase()
   };
 }
 
-function formatTimestamp(value) {
-  if (!value) {
+function formatearFecha(valor) {
+  if (!valor) return "Pendiente";
+
+  let fecha;
+
+  if (
+    typeof valor?.toDate === "function"
+  ) {
+    fecha = valor.toDate();
+  } else if (valor instanceof Date) {
+    fecha = valor;
+  } else if (
+    typeof valor === "number" ||
+    typeof valor === "string"
+  ) {
+    fecha = new Date(valor);
+  } else if (
+    typeof valor?.seconds === "number"
+  ) {
+    fecha = new Date(
+      valor.seconds * 1000
+    );
+  }
+
+  if (
+    !(fecha instanceof Date) ||
+    Number.isNaN(fecha.getTime())
+  ) {
     return "Pendiente";
   }
 
-  let date;
-
-  if (typeof value?.toDate === "function") {
-    date = value.toDate();
-  } else if (value instanceof Date) {
-    date = value;
-  } else if (typeof value === "number" || typeof value === "string") {
-    date = new Date(value);
-  } else if (typeof value?.seconds === "number") {
-    date = new Date(value.seconds * 1000);
-  }
-
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
-    return "Pendiente";
-  }
-
-  return new Intl.DateTimeFormat("es-MX", {
-    dateStyle: "medium",
-    timeStyle: "short"
-  }).format(date);
+  return new Intl.DateTimeFormat(
+    "es-MX",
+    {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }
+  ).format(fecha);
 }
 
-function capitalizeWords(value) {
-  return String(value)
+function capitalizarPalabras(valor) {
+  return String(valor)
     .split(" ")
     .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map(
+      palabra =>
+        palabra.charAt(0).toUpperCase() +
+        palabra.slice(1)
+    )
     .join(" ");
 }
 
-function getOrCreateVisitorId() {
-  const storageKey = "asClickEmergencyVisitorId";
-  let id = localStorage.getItem(storageKey);
+function obtenerOCrearIdVisitante() {
+  const clave =
+    "asClickEmergencyVisitorId";
+
+  let id = localStorage.getItem(clave);
 
   if (!id) {
-    id = cryptoSafeId();
-    localStorage.setItem(storageKey, id);
+    id = crearIdSeguro();
+    localStorage.setItem(clave, id);
   }
 
   return id;
 }
 
-function cryptoSafeId() {
+function crearIdSeguro() {
   if (window.crypto?.randomUUID) {
     return window.crypto.randomUUID();
   }
 
-  return `${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+  return (
+    `${Date.now()}_` +
+    Math.random()
+      .toString(36)
+      .slice(2, 12)
+  );
 }
 
-function getSafeFileExtension(fileName) {
-  const match = String(fileName || "").match(/\.[a-zA-Z0-9]{1,8}$/);
-  return match ? match[0].toLowerCase() : "";
+function obtenerExtensionSegura(nombre) {
+  const coincidencia = String(
+    nombre || ""
+  ).match(/\.[a-zA-Z0-9]{1,8}$/);
+
+  return coincidencia
+    ? coincidencia[0].toLowerCase()
+    : "";
 }
 
-function isAllowedEvidenceType(mimeType) {
-  return /^image\//i.test(mimeType) || /^video\//i.test(mimeType);
+function esTipoEvidenciaPermitido(tipoMime) {
+  return (
+    /^image\//i.test(tipoMime) ||
+    /^video\//i.test(tipoMime)
+  );
 }
 
-function isSafeHttpUrl(value) {
+function esUrlHttpSegura(valor) {
   try {
-    const url = new URL(value, window.location.origin);
-    return url.protocol === "http:" || url.protocol === "https:";
+    const url = new URL(
+      valor,
+      window.location.origin
+    );
+
+    return (
+      url.protocol === "http:" ||
+      url.protocol === "https:"
+    );
   } catch {
     return false;
   }
 }
 
-function escapeHtml(value) {
-  return String(value ?? "")
+function escaparHtml(valor) {
+  return String(valor ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -1000,6 +1387,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function escapeAttribute(value) {
-  return escapeHtml(value).replaceAll("`", "&#096;");
+function escaparAtributo(valor) {
+  return escaparHtml(valor)
+    .replaceAll("`", "&#096;");
 }
