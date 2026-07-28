@@ -1,0 +1,228 @@
+:root{
+  --primary:#0b5ed7;
+  --primary-dark:#063970;
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#dc2626;
+  --purple:#7c3aed;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(0,0,0,.10);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+.trackingPage{
+  max-width:1200px;
+  margin:auto;
+  padding:24px;
+}
+
+.trackingHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.brandBlock{
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+
+.trackingLogo{
+  width:70px;
+}
+
+.connectionStatus{
+  background:#e8f5e9;
+  color:#0f9d58;
+  padding:8px 14px;
+  border-radius:999px;
+  font-weight:bold;
+}
+
+.statusPanel,
+.trackingCard,
+.caseHero{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-bottom:22px;
+}
+
+.caseHero{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.caseStatus{
+  background:var(--danger);
+  color:#fff;
+  padding:10px 18px;
+  border-radius:999px;
+  font-weight:bold;
+}
+
+.trackingGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
+
+.cardHeading{
+  display:flex;
+  gap:15px;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.cardIcon{
+  font-size:34px;
+}
+
+.detailList div{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+
+.locationPlaceholder{
+  border:2px dashed #cbd5e1;
+  border-radius:14px;
+  padding:40px;
+  text-align:center;
+  margin:18px 0;
+}
+
+.locationButton,
+.submitEvidenceButton,
+.primaryButton{
+  display:inline-block;
+  text-decoration:none;
+  background:var(--primary);
+  color:#fff;
+  padding:12px 22px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.actionGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+  margin-top:18px;
+}
+
+.caseActionButton{
+  border:none;
+  color:#fff;
+  font-size:16px;
+  border-radius:14px;
+  padding:18px;
+  cursor:pointer;
+  transition:.25s;
+  font-weight:bold;
+}
+
+.caseActionButton:hover{
+  transform:translateY(-3px);
+}
+
+.green{background:#16a34a;}
+.blue{background:#2563eb;}
+.teal{background:#0891b2;}
+.orange{background:#ea580c;}
+.purple{background:#7c3aed;}
+
+.formField{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin:15px 0;
+}
+
+.formField input,
+.formField textarea{
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+}
+
+.timeline{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.timelineItem{
+  border-left:4px solid var(--primary);
+  background:#f8fafc;
+  padding:14px;
+}
+
+.securityNotice{
+  background:#fff8e1;
+  border-left:6px solid #f59e0b;
+  padding:20px;
+  border-radius:14px;
+}
+
+.confirmationOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.confirmationModal{
+  background:#fff;
+  width:90%;
+  max-width:430px;
+  border-radius:18px;
+  padding:28px;
+  text-align:center;
+}
+
+.confirmationActions{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-top:22px;
+}
+
+.secondaryButton{
+  padding:12px 20px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  background:#fff;
+  cursor:pointer;
+}
+
+@media(max-width:768px){
+.trackingHeader,
+.caseHero{
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+}
+.actionGrid{
+grid-template-columns:1fr;
+}
+}
