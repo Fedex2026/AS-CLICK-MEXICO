@@ -930,23 +930,7 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
-      datosMembresia.vigencia ||
-
- 
-
-      datosMembresia.finVigencia ||
-
- 
-
-      usuario.vigencia ||
-
- 
-
-      usuario.finVigencia ||
-
- 
-
-      "",
+      resolverVigenciaMembresia(datosMembresia, usuario),
 
  
 
@@ -1555,6 +1539,138 @@ function normalizarEstado(estado) {
  
 
   return equivalencias[valor] || valor;
+
+ 
+
+}
+
+ 
+
+function resolverVigenciaMembresia(datosMembresia = {}, usuario = {}) {
+
+ 
+
+  const vigenciaRegistrada =
+
+ 
+
+    datosMembresia.vigencia ||
+
+ 
+
+    datosMembresia.finVigencia ||
+
+ 
+
+    usuario.vigencia ||
+
+ 
+
+    usuario.finVigencia ||
+
+ 
+
+    "";
+
+ 
+
+  if (vigenciaRegistrada) {
+
+ 
+
+    return vigenciaRegistrada;
+
+ 
+
+  }
+
+ 
+
+  const fechaVinculacion =
+
+ 
+
+    datosMembresia.fechaVinculacion ||
+
+ 
+
+    usuario.fechaVinculacion ||
+
+ 
+
+    "";
+
+ 
+
+  if (!fechaVinculacion) {
+
+ 
+
+    return "";
+
+ 
+
+  }
+
+ 
+
+  let fechaBase;
+
+ 
+
+  if (
+
+ 
+
+    typeof fechaVinculacion === "object" &&
+
+ 
+
+    typeof fechaVinculacion.toDate === "function"
+
+ 
+
+  ) {
+
+ 
+
+    fechaBase = fechaVinculacion.toDate();
+
+ 
+
+  } else {
+
+ 
+
+    fechaBase = new Date(fechaVinculacion);
+
+ 
+
+  }
+
+ 
+
+  if (Number.isNaN(fechaBase.getTime())) {
+
+ 
+
+    return "";
+
+ 
+
+  }
+
+ 
+
+  const fechaFin = new Date(fechaBase);
+
+ 
+
+  fechaFin.setFullYear(fechaFin.getFullYear() + 1);
+
+ 
+
+  return fechaFin.toISOString().slice(0, 10);
 
  
 
