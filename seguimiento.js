@@ -2,11 +2,23 @@ import {
 
  
 
+ 
+
+ 
+
   auth,
 
  
 
+ 
+
+ 
+
   db
+
+ 
+
+ 
 
  
 
@@ -18,11 +30,27 @@ import {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 import {
 
  
 
+ 
+
+ 
+
   onAuthStateChanged
+
+ 
+
+ 
 
  
 
@@ -34,7 +62,19 @@ import {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 import {
+
+ 
+
+ 
 
  
 
@@ -42,7 +82,15 @@ import {
 
  
 
+ 
+
+ 
+
   getDoc,
+
+ 
+
+ 
 
  
 
@@ -50,7 +98,15 @@ import {
 
  
 
+ 
+
+ 
+
   collection,
+
+ 
+
+ 
 
  
 
@@ -58,7 +114,15 @@ import {
 
  
 
+ 
+
+ 
+
   query,
+
+ 
+
+ 
 
  
 
@@ -66,7 +130,15 @@ import {
 
  
 
+ 
+
+ 
+
   serverTimestamp,
+
+ 
+
+ 
 
  
 
@@ -74,11 +146,23 @@ import {
 
  
 
+ 
+
+ 
+
   increment,
 
  
 
+ 
+
+ 
+
   limit
+
+ 
+
+ 
 
  
 
@@ -94,7 +178,23 @@ import {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
+
+ 
+
+ 
 
  
 
@@ -102,7 +202,19 @@ import {
 
  
 
+ 
+
+ 
+
 ============================================================ */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -114,7 +226,15 @@ const COLECCION_ALERTAS = "alertasEmergencia";
 
  
 
+ 
+
+ 
+
 const SUBCOLECCION_ACTUALIZACIONES = "actualizaciones";
+
+ 
+
+ 
 
  
 
@@ -126,7 +246,19 @@ const LIMITE_ARCHIVO = 25 * 1024 * 1024; // 25 MB
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 // Cloudinary: carga pública mediante preset Unsigned.
+
+ 
+
+ 
 
  
 
@@ -134,11 +266,23 @@ const CLOUDINARY_CLOUD_NAME = "dxcyy6jyv";
 
  
 
+ 
+
+ 
+
 const CLOUDINARY_UPLOAD_PRESET = "as_click_evidencias";
 
  
 
+ 
+
+ 
+
 const CLOUDINARY_UPLOAD_URL =
+
+ 
+
+ 
 
  
 
@@ -150,7 +294,19 @@ const CLOUDINARY_UPLOAD_URL =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 const ACCIONES = {
+
+ 
+
+ 
 
  
 
@@ -158,7 +314,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     etiqueta: "Voy para allá",
+
+ 
+
+ 
 
  
 
@@ -166,7 +330,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     estado: "apoyo_en_camino",
+
+ 
+
+ 
 
  
 
@@ -174,7 +346,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
   },
+
+ 
+
+ 
 
  
 
@@ -182,7 +362,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     etiqueta: "Llegó la policía",
+
+ 
+
+ 
 
  
 
@@ -190,7 +378,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     estado: "policia_en_sitio",
+
+ 
+
+ 
 
  
 
@@ -198,7 +394,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
   },
+
+ 
+
+ 
 
  
 
@@ -206,7 +410,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     etiqueta: "Cliente está bien",
+
+ 
+
+ 
 
  
 
@@ -214,7 +426,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     estado: "cliente_seguro",
+
+ 
+
+ 
 
  
 
@@ -222,7 +442,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
   },
+
+ 
+
+ 
 
  
 
@@ -230,7 +458,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     etiqueta: "Vehículo localizado",
+
+ 
+
+ 
 
  
 
@@ -238,7 +474,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     estado: "vehiculo_localizado",
+
+ 
+
+ 
 
  
 
@@ -246,7 +490,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
   },
+
+ 
+
+ 
 
  
 
@@ -254,7 +506,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     etiqueta: "Vehículo recuperado",
+
+ 
+
+ 
 
  
 
@@ -262,7 +522,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
     estado: "vehiculo_recuperado",
+
+ 
+
+ 
 
  
 
@@ -270,7 +538,15 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -282,11 +558,27 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
 
  
 
+ 
+
+ 
+
    ELEMENTOS DE LA PÁGINA
+
+ 
+
+ 
 
  
 
@@ -298,7 +590,19 @@ const ACCIONES = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 const ui = {
+
+ 
+
+ 
 
  
 
@@ -306,7 +610,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   errorPanel: document.getElementById("errorPanel"),
+
+ 
+
+ 
 
  
 
@@ -314,11 +626,23 @@ const ui = {
 
  
 
+ 
+
+ 
+
   errorMessage: document.getElementById("errorMessage"),
 
  
 
+ 
+
+ 
+
   trackingContent: document.getElementById("trackingContent"),
+
+ 
+
+ 
 
  
 
@@ -330,7 +654,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   caseFolio: document.getElementById("caseFolio"),
+
+ 
+
+ 
 
  
 
@@ -338,11 +674,23 @@ const ui = {
 
  
 
+ 
+
+ 
+
   alertType: document.getElementById("alertType"),
 
  
 
+ 
+
+ 
+
   createdAt: document.getElementById("createdAt"),
+
+ 
+
+ 
 
  
 
@@ -354,7 +702,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   vehicleName: document.getElementById("vehicleName"),
+
+ 
+
+ 
 
  
 
@@ -362,7 +722,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   vehicleColor: document.getElementById("vehicleColor"),
+
+ 
+
+ 
 
  
 
@@ -374,11 +742,27 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   memberName: document.getElementById("memberName"),
 
  
 
+ 
+
+ 
+
   membershipNumber: document.getElementById("membershipNumber"),
+
+ 
+
+ 
 
  
 
@@ -390,7 +774,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   locationPlaceholder: document.getElementById("locationPlaceholder"),
+
+ 
+
+ 
 
  
 
@@ -402,7 +798,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   actionButtons: Array.from(
+
+ 
+
+ 
 
  
 
@@ -410,7 +818,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   ),
+
+ 
+
+ 
 
  
 
@@ -422,7 +838,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   evidenceForm: document.getElementById("evidenceForm"),
+
+ 
+
+ 
 
  
 
@@ -430,7 +858,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   evidenceComment: document.getElementById("evidenceComment"),
+
+ 
+
+ 
 
  
 
@@ -438,11 +874,27 @@ const ui = {
 
  
 
+ 
+
+ 
+
     ".submitEvidenceButton"
 
  
 
+ 
+
+ 
+
   ),
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -458,7 +910,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   confirmationOverlay: document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -466,7 +930,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   ),
+
+ 
+
+ 
 
  
 
@@ -474,7 +946,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   confirmationTitle: document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -482,7 +962,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   ),
+
+ 
+
+ 
 
  
 
@@ -490,11 +978,23 @@ const ui = {
 
  
 
+ 
+
+ 
+
     "confirmationMessage"
 
  
 
+ 
+
+ 
+
   ),
+
+ 
+
+ 
 
  
 
@@ -502,7 +1002,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
     "cancelConfirmationButton"
+
+ 
+
+ 
 
  
 
@@ -510,7 +1018,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   confirmActionButton: document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -518,7 +1034,15 @@ const ui = {
 
  
 
+ 
+
+ 
+
   )
+
+ 
+
+ 
 
  
 
@@ -530,7 +1054,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
+
+ 
+
+ 
 
  
 
@@ -538,7 +1074,19 @@ const ui = {
 
  
 
+ 
+
+ 
+
 ============================================================ */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -550,7 +1098,15 @@ let alertaId = "";
 
  
 
+ 
+
+ 
+
 let referenciaAlerta = null;
+
+ 
+
+ 
 
  
 
@@ -558,7 +1114,15 @@ let datosAlerta = null;
 
  
 
+ 
+
+ 
+
 let accionPendiente = null;
+
+ 
+
+ 
 
  
 
@@ -566,7 +1130,15 @@ let cancelarEscuchaAlerta = null;
 
  
 
+ 
+
+ 
+
 let cancelarEscuchaActualizaciones = null;
+
+ 
+
+ 
 
  
 
@@ -574,11 +1146,23 @@ let accionEnProceso = false;
 
  
 
+ 
+
+ 
+
 let evidenciaEnProceso = false;
 
  
 
+ 
+
+ 
+
 let temporizadorCarga = null;
+
+ 
+
+ 
 
  
 
@@ -590,11 +1174,35 @@ let esAdministrador = false;
 
  
 
+let datosPrivadosAlerta = null;
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
 const visitanteId = obtenerOCrearIdVisitante();
 
  
 
+ 
+
+ 
+
 const CLAVE_IDENTIDAD_PARTICIPANTE =
+
+ 
+
+ 
 
  
 
@@ -606,7 +1214,19 @@ const CLAVE_IDENTIDAD_PARTICIPANTE =
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
+
+ 
+
+ 
 
  
 
@@ -614,7 +1234,19 @@ const CLAVE_IDENTIDAD_PARTICIPANTE =
 
  
 
+ 
+
+ 
+
 ============================================================ */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -630,7 +1262,19 @@ iniciarSeguimiento();
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function iniciarSeguimiento() {
+
+ 
+
+ 
 
  
 
@@ -642,11 +1286,31 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   enlazarEventos();
 
  
 
-  iniciarDeteccionAdministrador();
+ 
+
+ 
+
+  
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -658,11 +1322,23 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
     new URLSearchParams(window.location.search)
 
  
 
+ 
+
+ 
+
       .get("id")
+
+ 
+
+ 
 
  
 
@@ -674,7 +1350,19 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (!alertaId) {
+
+ 
+
+ 
 
  
 
@@ -682,7 +1370,15 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
       "Enlace incompleto",
+
+ 
+
+ 
 
  
 
@@ -690,11 +1386,23 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -706,7 +1414,19 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   referenciaAlerta = doc(
+
+ 
+
+ 
 
  
 
@@ -714,11 +1434,23 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
     COLECCION_ALERTAS,
 
  
 
+ 
+
+ 
+
     alertaId
+
+ 
+
+ 
 
  
 
@@ -730,7 +1462,27 @@ function iniciarSeguimiento() {
 
  
 
+  iniciarDeteccionAdministrador();
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
   temporizadorCarga = window.setTimeout(() => {
+
+ 
+
+ 
 
  
 
@@ -738,7 +1490,15 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
       mostrarErrorFatal(
+
+ 
+
+ 
 
  
 
@@ -746,7 +1506,15 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
         "Revisa tu conexión y vuelve a abrir el enlace."
+
+ 
+
+ 
 
  
 
@@ -754,7 +1522,15 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -766,7 +1542,19 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   iniciarEscuchaAlerta();
+
+ 
+
+ 
 
  
 
@@ -774,7 +1562,19 @@ function iniciarSeguimiento() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -791,6 +1591,10 @@ function iniciarDeteccionAdministrador() {
  
 
     let nuevoEstadoAdministrador = false;
+
+ 
+
+    datosPrivadosAlerta = null;
 
  
 
@@ -838,11 +1642,15 @@ function iniciarDeteccionAdministrador() {
 
  
 
+          const datosUsuario = documentoUsuario.data() || {};
+
+ 
+
           const rol = String(
 
  
 
-            documentoUsuario.data()?.rol || ""
+            datosUsuario.rol || ""
 
  
 
@@ -858,7 +1666,27 @@ function iniciarDeteccionAdministrador() {
 
  
 
-          nuevoEstadoAdministrador = rol === "admin";
+          nuevoEstadoAdministrador =
+
+ 
+
+            rol === "admin" &&
+
+ 
+
+            datosUsuario.activo === true;
+
+ 
+
+        }
+
+ 
+
+        if (nuevoEstadoAdministrador) {
+
+ 
+
+          await cargarDatosPrivadosAdministrador();
 
  
 
@@ -886,6 +1714,14 @@ function iniciarDeteccionAdministrador() {
 
  
 
+        nuevoEstadoAdministrador = false;
+
+ 
+
+        datosPrivadosAlerta = null;
+
+ 
+
       }
 
  
@@ -894,19 +1730,11 @@ function iniciarDeteccionAdministrador() {
 
  
 
-    const cambioRol =
-
- 
-
-      esAdministrador !== nuevoEstadoAdministrador;
-
- 
-
     esAdministrador = nuevoEstadoAdministrador;
 
  
 
-    if (cambioRol && datosAlerta) {
+    if (datosAlerta) {
 
  
 
@@ -919,6 +1747,118 @@ function iniciarDeteccionAdministrador() {
  
 
   });
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+async function cargarDatosPrivadosAdministrador() {
+
+ 
+
+  if (!alertaId) {
+
+ 
+
+    datosPrivadosAlerta = null;
+
+ 
+
+    return;
+
+ 
+
+  }
+
+ 
+
+  try {
+
+ 
+
+    const referenciaPrivada = doc(
+
+ 
+
+      db,
+
+ 
+
+      COLECCION_ALERTAS,
+
+ 
+
+      alertaId,
+
+ 
+
+      "privado",
+
+ 
+
+      "datos"
+
+ 
+
+    );
+
+ 
+
+    const documentoPrivado = await getDoc(
+
+ 
+
+      referenciaPrivada
+
+ 
+
+    );
+
+ 
+
+    datosPrivadosAlerta = documentoPrivado.exists()
+
+ 
+
+      ? documentoPrivado.data()
+
+ 
+
+      : null;
+
+ 
+
+  } catch (error) {
+
+ 
+
+    datosPrivadosAlerta = null;
+
+ 
+
+    console.warn(
+
+ 
+
+      "No fue posible cargar los datos privados de la alerta:",
+
+ 
+
+      error
+
+ 
+
+    );
+
+ 
+
+  }
 
  
 
@@ -934,7 +1874,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
   ui.actionButtons.forEach(boton => {
+
+ 
+
+ 
 
  
 
@@ -942,7 +1890,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
       abrirConfirmacionAccion(
+
+ 
+
+ 
 
  
 
@@ -950,7 +1906,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -958,7 +1922,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -970,7 +1946,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     "click",
+
+ 
+
+ 
 
  
 
@@ -978,7 +1962,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -990,7 +1986,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     "click",
+
+ 
+
+ 
 
  
 
@@ -998,7 +2002,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1010,7 +2026,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     "submit",
+
+ 
+
+ 
 
  
 
@@ -1018,7 +2042,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1030,7 +2066,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     "click",
+
+ 
+
+ 
 
  
 
@@ -1038,7 +2082,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
       if (evento.target === ui.confirmationOverlay) {
+
+ 
+
+ 
 
  
 
@@ -1046,7 +2098,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -1054,7 +2114,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1066,7 +2138,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     if (evento.key === "Escape") {
+
+ 
+
+ 
 
  
 
@@ -1074,11 +2154,27 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1090,11 +2186,27 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     actualizarEstadoConexion(true);
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1106,7 +2218,15 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     actualizarEstadoConexion(false);
+
+ 
+
+ 
 
  
 
@@ -1118,7 +2238,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   window.addEventListener(
+
+ 
+
+ 
 
  
 
@@ -1126,11 +2258,23 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
     detenerEscuchas
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -1142,7 +2286,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
+
+ 
+
+ 
 
  
 
@@ -1150,7 +2306,19 @@ function enlazarEventos() {
 
  
 
+ 
+
+ 
+
 ============================================================ */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1162,7 +2330,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
   cancelarEscuchaAlerta = onSnapshot(
+
+ 
+
+ 
 
  
 
@@ -1170,11 +2346,23 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
     documento => {
 
  
 
+ 
+
+ 
+
       window.clearTimeout(temporizadorCarga);
+
+ 
+
+ 
 
  
 
@@ -1186,7 +2374,19 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       if (!documento.exists()) {
+
+ 
+
+ 
 
  
 
@@ -1194,7 +2394,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
           "Caso no encontrado",
+
+ 
+
+ 
 
  
 
@@ -1202,11 +2410,23 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
         );
 
  
 
+ 
+
+ 
+
         return;
+
+ 
+
+ 
 
  
 
@@ -1218,7 +2438,19 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       datosAlerta = {
+
+ 
+
+ 
 
  
 
@@ -1226,7 +2458,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
         ...documento.data()
+
+ 
+
+ 
 
  
 
@@ -1238,7 +2478,19 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       mostrarAlerta(datosAlerta);
+
+ 
+
+ 
 
  
 
@@ -1246,7 +2498,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -1254,7 +2514,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
       window.clearTimeout(temporizadorCarga);
+
+ 
+
+ 
 
  
 
@@ -1262,7 +2530,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
         "Error al consultar la alerta:",
+
+ 
+
+ 
 
  
 
@@ -1270,7 +2546,19 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1282,7 +2570,19 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
         error?.code === "permission-denied";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1294,7 +2594,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
         esPermiso
+
+ 
+
+ 
 
  
 
@@ -1302,7 +2610,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
           : "No fue posible abrir el seguimiento",
+
+ 
+
+ 
 
  
 
@@ -1310,7 +2626,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
           ? "Las reglas de Firestore no permiten consultar este caso."
+
+ 
+
+ 
 
  
 
@@ -1318,7 +2642,15 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -1326,11 +2658,27 @@ function iniciarEscuchaAlerta() {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1342,7 +2690,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
   const referenciaActualizaciones = collection(
+
+ 
+
+ 
 
  
 
@@ -1350,11 +2706,27 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
     SUBCOLECCION_ACTUALIZACIONES
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1366,7 +2738,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
     referenciaActualizaciones,
+
+ 
+
+ 
 
  
 
@@ -1374,11 +2754,27 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
     limit(100)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1390,7 +2786,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
     consulta,
+
+ 
+
+ 
 
  
 
@@ -1398,7 +2802,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
       const actualizaciones = resultado.docs.map(
+
+ 
+
+ 
 
  
 
@@ -1406,7 +2818,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
           id: documento.id,
+
+ 
+
+ 
 
  
 
@@ -1414,11 +2834,27 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
         })
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1430,7 +2866,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -1438,7 +2882,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
       console.error(
+
+ 
+
+ 
 
  
 
@@ -1446,11 +2898,27 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
         error
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1462,7 +2930,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
         error?.code === "permission-denied"
+
+ 
+
+ 
 
  
 
@@ -1470,7 +2946,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
           : "No fue posible cargar el historial."
+
+ 
+
+ 
 
  
 
@@ -1478,7 +2962,15 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -1486,7 +2978,19 @@ function iniciarEscuchaActualizaciones() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1498,7 +3002,15 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
   if (typeof cancelarEscuchaAlerta === "function") {
+
+ 
+
+ 
 
  
 
@@ -1506,7 +3018,19 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1518,7 +3042,15 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
     typeof cancelarEscuchaActualizaciones ===
+
+ 
+
+ 
 
  
 
@@ -1526,11 +3058,23 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
   ) {
 
  
 
+ 
+
+ 
+
     cancelarEscuchaActualizaciones();
+
+ 
+
+ 
 
  
 
@@ -1542,11 +3086,27 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   cancelarEscuchaAlerta = null;
 
  
 
+ 
+
+ 
+
   cancelarEscuchaActualizaciones = null;
+
+ 
+
+ 
 
  
 
@@ -1558,11 +3118,27 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
 
  
 
+ 
+
+ 
+
    MOSTRAR DATOS REALES DE LA ALERTA
+
+ 
+
+ 
 
  
 
@@ -1574,15 +3150,87 @@ function detenerEscuchas() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function mostrarAlerta(data) {
 
  
 
-  const cliente = data.cliente || {};
+  const clientePublico = data.cliente || {};
 
  
 
-  const vehiculo = data.vehiculo || {};
+  const vehiculoPublico = data.vehiculo || {};
+
+ 
+
+  const clientePrivado =
+
+ 
+
+    esAdministrador && datosPrivadosAlerta?.cliente
+
+ 
+
+      ? datosPrivadosAlerta.cliente
+
+ 
+
+      : {};
+
+ 
+
+  const vehiculoPrivado =
+
+ 
+
+    esAdministrador && datosPrivadosAlerta?.vehiculo
+
+ 
+
+      ? datosPrivadosAlerta.vehiculo
+
+ 
+
+      : {};
+
+ 
+
+  const cliente = {
+
+ 
+
+    ...clientePublico,
+
+ 
+
+    ...clientePrivado
+
+ 
+
+  };
+
+ 
+
+  const vehiculo = {
+
+ 
+
+    ...vehiculoPublico,
+
+ 
+
+    ...vehiculoPrivado
+
+ 
+
+  };
 
  
 
@@ -1591,6 +3239,10 @@ function mostrarAlerta(data) {
  
 
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -1598,7 +3250,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     primerValor(
+
+ 
+
+ 
 
  
 
@@ -1606,7 +3266,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       data.numeroFolio,
+
+ 
+
+ 
 
  
 
@@ -1614,7 +3282,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       alertaId
+
+ 
+
+ 
 
  
 
@@ -1622,7 +3298,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1634,7 +3322,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     ui.alertType,
+
+ 
+
+ 
 
  
 
@@ -1642,7 +3338,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -1650,7 +3354,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.tipoAlerta,
+
+ 
+
+ 
 
  
 
@@ -1658,7 +3370,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       )
+
+ 
+
+ 
 
  
 
@@ -1666,7 +3386,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1678,7 +3410,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     primerValor(
+
+ 
+
+ 
 
  
 
@@ -1686,7 +3426,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       data.estadoActual,
+
+ 
+
+ 
 
  
 
@@ -1694,11 +3442,27 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     )
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1714,11 +3478,27 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (ui.caseStatus) {
 
  
 
+ 
+
+ 
+
     ui.caseStatus.dataset.status = estado.clave;
+
+ 
+
+ 
 
  
 
@@ -1730,7 +3510,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -1738,7 +3530,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     formatearFecha(
+
+ 
+
+ 
 
  
 
@@ -1746,7 +3546,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.creadoEn,
+
+ 
+
+ 
 
  
 
@@ -1754,7 +3562,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.createdAt
+
+ 
+
+ 
 
  
 
@@ -1762,7 +3578,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     )
+
+ 
+
+ 
 
  
 
@@ -1774,7 +3598,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -1782,11 +3618,23 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     formatearFecha(
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -1794,7 +3642,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.ultimaActualizacion,
+
+ 
+
+ 
 
  
 
@@ -1802,7 +3658,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.creadoEn,
+
+ 
+
+ 
 
  
 
@@ -1810,11 +3674,23 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       )
 
  
 
+ 
+
+ 
+
     )
+
+ 
+
+ 
 
  
 
@@ -1826,7 +3702,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -1834,11 +3722,23 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     [
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -1846,7 +3746,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.marca,
+
+ 
+
+ 
 
  
 
@@ -1854,7 +3762,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -1862,7 +3778,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         vehiculo.subMarca,
+
+ 
+
+ 
 
  
 
@@ -1870,7 +3794,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         vehiculo.modelo,
+
+ 
+
+ 
 
  
 
@@ -1878,7 +3810,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
         data.submarca,
+
+ 
+
+ 
 
  
 
@@ -1886,7 +3826,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       )
+
+ 
+
+ 
 
  
 
@@ -1894,7 +3842,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -1902,6 +3858,10 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
 
  
@@ -1910,7 +3870,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -1918,7 +3890,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     primerValor(
+
+ 
+
+ 
 
  
 
@@ -1926,7 +3906,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       data.placas,
+
+ 
+
+ 
 
  
 
@@ -1934,7 +3922,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       "Sin registrar"
+
+ 
+
+ 
 
  
 
@@ -1942,7 +3938,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1954,7 +3962,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     ui.vehicleColor,
+
+ 
+
+ 
 
  
 
@@ -1962,7 +3978,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       vehiculo.color,
+
+ 
+
+ 
 
  
 
@@ -1970,7 +3994,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       data.colorRegistro,
+
+ 
+
+ 
 
  
 
@@ -1978,11 +4010,27 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     )
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -1994,7 +4042,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     vehiculo.serie,
+
+ 
+
+ 
 
  
 
@@ -2002,7 +4058,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     data.serie,
+
+ 
+
+ 
 
  
 
@@ -2010,7 +4074,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     data.serieRegistro,
+
+ 
+
+ 
 
  
 
@@ -2018,7 +4090,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2026,7 +4106,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     ui.vehicleVin,
+
+ 
+
+ 
 
  
 
@@ -2034,7 +4122,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       ? (serieCompleta || "Sin registrar")
+
+ 
+
+ 
 
  
 
@@ -2042,7 +4138,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2054,7 +4162,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     cliente.nombre,
+
+ 
+
+ 
 
  
 
@@ -2062,7 +4178,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     data.nombre,
+
+ 
+
+ 
 
  
 
@@ -2070,7 +4194,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     "Miembro AS CLICK"
+
+ 
+
+ 
 
  
 
@@ -2078,7 +4210,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -2086,7 +4226,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     esAdministrador
+
+ 
+
+ 
 
  
 
@@ -2094,11 +4242,27 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       : obtenerPrimerNombre(nombreCompleto)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2110,7 +4274,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     ui.membershipNumber,
+
+ 
+
+ 
 
  
 
@@ -2118,7 +4290,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       data.numeroMembresia,
+
+ 
+
+ 
 
  
 
@@ -2126,7 +4306,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       cliente.numeroMembresia,
+
+ 
+
+ 
 
  
 
@@ -2134,11 +4322,27 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     )
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2150,7 +4354,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     cliente.telefono,
+
+ 
+
+ 
 
  
 
@@ -2158,7 +4370,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     data.telefonoRegistro,
+
+ 
+
+ 
 
  
 
@@ -2166,7 +4386,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2174,7 +4402,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   if (filaTelefono) {
+
+ 
+
+ 
 
  
 
@@ -2182,7 +4418,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2190,7 +4434,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
     ui.memberPhone,
+
+ 
+
+ 
 
  
 
@@ -2198,7 +4450,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
       ? telefonoCompleto
+
+ 
+
+ 
 
  
 
@@ -2206,7 +4466,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2218,7 +4490,15 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
   actualizarDisponibilidadAcciones(estado.clave);
+
+ 
+
+ 
 
  
 
@@ -2230,7 +4510,19 @@ function mostrarAlerta(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function mostrarUbicacion(data) {
+
+ 
+
+ 
 
  
 
@@ -2238,7 +4530,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     data.ubicacionActual,
+
+ 
+
+ 
 
  
 
@@ -2246,7 +4546,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     data.ubicacion,
+
+ 
+
+ 
 
  
 
@@ -2254,7 +4562,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
   ].filter(
+
+ 
+
+ 
 
  
 
@@ -2262,7 +4578,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       valor &&
+
+ 
+
+ 
 
  
 
@@ -2270,11 +4594,27 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       !Array.isArray(valor)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2286,7 +4626,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
   let longitud = Number.NaN;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2298,11 +4650,23 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     const latitudCandidata = convertirNumero(
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -2310,7 +4674,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         ubicacion.latitude,
+
+ 
+
+ 
 
  
 
@@ -2318,11 +4690,23 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       )
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2330,7 +4714,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -2338,7 +4730,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         ubicacion.longitude,
+
+ 
+
+ 
 
  
 
@@ -2346,7 +4746,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         ubicacion.lon
+
+ 
+
+ 
 
  
 
@@ -2354,7 +4762,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2362,7 +4778,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       Number.isFinite(latitudCandidata) &&
+
+ 
+
+ 
 
  
 
@@ -2370,7 +4794,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     ) {
+
+ 
+
+ 
 
  
 
@@ -2378,7 +4810,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       longitud = longitudCandidata;
+
+ 
+
+ 
 
  
 
@@ -2386,11 +4826,27 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2402,7 +4858,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     !Number.isFinite(latitud) ||
+
+ 
+
+ 
 
  
 
@@ -2410,7 +4874,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -2418,7 +4890,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -2426,7 +4906,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         data.latitude,
+
+ 
+
+ 
 
  
 
@@ -2434,11 +4922,23 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       )
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2446,7 +4946,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       primerValor(
+
+ 
+
+ 
 
  
 
@@ -2454,7 +4962,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         data.longitude,
+
+ 
+
+ 
 
  
 
@@ -2462,7 +4978,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         data.lon
+
+ 
+
+ 
 
  
 
@@ -2470,7 +4994,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2482,7 +5014,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const enlacesObjetos = objetosUbicacion.flatMap(
+
+ 
+
+ 
 
  
 
@@ -2490,7 +5034,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       ubicacion.enlaceGoogleMaps,
+
+ 
+
+ 
 
  
 
@@ -2498,7 +5050,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       ubicacion.url,
+
+ 
+
+ 
 
  
 
@@ -2506,7 +5066,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     ]
+
+ 
+
+ 
 
  
 
@@ -2518,7 +5086,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const candidatosEnlace = [
+
+ 
+
+ 
 
  
 
@@ -2526,7 +5106,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     data.enlaceGoogleMaps,
+
+ 
+
+ 
 
  
 
@@ -2534,7 +5122,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     data.urlUbicacion,
+
+ 
+
+ 
 
  
 
@@ -2542,7 +5138,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     typeof data.ubicacionActual === "string"
+
+ 
+
+ 
 
  
 
@@ -2550,7 +5154,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       : "",
+
+ 
+
+ 
 
  
 
@@ -2558,7 +5170,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       ? data.ubicacionInicial
+
+ 
+
+ 
 
  
 
@@ -2566,7 +5186,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     typeof data.ubicacion === "string"
+
+ 
+
+ 
 
  
 
@@ -2574,7 +5202,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       : ""
+
+ 
+
+ 
 
  
 
@@ -2586,7 +5222,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const enlaceDirecto = candidatosEnlace.find(
+
+ 
+
+ 
 
  
 
@@ -2594,7 +5242,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       typeof valor === "string" &&
+
+ 
+
+ 
 
  
 
@@ -2602,11 +5258,27 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       esUrlHttpSegura(valor.trim())
 
  
 
+ 
+
+ 
+
   )?.trim() || "";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2622,7 +5294,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -2630,7 +5314,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     Number.isFinite(longitud)
+
+ 
+
+ 
 
  
 
@@ -2638,7 +5330,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     enlaceMapa =
+
+ 
+
+ 
 
  
 
@@ -2650,7 +5350,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (ui.locationPlaceholder) {
+
+ 
+
+ 
 
  
 
@@ -2658,7 +5370,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         <span aria-hidden="true">📍</span>
+
+ 
+
+ 
 
  
 
@@ -2666,7 +5386,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         <p>${escaparHtml(latitud.toFixed(6))}, ${escaparHtml(longitud.toFixed(6))}</p>
+
+ 
+
+ 
 
  
 
@@ -2674,11 +5402,23 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   } else if (enlaceDirecto) {
+
+ 
+
+ 
 
  
 
@@ -2690,11 +5430,27 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (ui.locationPlaceholder) {
 
  
 
+ 
+
+ 
+
       ui.locationPlaceholder.innerHTML = `
+
+ 
+
+ 
 
  
 
@@ -2702,7 +5458,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         <p><strong>Ubicación disponible</strong></p>
+
+ 
+
+ 
 
  
 
@@ -2710,11 +5474,23 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       `;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -2722,7 +5498,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     if (ui.locationPlaceholder) {
+
+ 
+
+ 
 
  
 
@@ -2730,7 +5514,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
         <span aria-hidden="true">📍</span>
+
+ 
+
+ 
 
  
 
@@ -2738,7 +5530,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
       `;
+
+ 
+
+ 
 
  
 
@@ -2746,7 +5546,19 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2758,7 +5570,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     ui.openLocationButton &&
+
+ 
+
+ 
 
  
 
@@ -2766,7 +5586,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -2774,7 +5602,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     ui.openLocationButton.hidden = false;
+
+ 
+
+ 
 
  
 
@@ -2782,7 +5618,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
     ui.openLocationButton.removeAttribute("href");
+
+ 
+
+ 
 
  
 
@@ -2790,7 +5634,15 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2802,11 +5654,27 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
 
  
 
+ 
+
+ 
+
    ACCIONES DE SEGUIMIENTO
+
+ 
+
+ 
 
  
 
@@ -2818,11 +5686,31 @@ function mostrarUbicacion(data) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
   if (accionEnProceso) return;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2838,7 +5726,19 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (!accion) {
+
+ 
+
+ 
 
  
 
@@ -2846,7 +5746,15 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
       "La acción seleccionada no es válida.",
+
+ 
+
+ 
 
  
 
@@ -2854,7 +5762,15 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2862,7 +5778,19 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2878,7 +5806,19 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -2886,7 +5826,15 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
     accion.icono
+
+ 
+
+ 
 
  
 
@@ -2898,7 +5846,19 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   colocarTexto(
+
+ 
+
+ 
 
  
 
@@ -2906,11 +5866,27 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
     "Confirmar actualización"
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2922,7 +5898,15 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
     ui.confirmationMessage,
+
+ 
+
+ 
 
  
 
@@ -2930,7 +5914,19 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2942,7 +5938,15 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
     ui.confirmationOverlay.hidden = false;
+
+ 
+
+ 
 
  
 
@@ -2954,11 +5958,27 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   document.body.style.overflow = "hidden";
 
  
 
+ 
+
+ 
+
   ui.confirmActionButton?.focus();
+
+ 
+
+ 
 
  
 
@@ -2970,11 +5990,31 @@ function abrirConfirmacionAccion(claveAccion) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function cerrarConfirmacionAccion() {
 
  
 
+ 
+
+ 
+
   if (accionEnProceso) return;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2990,7 +6030,19 @@ function cerrarConfirmacionAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (ui.confirmationOverlay) {
+
+ 
+
+ 
 
  
 
@@ -2998,7 +6050,19 @@ function cerrarConfirmacionAccion() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3010,7 +6074,19 @@ function cerrarConfirmacionAccion() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3022,7 +6098,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -3030,7 +6114,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     accionEnProceso ||
+
+ 
+
+ 
 
  
 
@@ -3038,7 +6130,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3046,7 +6146,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3058,7 +6170,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
   const accion = ACCIONES[claveAccion];
+
+ 
+
+ 
 
  
 
@@ -3070,7 +6190,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (!autor) {
+
+ 
+
+ 
 
  
 
@@ -3078,7 +6210,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       "Debes identificarte para registrar la actualización.",
+
+ 
+
+ 
 
  
 
@@ -3086,11 +6226,23 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -3102,11 +6254,27 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   accionEnProceso = true;
 
  
 
+ 
+
+ 
+
   deshabilitarAcciones(true);
+
+ 
+
+ 
 
  
 
@@ -3118,7 +6286,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -3126,7 +6306,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       collection(
+
+ 
+
+ 
 
  
 
@@ -3134,7 +6322,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         SUBCOLECCION_ACTUALIZACIONES
+
+ 
+
+ 
 
  
 
@@ -3142,7 +6338,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       {
+
+ 
+
+ 
 
  
 
@@ -3150,7 +6354,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         accion: claveAccion,
+
+ 
+
+ 
 
  
 
@@ -3158,7 +6370,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         mensaje: accion.etiqueta,
+
+ 
+
+ 
 
  
 
@@ -3166,7 +6386,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         fecha: serverTimestamp(),
+
+ 
+
+ 
 
  
 
@@ -3174,7 +6402,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         autor,
+
+ 
+
+ 
 
  
 
@@ -3182,7 +6418,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         userAgent:
+
+ 
+
+ 
 
  
 
@@ -3190,7 +6434,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -3202,7 +6454,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     await updateDoc(referenciaAlerta, {
+
+ 
+
+ 
 
  
 
@@ -3210,7 +6474,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       estadoTexto: accion.estadoTexto,
+
+ 
+
+ 
 
  
 
@@ -3218,7 +6490,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       actualizadoEn: serverTimestamp(),
+
+ 
+
+ 
 
  
 
@@ -3226,7 +6506,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       ultimaAccion: claveAccion,
+
+ 
+
+ 
 
  
 
@@ -3234,7 +6522,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3250,7 +6550,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     mostrarRetroalimentacion(
+
+ 
+
+ 
 
  
 
@@ -3258,11 +6570,23 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       "success"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3270,7 +6594,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -3278,11 +6610,27 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       error
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3294,7 +6642,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
       error?.code === "permission-denied"
+
+ 
+
+ 
 
  
 
@@ -3302,7 +6658,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         : "No fue posible registrar la actualización.",
+
+ 
+
+ 
 
  
 
@@ -3310,7 +6674,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3318,11 +6690,23 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     accionEnProceso = false;
 
  
 
+ 
+
+ 
+
     deshabilitarAcciones(false);
+
+ 
+
+ 
 
  
 
@@ -3334,7 +6718,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (datosAlerta) {
+
+ 
+
+ 
 
  
 
@@ -3342,11 +6738,27 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         datosAlerta.estado
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3358,7 +6770,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
         estadoActual.clave
+
+ 
+
+ 
 
  
 
@@ -3366,7 +6786,15 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -3374,7 +6802,19 @@ async function confirmarAccion() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3386,7 +6826,19 @@ function cerrarConfirmacionForzada() {
 
  
 
+ 
+
+ 
+
   accionPendiente = null;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3398,11 +6850,27 @@ function cerrarConfirmacionForzada() {
 
  
 
+ 
+
+ 
+
     ui.confirmationOverlay.hidden = true;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3414,7 +6882,19 @@ function cerrarConfirmacionForzada() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3426,7 +6906,15 @@ function marcarConfirmacionOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -3434,7 +6922,15 @@ function marcarConfirmacionOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
     !ui.cancelConfirmationButton
+
+ 
+
+ 
 
  
 
@@ -3442,11 +6938,27 @@ function marcarConfirmacionOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3458,7 +6970,19 @@ function marcarConfirmacionOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
   ui.cancelConfirmationButton.disabled = ocupada;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3470,11 +6994,27 @@ function marcarConfirmacionOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
     ocupada ? "Guardando..." : "Confirmar";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3486,7 +7026,15 @@ function deshabilitarAcciones(deshabilitadas) {
 
  
 
+ 
+
+ 
+
   ui.actionButtons.forEach(boton => {
+
+ 
+
+ 
 
  
 
@@ -3494,11 +7042,27 @@ function deshabilitarAcciones(deshabilitadas) {
 
  
 
+ 
+
+ 
+
   });
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3510,7 +7074,15 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
   const casoCerrado = [
+
+ 
+
+ 
 
  
 
@@ -3518,7 +7090,15 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
     "cerrada",
+
+ 
+
+ 
 
  
 
@@ -3526,7 +7106,15 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
     "cancelada"
+
+ 
+
+ 
 
  
 
@@ -3538,7 +7126,19 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   ui.actionButtons.forEach(boton => {
+
+ 
+
+ 
 
  
 
@@ -3546,7 +7146,15 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
       casoCerrado || accionEnProceso;
+
+ 
+
+ 
 
  
 
@@ -3558,7 +7166,19 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (casoCerrado) {
+
+ 
+
+ 
 
  
 
@@ -3566,7 +7186,15 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
       "El caso está cerrado y ya no acepta nuevas acciones.",
+
+ 
+
+ 
 
  
 
@@ -3574,11 +7202,23 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -3590,11 +7230,27 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
 
  
 
+ 
+
+ 
+
    EVIDENCIA
+
+ 
+
+ 
 
  
 
@@ -3606,7 +7262,19 @@ function actualizarDisponibilidadAcciones(estado) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 async function enviarEvidencia(evento) {
+
+ 
+
+ 
 
  
 
@@ -3618,7 +7286,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -3626,7 +7306,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     !referenciaAlerta
+
+ 
+
+ 
 
  
 
@@ -3634,11 +7322,27 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3650,7 +7354,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     ui.evidenceFile?.files?.[0] || null;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3662,7 +7378,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     ui.evidenceComment?.value?.trim() || "";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3674,7 +7402,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     mostrarRetroalimentacion(
+
+ 
+
+ 
 
  
 
@@ -3682,7 +7418,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       "error"
+
+ 
+
+ 
 
  
 
@@ -3690,7 +7434,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -3702,11 +7454,27 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (
 
  
 
+ 
+
+ 
+
     archivo &&
+
+ 
+
+ 
 
  
 
@@ -3714,7 +7482,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3722,7 +7498,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       "El archivo supera el límite de 25 MB.",
+
+ 
+
+ 
 
  
 
@@ -3730,7 +7514,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3738,7 +7530,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3750,7 +7554,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     archivo &&
+
+ 
+
+ 
 
  
 
@@ -3758,7 +7570,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3766,7 +7586,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       "Solo se permiten imágenes o videos.",
+
+ 
+
+ 
 
  
 
@@ -3774,7 +7602,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3782,7 +7618,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3798,7 +7646,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (!autor) {
+
+ 
+
+ 
 
  
 
@@ -3806,7 +7666,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       "Debes identificarte para enviar la actualización.",
+
+ 
+
+ 
 
  
 
@@ -3814,11 +7682,23 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -3830,7 +7710,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   evidenciaEnProceso = true;
+
+ 
+
+ 
 
  
 
@@ -3842,7 +7734,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -3850,7 +7754,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     let archivoRuta = "";
+
+ 
+
+ 
 
  
 
@@ -3858,7 +7770,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     let cloudinaryResourceType = "";
+
+ 
+
+ 
 
  
 
@@ -3870,7 +7790,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (archivo) {
+
+ 
+
+ 
 
  
 
@@ -3878,7 +7810,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         await subirArchivoACloudinary(
+
+ 
+
+ 
 
  
 
@@ -3886,7 +7826,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
           progreso => {
+
+ 
+
+ 
 
  
 
@@ -3894,11 +7842,27 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
           }
 
  
 
+ 
+
+ 
+
         );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3910,11 +7874,23 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         resultadoCloudinary.secure_url ||
 
  
 
+ 
+
+ 
+
         resultadoCloudinary.url ||
+
+ 
+
+ 
 
  
 
@@ -3926,7 +7902,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       cloudinaryPublicId =
+
+ 
+
+ 
 
  
 
@@ -3938,7 +7926,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       cloudinaryResourceType =
+
+ 
+
+ 
 
  
 
@@ -3950,7 +7950,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       cloudinaryVersion =
+
+ 
+
+ 
 
  
 
@@ -3962,11 +7974,27 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       // Se conserva este campo para no alterar la estructura
 
  
 
+ 
+
+ 
+
       // que ya utiliza el historial.
+
+ 
+
+ 
 
  
 
@@ -3978,7 +8006,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       if (!archivoUrl) {
+
+ 
+
+ 
 
  
 
@@ -3986,7 +8026,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
           "Cloudinary no devolvió una URL válida."
+
+ 
+
+ 
 
  
 
@@ -3994,7 +8042,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -4006,7 +8062,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     await addDoc(
+
+ 
+
+ 
 
  
 
@@ -4014,7 +8082,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         referenciaAlerta,
+
+ 
+
+ 
 
  
 
@@ -4022,7 +8098,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -4030,7 +8114,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         tipo: "evidencia",
+
+ 
+
+ 
 
  
 
@@ -4038,7 +8130,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
           ? "Evidencia recibida"
+
+ 
+
+ 
 
  
 
@@ -4046,7 +8146,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         mensaje:
+
+ 
+
+ 
 
  
 
@@ -4054,7 +8162,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
           "Se agregó un archivo como evidencia.",
+
+ 
+
+ 
 
  
 
@@ -4062,7 +8178,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         archivoUrl,
+
+ 
+
+ 
 
  
 
@@ -4070,11 +8194,23 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         archivoNombre: archivo?.name || "",
 
  
 
+ 
+
+ 
+
         archivoTipo: archivo?.type || "",
+
+ 
+
+ 
 
  
 
@@ -4086,7 +8222,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         // Datos necesarios para identificar y eliminar
+
+ 
+
+ 
 
  
 
@@ -4094,7 +8242,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         cloudinaryPublicId,
+
+ 
+
+ 
 
  
 
@@ -4102,7 +8258,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         cloudinaryVersion,
+
+ 
+
+ 
 
  
 
@@ -4110,7 +8274,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
           ? "cloudinary"
+
+ 
+
+ 
 
  
 
@@ -4118,7 +8290,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         fechaExpiracion: archivo
+
+ 
+
+ 
 
  
 
@@ -4126,11 +8306,23 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
               Date.now() + 24 * 60 * 60 * 1000
 
  
 
+ 
+
+ 
+
             )
+
+ 
+
+ 
 
  
 
@@ -4142,7 +8334,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         fecha: serverTimestamp(),
+
+ 
+
+ 
 
  
 
@@ -4150,7 +8354,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         autor,
+
+ 
+
+ 
 
  
 
@@ -4158,7 +8370,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -4170,7 +8390,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     await updateDoc(referenciaAlerta, {
+
+ 
+
+ 
 
  
 
@@ -4178,7 +8410,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       actualizadoEn: serverTimestamp(),
+
+ 
+
+ 
 
  
 
@@ -4186,7 +8426,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       ultimaAccion: "evidencia",
+
+ 
+
+ 
 
  
 
@@ -4194,7 +8442,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         ? "Evidencia recibida"
+
+ 
+
+ 
 
  
 
@@ -4202,7 +8458,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4218,7 +8486,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     mostrarRetroalimentacion(
+
+ 
+
+ 
 
  
 
@@ -4226,11 +8506,23 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       "success"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4238,7 +8530,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -4246,11 +8546,27 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       error
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4262,7 +8578,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       error?.code === "permission-denied"
+
+ 
+
+ 
 
  
 
@@ -4270,7 +8594,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
         : error?.message ||
+
+ 
+
+ 
 
  
 
@@ -4278,7 +8610,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
       "error"
+
+ 
+
+ 
 
  
 
@@ -4286,7 +8626,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
   } finally {
+
+ 
+
+ 
 
  
 
@@ -4294,7 +8642,15 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
     marcarEvidenciaOcupada(false);
+
+ 
+
+ 
 
  
 
@@ -4302,7 +8658,19 @@ async function enviarEvidencia(evento) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4314,7 +8682,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
   archivo,
+
+ 
+
+ 
 
  
 
@@ -4322,11 +8698,23 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
 ) {
 
  
 
+ 
+
+ 
+
   return new Promise((resolve, reject) => {
+
+ 
+
+ 
 
  
 
@@ -4338,11 +8726,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     formulario.append("file", archivo);
 
  
 
+ 
+
+ 
+
     formulario.append(
+
+ 
+
+ 
 
  
 
@@ -4350,7 +8754,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       CLOUDINARY_UPLOAD_PRESET
+
+ 
+
+ 
 
  
 
@@ -4358,7 +8770,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
     formulario.append(
+
+ 
+
+ 
 
  
 
@@ -4366,11 +8786,23 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       `alerta_id=${alertaId}|visitante_id=${visitanteId}|origen=seguimiento_web`
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4378,7 +8810,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       "tags",
+
+ 
+
+ 
 
  
 
@@ -4386,7 +8826,19 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4398,7 +8850,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
     solicitud.open(
+
+ 
+
+ 
 
  
 
@@ -4406,7 +8866,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       CLOUDINARY_UPLOAD_URL,
+
+ 
+
+ 
 
  
 
@@ -4414,11 +8882,23 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     solicitud.responseType = "json";
+
+ 
+
+ 
 
  
 
@@ -4430,7 +8910,19 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     solicitud.upload.addEventListener(
+
+ 
+
+ 
 
  
 
@@ -4438,7 +8930,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       evento => {
+
+ 
+
+ 
 
  
 
@@ -4446,7 +8946,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
           return;
+
+ 
+
+ 
 
  
 
@@ -4458,11 +8966,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         const progreso = Math.round(
 
  
 
+ 
+
+ 
+
           (evento.loaded / evento.total) * 100
+
+ 
+
+ 
 
  
 
@@ -4474,11 +8998,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         alProgresar(progreso);
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -4490,11 +9030,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     solicitud.addEventListener("load", () => {
 
  
 
+ 
+
+ 
+
       const respuesta =
+
+ 
+
+ 
 
  
 
@@ -4506,7 +9062,19 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       if (
+
+ 
+
+ 
 
  
 
@@ -4514,7 +9082,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
         solicitud.status < 300
+
+ 
+
+ 
 
  
 
@@ -4522,7 +9098,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
         alProgresar(100);
+
+ 
+
+ 
 
  
 
@@ -4530,7 +9114,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
         return;
+
+ 
+
+ 
 
  
 
@@ -4542,11 +9134,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       const mensaje =
 
  
 
+ 
+
+ 
+
         respuesta?.error?.message ||
+
+ 
+
+ 
 
  
 
@@ -4558,11 +9166,31 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
       reject(new Error(mensaje));
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4574,7 +9202,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       reject(
+
+ 
+
+ 
 
  
 
@@ -4582,7 +9218,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
           "No fue posible conectar con Cloudinary."
+
+ 
+
+ 
 
  
 
@@ -4590,11 +9234,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4606,7 +9266,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       reject(
+
+ 
+
+ 
 
  
 
@@ -4614,7 +9282,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
           "La carga tardó demasiado y fue cancelada."
+
+ 
+
+ 
 
  
 
@@ -4622,11 +9298,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4638,7 +9330,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       reject(
+
+ 
+
+ 
 
  
 
@@ -4646,7 +9346,15 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -4658,11 +9366,27 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     solicitud.send(formulario);
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -4674,11 +9398,31 @@ function subirArchivoACloudinary(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function marcarEvidenciaOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
   if (!ui.evidenceSubmitButton) return;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4694,7 +9438,19 @@ function marcarEvidenciaOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (ui.evidenceFile) {
+
+ 
+
+ 
 
  
 
@@ -4702,7 +9458,19 @@ function marcarEvidenciaOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4714,11 +9482,27 @@ function marcarEvidenciaOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
     ui.evidenceComment.disabled = ocupada;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4730,7 +9514,15 @@ function marcarEvidenciaOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
     ocupada
+
+ 
+
+ 
 
  
 
@@ -4738,11 +9530,27 @@ function marcarEvidenciaOcupada(ocupada) {
 
  
 
+ 
+
+ 
+
       : "Enviar actualización";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4754,7 +9562,15 @@ function actualizarProgresoEvidencia(progreso) {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -4762,7 +9578,15 @@ function actualizarProgresoEvidencia(progreso) {
 
  
 
+ 
+
+ 
+
     ui.evidenceSubmitButton
+
+ 
+
+ 
 
  
 
@@ -4770,7 +9594,15 @@ function actualizarProgresoEvidencia(progreso) {
 
  
 
+ 
+
+ 
+
     ui.evidenceSubmitButton.textContent =
+
+ 
+
+ 
 
  
 
@@ -4778,7 +9610,15 @@ function actualizarProgresoEvidencia(progreso) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4790,7 +9630,19 @@ function actualizarProgresoEvidencia(progreso) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
+
+ 
+
+ 
 
  
 
@@ -4798,7 +9650,19 @@ function actualizarProgresoEvidencia(progreso) {
 
  
 
+ 
+
+ 
+
 ============================================================ */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4810,7 +9674,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
   if (!ui.updatesTimeline) return;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4822,7 +9698,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
     mostrarMensajeHistorial(
+
+ 
+
+ 
 
  
 
@@ -4830,7 +9714,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4838,7 +9730,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4850,7 +9754,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
     actualizaciones
+
+ 
+
+ 
 
  
 
@@ -4858,7 +9770,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
         const accion =
+
+ 
+
+ 
 
  
 
@@ -4870,7 +9790,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         const icono =
+
+ 
+
+ 
 
  
 
@@ -4878,7 +9810,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           (
+
+ 
+
+ 
 
  
 
@@ -4886,11 +9826,23 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
               ? "📷"
 
  
 
+ 
+
+ 
+
               : "🕒"
+
+ 
+
+ 
 
  
 
@@ -4902,7 +9854,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         const titulo = primerValor(
+
+ 
+
+ 
 
  
 
@@ -4910,7 +9874,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           accion?.etiqueta,
+
+ 
+
+ 
 
  
 
@@ -4918,7 +9890,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
         );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4930,7 +9914,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           actualizacion.mensaje,
+
+ 
+
+ 
 
  
 
@@ -4938,11 +9930,27 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           ""
 
  
 
+ 
+
+ 
+
         );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4954,11 +9962,27 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           actualizacion.fecha
 
  
 
+ 
+
+ 
+
         );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -4970,7 +9994,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           actualizacion.autor
+
+ 
+
+ 
 
  
 
@@ -4982,7 +10014,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         const textoAutor = autorVisible
+
+ 
+
+ 
 
  
 
@@ -4990,11 +10034,23 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
             ? `Enviado por: ${autorVisible}`
 
  
 
+ 
+
+ 
+
             : `Reportado por: ${autorVisible}`
+
+ 
+
+ 
 
  
 
@@ -5006,7 +10062,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         const enlaceEvidencia =
+
+ 
+
+ 
 
  
 
@@ -5014,7 +10082,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           esUrlHttpSegura(
+
+ 
+
+ 
 
  
 
@@ -5022,7 +10098,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           )
+
+ 
+
+ 
 
  
 
@@ -5030,7 +10114,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
               <a
+
+ 
+
+ 
 
  
 
@@ -5038,7 +10130,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
                 target="_blank"
+
+ 
+
+ 
 
  
 
@@ -5046,7 +10146,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
               >
+
+ 
+
+ 
 
  
 
@@ -5054,11 +10162,23 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
               </a>
 
  
 
+ 
+
+ 
+
             `
+
+ 
+
+ 
 
  
 
@@ -5070,7 +10190,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
         return `
+
+ 
+
+ 
 
  
 
@@ -5078,7 +10210,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
             <div class="timelineItemHeader">
+
+ 
+
+ 
 
  
 
@@ -5086,7 +10226,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
                 class="timelineItemIcon"
+
+ 
+
+ 
 
  
 
@@ -5094,11 +10242,23 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
               >
 
  
 
+ 
+
+ 
+
                 ${escaparHtml(icono)}
+
+ 
+
+ 
 
  
 
@@ -5110,7 +10270,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
@@ -5118,7 +10290,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
                   ${escaparHtml(titulo)}
+
+ 
+
+ 
 
  
 
@@ -5130,7 +10310,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
                 <small>
+
+ 
+
+ 
 
  
 
@@ -5138,11 +10330,23 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
                 </small>
 
  
 
+ 
+
+ 
+
               </div>
+
+ 
+
+ 
 
  
 
@@ -5154,7 +10358,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
             ${
+
+ 
+
+ 
 
  
 
@@ -5162,7 +10378,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
                 ? `<p><strong>${escaparHtml(textoAutor)}</strong></p>`
+
+ 
+
+ 
 
  
 
@@ -5170,7 +10394,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
             }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5182,7 +10418,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
               mensaje
+
+ 
+
+ 
 
  
 
@@ -5190,11 +10434,27 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
                 : ""
 
  
 
+ 
+
+ 
+
             }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5206,7 +10466,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
           </article>
+
+ 
+
+ 
 
  
 
@@ -5214,7 +10482,15 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
       })
+
+ 
+
+ 
 
  
 
@@ -5222,7 +10498,19 @@ function mostrarActualizaciones(actualizaciones) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5234,7 +10522,19 @@ function mostrarMensajeHistorial(mensaje) {
 
  
 
+ 
+
+ 
+
   if (!ui.updatesTimeline) return;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5246,7 +10546,15 @@ function mostrarMensajeHistorial(mensaje) {
 
  
 
+ 
+
+ 
+
     <div class="timelineEmpty">
+
+ 
+
+ 
 
  
 
@@ -5254,11 +10562,23 @@ function mostrarMensajeHistorial(mensaje) {
 
  
 
+ 
+
+ 
+
     </div>
 
  
 
+ 
+
+ 
+
   `;
+
+ 
+
+ 
 
  
 
@@ -5270,7 +10590,19 @@ function mostrarMensajeHistorial(mensaje) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 /* ============================================================
+
+ 
+
+ 
 
  
 
@@ -5278,7 +10610,19 @@ function mostrarMensajeHistorial(mensaje) {
 
  
 
+ 
+
+ 
+
 ============================================================ */
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5290,7 +10634,15 @@ function mostrarContenido() {
 
  
 
+ 
+
+ 
+
   if (ui.loadingPanel) {
+
+ 
+
+ 
 
  
 
@@ -5298,7 +10650,19 @@ function mostrarContenido() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5310,11 +10674,27 @@ function mostrarContenido() {
 
  
 
+ 
+
+ 
+
     ui.errorPanel.hidden = true;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5326,11 +10706,27 @@ function mostrarContenido() {
 
  
 
+ 
+
+ 
+
     ui.trackingContent.hidden = false;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5342,7 +10738,15 @@ function mostrarContenido() {
 
  
 
+ 
+
+ 
+
     navigator.onLine
+
+ 
+
+ 
 
  
 
@@ -5350,7 +10754,19 @@ function mostrarContenido() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5362,7 +10778,19 @@ function mostrarErrorFatal(titulo, mensaje) {
 
  
 
+ 
+
+ 
+
   detenerEscuchas();
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5374,11 +10802,27 @@ function mostrarErrorFatal(titulo, mensaje) {
 
  
 
+ 
+
+ 
+
     ui.loadingPanel.hidden = true;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5390,11 +10834,27 @@ function mostrarErrorFatal(titulo, mensaje) {
 
  
 
+ 
+
+ 
+
     ui.trackingContent.hidden = true;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5406,11 +10866,27 @@ function mostrarErrorFatal(titulo, mensaje) {
 
  
 
+ 
+
+ 
+
     ui.errorPanel.hidden = false;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5422,7 +10898,15 @@ function mostrarErrorFatal(titulo, mensaje) {
 
  
 
+ 
+
+ 
+
   colocarTexto(ui.errorMessage, mensaje);
+
+ 
+
+ 
 
  
 
@@ -5430,7 +10914,19 @@ function mostrarErrorFatal(titulo, mensaje) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5442,7 +10938,15 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
   mensaje,
+
+ 
+
+ 
 
  
 
@@ -5450,7 +10954,15 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
 ) {
+
+ 
+
+ 
 
  
 
@@ -5462,7 +10974,19 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   ui.actionFeedback.hidden = false;
+
+ 
+
+ 
 
  
 
@@ -5470,7 +10994,15 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
     `actionFeedback ${tipo}`;
+
+ 
+
+ 
 
  
 
@@ -5482,7 +11014,19 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   window.clearTimeout(
+
+ 
+
+ 
 
  
 
@@ -5490,7 +11034,19 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5502,7 +11058,15 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
     window.setTimeout(() => {
+
+ 
+
+ 
 
  
 
@@ -5510,11 +11074,27 @@ function mostrarRetroalimentacion(
 
  
 
+ 
+
+ 
+
     }, 6500);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5526,7 +11106,19 @@ function actualizarEstadoConexion(conectado) {
 
  
 
+ 
+
+ 
+
   if (!ui.connectionStatus) return;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5538,7 +11130,15 @@ function actualizarEstadoConexion(conectado) {
 
  
 
+ 
+
+ 
+
     ? "Conectado en tiempo real"
+
+ 
+
+ 
 
  
 
@@ -5550,7 +11150,19 @@ function actualizarEstadoConexion(conectado) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   ui.connectionStatus.dataset.online =
+
+ 
+
+ 
 
  
 
@@ -5558,7 +11170,19 @@ function actualizarEstadoConexion(conectado) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5570,7 +11194,15 @@ function actualizarEstadoConexion(conectado) {
 
  
 
+ 
+
+ 
+
    UTILIDADES
+
+ 
+
+ 
 
  
 
@@ -5582,7 +11214,19 @@ function actualizarEstadoConexion(conectado) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function obtenerPrimerNombre(nombreCompleto) {
+
+ 
+
+ 
 
  
 
@@ -5590,7 +11234,15 @@ function obtenerPrimerNombre(nombreCompleto) {
 
  
 
+ 
+
+ 
+
     nombreCompleto || ""
+
+ 
+
+ 
 
  
 
@@ -5598,7 +11250,15 @@ function obtenerPrimerNombre(nombreCompleto) {
 
  
 
+ 
+
+ 
+
   if (!nombre) {
+
+ 
+
+ 
 
  
 
@@ -5606,7 +11266,15 @@ function obtenerPrimerNombre(nombreCompleto) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5614,7 +11282,19 @@ function obtenerPrimerNombre(nombreCompleto) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5626,7 +11306,15 @@ function obtenerSeriePublica(serieCompleta) {
 
  
 
+ 
+
+ 
+
   const serie = String(
+
+ 
+
+ 
 
  
 
@@ -5634,7 +11322,15 @@ function obtenerSeriePublica(serieCompleta) {
 
  
 
+ 
+
+ 
+
   ).trim();
+
+ 
+
+ 
 
  
 
@@ -5642,7 +11338,15 @@ function obtenerSeriePublica(serieCompleta) {
 
  
 
+ 
+
+ 
+
     return "Sin registrar";
+
+ 
+
+ 
 
  
 
@@ -5650,11 +11354,27 @@ function obtenerSeriePublica(serieCompleta) {
 
  
 
+ 
+
+ 
+
   return serie.slice(-6);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5666,7 +11386,15 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
   return valores.find(valor => {
+
+ 
+
+ 
 
  
 
@@ -5674,7 +11402,15 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
       valor === null ||
+
+ 
+
+ 
 
  
 
@@ -5682,7 +11418,15 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
     ) {
+
+ 
+
+ 
 
  
 
@@ -5690,7 +11434,19 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5702,7 +11458,15 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
       return valor.trim() !== "";
+
+ 
+
+ 
 
  
 
@@ -5714,7 +11478,19 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     return true;
+
+ 
+
+ 
 
  
 
@@ -5722,7 +11498,19 @@ function primerValor(...valores) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5734,7 +11522,15 @@ function colocarTexto(elemento, valor) {
 
  
 
+ 
+
+ 
+
   if (elemento) {
+
+ 
+
+ 
 
  
 
@@ -5742,7 +11538,15 @@ function colocarTexto(elemento, valor) {
 
  
 
+ 
+
+ 
+
       String(valor ?? "");
+
+ 
+
+ 
 
  
 
@@ -5750,7 +11554,19 @@ function colocarTexto(elemento, valor) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5762,7 +11578,15 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
   if (typeof valor === "number") {
+
+ 
+
+ 
 
  
 
@@ -5770,7 +11594,19 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5782,7 +11618,15 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
     typeof valor === "string" &&
+
+ 
+
+ 
 
  
 
@@ -5790,7 +11634,15 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -5798,7 +11650,15 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
       valor.replace(",", ".")
+
+ 
+
+ 
 
  
 
@@ -5806,7 +11666,19 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5818,7 +11690,19 @@ function convertirNumero(valor) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5830,7 +11714,15 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
   const normalizado = String(
+
+ 
+
+ 
 
  
 
@@ -5838,11 +11730,23 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
   )
 
  
 
+ 
+
+ 
+
     .trim()
+
+ 
+
+ 
 
  
 
@@ -5854,7 +11758,19 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (normalizado.includes("robo")) {
+
+ 
+
+ 
 
  
 
@@ -5862,7 +11778,19 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5874,7 +11802,15 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
     return "Montachoques";
+
+ 
+
+ 
 
  
 
@@ -5886,7 +11822,19 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   return capitalizarPalabras(
+
+ 
+
+ 
 
  
 
@@ -5894,11 +11842,27 @@ function formatearTipoAlerta(valor) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -5910,7 +11874,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
   const clave = String(
+
+ 
+
+ 
 
  
 
@@ -5918,7 +11890,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
   )
+
+ 
+
+ 
 
  
 
@@ -5926,7 +11906,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     .toLowerCase()
+
+ 
+
+ 
 
  
 
@@ -5934,7 +11922,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     .replace(/[\u0300-\u036f]/g, "")
+
+ 
+
+ 
 
  
 
@@ -5946,7 +11942,19 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const etiquetas = {
+
+ 
+
+ 
 
  
 
@@ -5954,7 +11962,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     en_seguimiento: "EN SEGUIMIENTO",
+
+ 
+
+ 
 
  
 
@@ -5962,7 +11978,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     verificada: "ALERTA VERIFICADA",
+
+ 
+
+ 
 
  
 
@@ -5970,7 +11994,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     apoyo_en_camino: "APOYO EN CAMINO",
+
+ 
+
+ 
 
  
 
@@ -5978,7 +12010,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     cliente_seguro: "CLIENTE ESTÁ BIEN",
+
+ 
+
+ 
 
  
 
@@ -5986,7 +12026,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     vehiculo_recuperado: "VEHÍCULO RECUPERADO",
+
+ 
+
+ 
 
  
 
@@ -5994,7 +12042,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     finalizada: "CASO FINALIZADO",
+
+ 
+
+ 
 
  
 
@@ -6002,7 +12058,19 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6014,7 +12082,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
     clave,
+
+ 
+
+ 
 
  
 
@@ -6022,7 +12098,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
       etiquetas[clave] ||
+
+ 
+
+ 
 
  
 
@@ -6030,7 +12114,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
         clave.replace(/_/g, " ")
+
+ 
+
+ 
 
  
 
@@ -6038,7 +12130,15 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -6050,11 +12150,31 @@ function normalizarEstado(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   if (!valor) return "Pendiente";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6070,7 +12190,19 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -6078,7 +12210,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -6086,7 +12226,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   } else if (valor instanceof Date) {
+
+ 
+
+ 
 
  
 
@@ -6094,7 +12242,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   } else if (
+
+ 
+
+ 
 
  
 
@@ -6102,11 +12258,23 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
     typeof valor === "string"
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -6114,7 +12282,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   } else if (
+
+ 
+
+ 
 
  
 
@@ -6122,7 +12298,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -6130,7 +12314,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
       valor.seconds * 1000
+
+ 
+
+ 
 
  
 
@@ -6138,7 +12330,19 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6150,7 +12354,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
     !(fecha instanceof Date) ||
+
+ 
+
+ 
 
  
 
@@ -6158,7 +12370,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -6166,7 +12386,19 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6178,7 +12410,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
     "es-MX",
+
+ 
+
+ 
 
  
 
@@ -6186,7 +12426,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
       dateStyle: "medium",
+
+ 
+
+ 
 
  
 
@@ -6194,7 +12442,15 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6202,7 +12458,19 @@ function formatearFecha(valor) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6214,7 +12482,15 @@ function capitalizarPalabras(valor) {
 
  
 
+ 
+
+ 
+
   return String(valor)
+
+ 
+
+ 
 
  
 
@@ -6222,7 +12498,15 @@ function capitalizarPalabras(valor) {
 
  
 
+ 
+
+ 
+
     .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -6230,7 +12514,15 @@ function capitalizarPalabras(valor) {
 
  
 
+ 
+
+ 
+
       palabra =>
+
+ 
+
+ 
 
  
 
@@ -6238,7 +12530,15 @@ function capitalizarPalabras(valor) {
 
  
 
+ 
+
+ 
+
         palabra.slice(1)
+
+ 
+
+ 
 
  
 
@@ -6246,11 +12546,27 @@ function capitalizarPalabras(valor) {
 
  
 
+ 
+
+ 
+
     .join(" ");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6262,7 +12578,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   const identidadGuardada = leerIdentidadParticipante();
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6274,11 +12602,27 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     return identidadGuardada;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6290,7 +12634,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     "¿Quién está registrando esta información?\n\n" +
+
+ 
+
+ 
 
  
 
@@ -6298,7 +12650,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     "Escribe 2 si eres Policía, C5 o Recuperación de Robo."
+
+ 
+
+ 
 
  
 
@@ -6310,7 +12670,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (tipoSeleccionado === null) {
+
+ 
+
+ 
 
  
 
@@ -6318,7 +12690,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6330,7 +12714,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   let identidad = null;
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6342,7 +12738,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     const nombre = window.prompt(
+
+ 
+
+ 
 
  
 
@@ -6350,7 +12754,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6362,7 +12778,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       return null;
+
+ 
+
+ 
 
  
 
@@ -6374,7 +12798,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     identidad = {
+
+ 
+
+ 
 
  
 
@@ -6382,7 +12818,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       nombre: nombre.trim().slice(0, 100),
+
+ 
+
+ 
 
  
 
@@ -6390,11 +12834,23 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       visitanteId
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -6402,7 +12858,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     identidad = {
+
+ 
+
+ 
 
  
 
@@ -6410,7 +12874,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       nombre: "",
+
+ 
+
+ 
 
  
 
@@ -6418,7 +12890,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       visitanteId
+
+ 
+
+ 
 
  
 
@@ -6426,7 +12906,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   } else {
+
+ 
+
+ 
 
  
 
@@ -6434,7 +12922,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       "Selecciona 1 para Miembro AS CLICK o 2 para Autoridad.",
+
+ 
+
+ 
 
  
 
@@ -6442,7 +12938,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6450,7 +12954,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6462,7 +12978,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     localStorage.setItem(
+
+ 
+
+ 
 
  
 
@@ -6470,11 +12994,23 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       JSON.stringify(identidad)
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6482,7 +13018,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     console.warn(
+
+ 
+
+ 
 
  
 
@@ -6490,7 +13034,15 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       error
+
+ 
+
+ 
 
  
 
@@ -6498,7 +13050,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6510,7 +13074,19 @@ function obtenerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6522,7 +13098,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -6530,7 +13114,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       CLAVE_IDENTIDAD_PARTICIPANTE
+
+ 
+
+ 
 
  
 
@@ -6542,7 +13134,19 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (!guardado) {
+
+ 
+
+ 
 
  
 
@@ -6550,7 +13154,19 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6566,7 +13182,19 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
     if (
+
+ 
+
+ 
 
  
 
@@ -6574,7 +13202,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     ) {
+
+ 
+
+ 
 
  
 
@@ -6582,7 +13218,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
         tipo: "autoridad",
+
+ 
+
+ 
 
  
 
@@ -6590,7 +13234,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
         nombreVisible: "Autoridad",
+
+ 
+
+ 
 
  
 
@@ -6598,11 +13250,27 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       };
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6614,7 +13282,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       identidad?.tipo === "miembro" &&
+
+ 
+
+ 
 
  
 
@@ -6622,7 +13298,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       identidad.nombreVisible.trim()
+
+ 
+
+ 
 
  
 
@@ -6630,7 +13314,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       return {
+
+ 
+
+ 
 
  
 
@@ -6638,7 +13330,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
         nombre: identidad.nombreVisible.trim().slice(0, 100),
+
+ 
+
+ 
 
  
 
@@ -6646,7 +13346,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
         visitanteId
+
+ 
+
+ 
 
  
 
@@ -6654,7 +13362,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6662,7 +13378,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
     console.warn(
+
+ 
+
+ 
 
  
 
@@ -6670,7 +13394,15 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
       error
+
+ 
+
+ 
 
  
 
@@ -6678,7 +13410,19 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6690,7 +13434,19 @@ function leerIdentidadParticipante() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6702,7 +13458,15 @@ function obtenerAutorVisible(autor) {
 
  
 
+ 
+
+ 
+
   if (!autor || typeof autor !== "object") {
+
+ 
+
+ 
 
  
 
@@ -6710,7 +13474,19 @@ function obtenerAutorVisible(autor) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6722,7 +13498,15 @@ function obtenerAutorVisible(autor) {
 
  
 
+ 
+
+ 
+
     return "Autoridad";
+
+ 
+
+ 
 
  
 
@@ -6734,7 +13518,19 @@ function obtenerAutorVisible(autor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   return String(
+
+ 
+
+ 
 
  
 
@@ -6742,7 +13538,15 @@ function obtenerAutorVisible(autor) {
 
  
 
+ 
+
+ 
+
   ).trim();
+
+ 
+
+ 
 
  
 
@@ -6754,7 +13558,19 @@ function obtenerAutorVisible(autor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function obtenerOCrearIdVisitante() {
+
+ 
+
+ 
 
  
 
@@ -6762,7 +13578,19 @@ function obtenerOCrearIdVisitante() {
 
  
 
+ 
+
+ 
+
     "asClickEmergencyVisitorId";
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6778,7 +13606,19 @@ function obtenerOCrearIdVisitante() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   if (!id) {
+
+ 
+
+ 
 
  
 
@@ -6786,11 +13626,27 @@ function obtenerOCrearIdVisitante() {
 
  
 
+ 
+
+ 
+
     localStorage.setItem(clave, id);
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6802,7 +13658,19 @@ function obtenerOCrearIdVisitante() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6814,11 +13682,23 @@ function crearIdSeguro() {
 
  
 
+ 
+
+ 
+
   if (window.crypto?.randomUUID) {
 
  
 
+ 
+
+ 
+
     return window.crypto.randomUUID();
+
+ 
+
+ 
 
  
 
@@ -6830,7 +13710,19 @@ function crearIdSeguro() {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   return (
+
+ 
+
+ 
 
  
 
@@ -6838,7 +13730,15 @@ function crearIdSeguro() {
 
  
 
+ 
+
+ 
+
     Math.random()
+
+ 
+
+ 
 
  
 
@@ -6846,7 +13746,15 @@ function crearIdSeguro() {
 
  
 
+ 
+
+ 
+
       .slice(2, 12)
+
+ 
+
+ 
 
  
 
@@ -6854,7 +13762,19 @@ function crearIdSeguro() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6866,7 +13786,15 @@ function esTipoEvidenciaPermitido(tipoMime) {
 
  
 
+ 
+
+ 
+
   return (
+
+ 
+
+ 
 
  
 
@@ -6874,7 +13802,15 @@ function esTipoEvidenciaPermitido(tipoMime) {
 
  
 
+ 
+
+ 
+
     /^video\//i.test(tipoMime)
+
+ 
+
+ 
 
  
 
@@ -6882,7 +13818,19 @@ function esTipoEvidenciaPermitido(tipoMime) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6894,7 +13842,15 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -6902,7 +13858,15 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
       valor,
+
+ 
+
+ 
 
  
 
@@ -6910,7 +13874,19 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6922,7 +13898,15 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
       url.protocol === "http:" ||
+
+ 
+
+ 
 
  
 
@@ -6930,7 +13914,15 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6938,7 +13930,15 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
     return false;
+
+ 
+
+ 
 
  
 
@@ -6946,7 +13946,19 @@ function esUrlHttpSegura(valor) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -6958,7 +13970,15 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
   return String(valor ?? "")
+
+ 
+
+ 
 
  
 
@@ -6966,7 +13986,15 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll("<", "&lt;")
+
+ 
+
+ 
 
  
 
@@ -6974,11 +14002,23 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll('"', "&quot;")
 
  
 
+ 
+
+ 
+
     .replaceAll("'", "&#039;");
+
+ 
+
+ 
 
  
 
@@ -6990,7 +14030,19 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
 function escaparAtributo(valor) {
+
+ 
+
+ 
 
  
 
@@ -6998,7 +14050,15 @@ function escaparAtributo(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll("`", "&#096;");
+
+ 
+
+ 
 
  
 
