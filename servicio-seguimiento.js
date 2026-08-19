@@ -56,7 +56,7 @@ function startTracking(){
 }
 
 function listenService(){
-  const q=query(collection(db,"servicios"),where("folio","==",state.folio));
+  const q=query(collection(db,"servicios"),where("folio","==",state.folio),where("usuarioId","==",state.user.uid));
   state.unsubscribeService=onSnapshot(q,snapshot=>{
     const serviceDoc=snapshot.docs.find(item=>{
       const d=item.data();
@@ -76,7 +76,7 @@ function listenService(){
 }
 
 function listenRequest(){
-  const q=query(collection(db,"solicitudes"),where("folio","==",state.folio));
+  const q=query(collection(db,"solicitudes"),where("folio","==",state.folio),where("usuarioId","==",state.user.uid));
   state.unsubscribeRequest=onSnapshot(q,snapshot=>{
     const requestDoc=snapshot.docs.find(item=>{
       const d=item.data();
