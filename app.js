@@ -3734,7 +3734,11 @@ async function solicitarServicio(servicio, detalleServicio = "", confirmacionAbo
 
  
 
-    window.location.href = url;
+    // Abre WhatsApp con la solicitud y deja la web en la pantalla de seguimiento.
+    window.open(url, "_blank");
+
+    window.location.href =
+      `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
 
  
 
