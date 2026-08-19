@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguimiento de servicio | AS CLICK</title>
+  <meta name="description" content="Seguimiento en tiempo real de tu servicio AS CLICK.">
+  <meta name="theme-color" content="#07111f">
+  <link rel="icon" type="image/png" href="./logo AS CLICK 2.png">
+  <link rel="apple-touch-icon" href="./logo AS CLICK 2.png">
+  <link rel="stylesheet" href="./servicio-seguimiento.css">
+</head>
+<body>
+  <main class="serviceTrackingPage">
+    <header class="serviceHeader">
+      <a class="brand" href="./index.html" aria-label="Volver a AS CLICK">
+        <img src="./logo AS CLICK 1.png" alt="AS CLICK">
+        <div><b>AS CLICK</b><span>Asistencia vial 24/7</span></div>
+      </a>
+      <div class="headerCenter">
+        <h1>Seguimiento de servicio</h1>
+        <p>Estamos contigo en cada paso</p>
+      </div>
+      <div class="headerActions">
+        <button id="helpHeaderButton" type="button">🎧 Ayuda</button>
+        <a href="./index.html">Salir</a>
+      </div>
+    </header>
+
+    <section id="loadingPanel" class="statePanel">
+      <div class="spinner"></div>
+      <h2>Cargando tu servicio</h2>
+      <p>Estamos conectando con AS CLICK.</p>
+    </section>
+
+    <section id="errorPanel" class="statePanel errorPanel" hidden>
+      <div class="stateIcon">⚠️</div>
+      <h2 id="errorTitle">No fue posible abrir el seguimiento</h2>
+      <p id="errorMessage">Revisa el enlace e inténtalo nuevamente.</p>
+      <a class="mainButton" href="./index.html">Volver a AS CLICK</a>
+    </section>
+
+    <section id="trackingContent" hidden>
+      <section class="heroCard">
+        <div class="heroTop">
+          <div>
+            <span class="label">FOLIO</span>
+            <strong id="serviceFolio">—</strong>
+            <small id="requestDate">Solicitud registrada</small>
+          </div>
+          <div>
+            <span class="label">TIPO DE SERVICIO</span>
+            <strong id="serviceType">Servicio</strong>
+            <small id="serviceSubtype"></small>
+          </div>
+          <div class="statusBox">
+            <span class="label">ESTADO ACTUAL</span>
+            <strong id="currentStatus" class="statusBadge">BUSCANDO PROVEEDOR</strong>
+            <small id="currentStatusText">Estamos buscando al proveedor más cercano.</small>
+          </div>
+        </div>
+
+        <div class="progressTrack" id="progressTrack">
+          <div class="progressStep" data-step="solicitado"><span>✓</span><b>Solicitud recibida</b><small id="timeSolicitado">—</small></div>
+          <div class="progressLine"></div>
+          <div class="progressStep" data-step="asignado"><span>👤</span><b>Proveedor asignado</b><small id="timeAsignado">—</small></div>
+          <div class="progressLine"></div>
+          <div class="progressStep" data-step="en_camino"><span>🚗</span><b>En camino</b><small id="timeEnCamino">—</small></div>
+          <div class="progressLine"></div>
+          <div class="progressStep" data-step="arribo"><span>📍</span><b>Llegó contigo</b><small id="timeArribo">—</small></div>
+          <div class="progressLine towOnly"></div>
+          <div class="progressStep towOnly" data-step="en_traslado"><span>🚛</span><b>En traslado</b><small id="timeTraslado">—</small></div>
+          <div class="progressLine towOnly"></div>
+          <div class="progressStep towOnly" data-step="destino"><span>🏁</span><b>Llegó al destino</b><small id="timeDestino">—</small></div>
+          <div class="progressLine"></div>
+          <div class="progressStep" data-step="finalizado"><span>✓</span><b>Finalizado</b><small id="timeFinalizado">—</small></div>
+        </div>
+      </section>
+
+      <div class="mainGrid">
+        <div class="leftColumn">
+          <article class="card providerCard">
+            <div class="sectionTitle">
+              <div><span class="label">TU PROVEEDOR ASIGNADO</span><h2 id="providerWaitingTitle">Esperando asignación</h2></div>
+              <span id="providerVerifiedBadge" class="verifiedBadge" hidden>✓ Verificado</span>
+            </div>
+
+            <div id="providerWaiting" class="waitingProvider">
+              <div class="pulseAvatar">AS</div>
+              <div><b>Buscando proveedor cercano</b><p>En cuanto un proveedor acepte, sus datos aparecerán aquí automáticamente.</p></div>
+            </div>
+
+            <div id="providerInfo" class="providerInfo" hidden>
+              <div class="providerIdentity">
+                <div class="providerPhotoWrap">
+                  <img id="providerPhoto" alt="Foto del proveedor" hidden>
+                  <div id="providerPhotoPlaceholder">AS</div>
+                </div>
+                <div class="providerNameBlock">
+                  <h3 id="providerName">Proveedor AS CLICK</h3>
+                  <div class="ratingLine"><span>⭐</span><b id="providerRating">5.0</b><span id="providerServices"></span></div>
+                  <div class="providerButtons">
+                    <a id="callProviderButton" class="greenButton" href="#">☎ Llamar</a>
+                    <a id="whatsappProviderButton" class="blueButton" href="#" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                  </div>
+                </div>
+                <div class="unitBox">
+                  <span class="label">UNIDAD</span>
+                  <strong id="providerUnit">Por confirmar</strong>
+                  <p id="providerUnitDetails">Datos de unidad pendientes</p>
+                </div>
+              </div>
+
+              <div class="quickStats">
+                <div><span>⏱</span><small>TIEMPO ESTIMADO</small><strong id="etaValue">—</strong></div>
+                <div><span>📍</span><small>DISTANCIA</small><strong id="distanceValue">—</strong></div>
+                <div><span>🔐</span><small>CÓDIGO DEL SERVICIO</small><strong id="securityCode">----</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card liveLocationCard">
+            <div class="sectionTitle">
+              <div><span class="label">UBICACIÓN EN TIEMPO REAL</span><h2>Tu proveedor</h2></div>
+              <span id="locationUpdatedAt" class="mapUpdate">Esperando ubicación</span>
+            </div>
+            <div id="mapWaiting" class="mapWaiting"><span>🗺️</span><b>La ubicación aparecerá cuando el proveedor vaya en camino.</b></div>
+            <div id="mapContainer" class="mapContainer" hidden>
+              <iframe id="providerMap" title="Ubicación del proveedor" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <div class="mapFloating"><b>Tu proveedor</b><span id="mapDistanceText">Ubicación actualizada</span></div>
+            </div>
+            <div class="mapActions">
+              <a id="openProviderMapButton" class="outlineButton" href="#" target="_blank" rel="noopener noreferrer" hidden>Abrir en Google Maps</a>
+              <button id="shareTrackingButton" class="outlineButton" type="button">Compartir seguimiento</button>
+            </div>
+          </article>
+
+          <article id="arrivalConfirmCard" class="card arrivalCard" hidden>
+            <div><span class="label">CONFIRMA EL ARRIBO</span><h2>¿Ya tienes al proveedor a la vista?</h2><p>Esto nos ayuda a registrar el tiempo real de llegada.</p></div>
+            <div class="arrivalButtons">
+              <button id="confirmArrivalButton" class="greenButton buttonReset" type="button">Sí, ya llegó</button>
+              <button id="notSeenButton" class="outlineButton" type="button">Aún no lo veo</button>
+            </div>
+            <p id="arrivalFeedback" class="inlineFeedback" hidden></p>
+          </article>
+
+          <article id="ratingCard" class="card ratingCard" hidden>
+            <span class="label">SERVICIO FINALIZADO</span>
+            <h2>¿Cómo fue tu experiencia?</h2>
+            <p>Tu calificación nos ayuda a mantener proveedores de calidad.</p>
+            <div id="starSelector" class="stars" aria-label="Calificación de 1 a 5 estrellas">
+              <button type="button" data-stars="1">★</button><button type="button" data-stars="2">★</button><button type="button" data-stars="3">★</button><button type="button" data-stars="4">★</button><button type="button" data-stars="5">★</button>
+            </div>
+            <div class="ratingTags" id="ratingTags">
+              <button type="button" data-tag="Llegó rápido">Llegó rápido</button>
+              <button type="button" data-tag="Buen trato">Buen trato</button>
+              <button type="button" data-tag="Profesional">Profesional</button>
+              <button type="button" data-tag="Resolvió el problema">Resolvió el problema</button>
+              <button type="button" data-tag="Llegó tarde">Llegó tarde</button>
+              <button type="button" data-tag="Problema con el cobro">Problema con el cobro</button>
+            </div>
+            <textarea id="ratingComment" maxlength="500" rows="4" placeholder="Comentario opcional..."></textarea>
+            <button id="submitRatingButton" class="mainButton" type="button" disabled>Enviar calificación</button>
+            <p id="ratingFeedback" class="inlineFeedback" hidden></p>
+          </article>
+        </div>
+
+        <aside class="rightColumn">
+          <article class="card summaryCard">
+            <span class="label">RESUMEN DEL SERVICIO</span>
+            <div class="summaryItem"><span class="dot blueDot"></span><div><small>Origen</small><b id="originText">Ubicación registrada</b></div></div>
+            <div id="destinationRow" class="summaryItem" hidden><span class="dot redDot"></span><div><small>Destino</small><b id="destinationText">Por confirmar</b></div></div>
+            <div class="summaryItem"><span class="dot grayDot"></span><div><small>Vehículo</small><b id="vehicleText">Por confirmar</b></div></div>
+            <div id="towDetails" class="towDetails" hidden>
+              <p><span>Condición</span><b id="towCondition">—</b></p>
+              <p><span>Liberado</span><b id="towReleased">—</b></p>
+              <p><span>Tiene carga</span><b id="towLoad">—</b></p>
+            </div>
+          </article>
+
+          <article class="card actionCard">
+            <span class="label">ACCIONES</span>
+            <button id="cancelServiceButton" class="cancelButton" type="button">✕ Cancelar servicio</button>
+            <button id="helpButton" class="helpButton" type="button">⚠ Necesito ayuda</button>
+            <button id="reportProblemButton" class="outlineButton wideButton" type="button">⚑ Reportar problema</button>
+          </article>
+
+          <article class="card safetyCard">
+            <span class="shield">🛡️</span>
+            <div><b>Importante</b><p>Verifica nombre, unidad y placas antes de subir o entregar tu vehículo. El código corresponde a los últimos 4 dígitos numéricos de tu folio.</p></div>
+          </article>
+
+          <article id="whatsappPendingCard" class="card whatsappPendingCard" hidden>
+            <b>WhatsApp no se abrió automáticamente</b>
+            <p>Tu solicitud sí quedó registrada. Usa este botón para enviar el mensaje a cabina.</p>
+            <a id="openPendingWhatsappButton" class="greenButton" href="#" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>
+          </article>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./servicio-seguimiento.js"></script>
+</body>
+</html>
