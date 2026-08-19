@@ -1,12 +1,9 @@
 import { auth, db } from "./firebase-config.js";
-
 import {
   collection, doc, getDoc, onSnapshot, query, where,
   updateDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
 const TELEFONO_CABINA = "525519750497";
 const state = {
   user:null, folio:"", service:null, serviceId:"",
@@ -15,11 +12,9 @@ const state = {
   unsubscribeRequest:null, unsubscribeLocation:null,
   rating:0, tags:new Set()
 };
-
 const $ = id => document.getElementById(id);
 const setText = (id,value) => { const el=$(id); if(el) el.textContent=value ?? ""; };
 const setHidden = (id,hidden) => { const el=$(id); if(el) el.hidden=hidden; };
-
 function showError(title,message){
   setHidden("loadingPanel",true);
   setHidden("trackingContent",true);
@@ -32,9 +27,7 @@ function showContent(){
   setHidden("errorPanel",true);
   setHidden("trackingContent",false);
 }
-
 state.folio = new URLSearchParams(location.search).get("folio")?.trim() || "";
-
 if(!state.folio){
   showError("Enlace incompleto","No encontramos el folio del servicio.");
 }else{
@@ -47,14 +40,12 @@ if(!state.folio){
     startTracking();
   });
 }
-
 function startTracking(){
   listenService();
   listenRequest();
   bindActions();
   restorePendingWhatsApp();
 }
-
 function listenService(){
   const q=query(collection(db,"servicios"),where("folio","==",state.folio),where("usuarioId","==",state.user.uid));
   state.unsubscribeService=onSnapshot(q,snapshot=>{
@@ -74,9 +65,8 @@ function listenService(){
     showError("No fue posible cargar el servicio","Revisa tu conexión e inténtalo nuevamente.");
   });
 }
-
 function listenRequest(){
-  const q=query(collection(db,"solicitudes"),where("folio","==",state.folio),where("usuarioId","==",state.user.uid));
+  const q=query(collection(db,"solicitudes"),where("folio","==",state.folio),where("uidCliente","==",state.user.uid));
   state.unsubscribeRequest=onSnapshot(q,snapshot=>{
     const requestDoc=snapshot.docs.find(item=>{
       const d=item.data();
@@ -95,7 +85,6 @@ function listenRequest(){
     renderAll(); showContent();
   },error=>console.error("Error leyendo solicitud:",error));
 }
-
 async function loadProvider(uid){
   try{
     const snap=await getDoc(doc(db,"proveedores",uid));
@@ -107,7 +96,6 @@ async function loadProvider(uid){
     console.warn("No fue posible leer el perfil completo del proveedor:",error);
   }
 }
-
 function listenProviderLocation(){
   if(!state.requestId) return;
   state.unsubscribeLocation?.();
@@ -117,7 +105,6 @@ function listenProviderLocation(){
     renderProviderLocation();
   },error=>console.warn("No fue posible leer ubicación del proveedor:",error));
 }
-
 function renderAll(){
   if(!state.service && !state.request) return;
   const source=state.request || state.service;
@@ -130,7 +117,6 @@ function renderAll(){
   renderStatus(); renderProgress(); renderProvider(); renderSummary();
   renderProviderLocation(); renderArrivalConfirmation(); renderRating();
 }
-
 function getServiceName(data){
   return data?.servicio?.nombre || data?.servicio || data?.tipoServicio || "Servicio";
 }
@@ -148,7 +134,6 @@ function getCurrentState(){
     .trim().toLowerCase().normalize("NFD")
     .replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,"_");
 }
-
 function renderStatus(){
   const status=getCurrentState();
   const map={
@@ -171,7 +156,6 @@ function renderStatus(){
   const badge=$("currentStatus");
   if(badge) badge.dataset.state=["cancelado","cancelada"].includes(status)?"cancelado":status;
 }
-
 function renderProgress(){
   const source=state.request || state.service || {};
   const type=normalizeServiceType(source.servicio?.tipo || source.tipoServicio || state.service?.tipoServicio || getServiceName(source));
@@ -207,7 +191,6 @@ function renderProgress(){
   setText("timeDestino",formatTime(source.fechaLlegadaDestino));
   setText("timeFinalizado",formatTime(source.fechaFinalizacion||source.finalizadoEn||state.service?.fechaFinalizacion||state.service?.finalizadoEn));
 }
-
 function renderProvider(){
   const assignment=state.request?.asignacion || {};
   const uid=assignment.uidProveedor || "";
@@ -254,7 +237,6 @@ function renderProvider(){
   setText("distanceValue",Number.isFinite(Number(distance))?`${Number(distance).toFixed(1)} km`:"Calculando");
   setText("securityCode",getSecurityCode(state.folio));
 }
-
 function renderProviderLocation(){
   const location=state.providerLocation;
   const lat=Number(location?.latitud??location?.latitude);
@@ -271,7 +253,6 @@ function renderProviderLocation(){
   const distance=state.request?.distanciaProveedorKm;
   setText("mapDistanceText",Number.isFinite(Number(distance))?`A ${Number(distance).toFixed(1)} km de ti`:"Ubicación actualizada");
 }
-
 function renderSummary(){
   const service=state.service||{},request=state.request||{},vehicle=request.vehiculo||service.vehiculo||{};
   const origin=request.ubicacion?.enlaceGoogleMaps||service.ubicacion||service.ubicacionDatos?.enlaceGoogleMaps||"Ubicación registrada";
@@ -289,7 +270,6 @@ function renderSummary(){
     setText("towLoad",tow?.tieneCarga||"No registrado");
   }
 }
-
 function renderArrivalConfirmation(){
   const status=getCurrentState();
   const confirmed=state.service?.clienteConfirmoArribo===true||state.request?.clienteConfirmoArribo===true;
@@ -303,7 +283,6 @@ function renderRating(){
   }
   setHidden("ratingCard",status!=="finalizado");
 }
-
 function bindActions(){
   $("shareTrackingButton")?.addEventListener("click",shareTracking);
   $("cancelServiceButton")?.addEventListener("click",cancelService);
@@ -325,14 +304,12 @@ function bindActions(){
   }));
   $("submitRatingButton")?.addEventListener("click",submitRating);
 }
-
 function renderStars(){
   document.querySelectorAll("#starSelector button").forEach(button=>{
     button.classList.toggle("active",Number(button.dataset.stars)<=state.rating);
   });
   const submit=$("submitRatingButton"); if(submit) submit.disabled=state.rating<1;
 }
-
 async function confirmArrival(){
   if(!state.serviceId) return;
   const payload={clienteConfirmoArribo:true,fechaConfirmacionArriboCliente:serverTimestamp()};
@@ -344,7 +321,6 @@ async function confirmArrival(){
   }
   setText("arrivalFeedback","Llegada confirmada. Gracias.");setHidden("arrivalFeedback",false);setHidden("arrivalConfirmCard",true);
 }
-
 function cancelService(){
   const status=getCurrentState();
   if(["finalizado","cancelado","cancelada"].includes(status)){alert("Este servicio ya no puede cancelarse.");return;}
@@ -372,7 +348,6 @@ async function shareTracking(){
   try{await navigator.clipboard.writeText(url);alert("Enlace de seguimiento copiado.");}
   catch{prompt("Copia este enlace de seguimiento:",url);}
 }
-
 async function submitRating(){
   if(!state.serviceId||state.rating<1) return;
   const button=$("submitRatingButton"); if(button){button.disabled=true;button.textContent="Guardando...";}
@@ -387,7 +362,6 @@ async function submitRating(){
   setText("ratingFeedback","Gracias. Tu calificación fue enviada.");setHidden("ratingFeedback",false);
   if(button){button.textContent="Calificación enviada";button.disabled=true;}
 }
-
 function restorePendingWhatsApp(){
   try{
     const pending=sessionStorage.getItem("asClickWhatsAppPendiente");
@@ -400,7 +374,6 @@ function restorePendingWhatsApp(){
     },{once:true});
   }catch(error){console.warn("No fue posible recuperar el enlace de WhatsApp:",error);}
 }
-
 function getSecurityCode(folio){
   const digits=String(folio||"").replace(/\D/g,"");
   return digits.slice(-4).padStart(4,"0");
