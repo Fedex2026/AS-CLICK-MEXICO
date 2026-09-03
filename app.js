@@ -3602,7 +3602,7 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
-  await guardarSolicitudServicio(
+  const folio = await guardarSolicitudServicio(
 
  
 
@@ -3663,6 +3663,18 @@ async function solicitarServicio(servicio, detalleServicio = "") {
  
 
   window.open(url, "_blank", "noopener,noreferrer");
+
+ 
+
+  if (folio) {
+
+ 
+
+    window.location.href = generarEnlaceSeguimientoServicio(folio);
+
+ 
+
+  }
 
  
 
@@ -4442,9 +4454,13 @@ async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalle
 
     await cargarHistorialServicios();
 
+    return folio;
+
   } catch (error) {
 
     console.error("No fue posible guardar la solicitud:", error);
+
+    return "";
 
   }
 
