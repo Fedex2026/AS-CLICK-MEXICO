@@ -3670,7 +3670,7 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
-    window.location.href = generarEnlaceSeguimientoServicio(folio);
+    window.location.href = `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
 
  
 
