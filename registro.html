@@ -283,6 +283,116 @@
 
             </div>
 
+            <!-- AFILIACIÓN MONTEC / ACME -->
+            <div class="formGroup fullWidth" style="margin-top: 18px;">
+
+              <label for="afiliacionGremial">
+                Afiliación gremial
+              </label>
+
+              <div class="selectWrapper">
+
+                <span class="inputIcon">
+                  🤝
+                </span>
+
+                <select
+                  id="afiliacionGremial"
+                  name="afiliacionGremial"
+                >
+                  <option value="ninguna">
+                    No pertenezco a ninguna
+                  </option>
+
+                  <option value="montec">
+                    MONTEC
+                  </option>
+
+                  <option value="acme">
+                    ACME
+                  </option>
+
+                  <option value="ambos">
+                    MONTEC y ACME
+                  </option>
+                </select>
+
+              </div>
+
+              <small class="fieldError"></small>
+
+              <p class="membershipHelp">
+                Si estás agremiado, selecciona MONTEC, ACME o ambas e ingresa tu número de estampa.
+              </p>
+
+            </div>
+
+            <div
+              class="formGroup fullWidth"
+              id="montecNumberBlock"
+              hidden
+            >
+
+              <label for="numeroEstampaMontec">
+                Número de estampa MONTEC
+              </label>
+
+              <div class="inputWrapper">
+
+                <span class="inputIcon">
+                  🪪
+                </span>
+
+                <input
+                  type="text"
+                  id="numeroEstampaMontec"
+                  name="numeroEstampaMontec"
+                  placeholder="Número de estampa MONTEC"
+                  autocomplete="off"
+                />
+
+              </div>
+
+              <small
+                id="numeroEstampaMontecError"
+                class="fieldError"
+              ></small>
+
+            </div>
+
+            <div
+              class="formGroup fullWidth"
+              id="acmeNumberBlock"
+              hidden
+            >
+
+              <label for="numeroEstampaAcme">
+                Número de estampa ACME
+              </label>
+
+              <div class="inputWrapper">
+
+                <span class="inputIcon">
+                  🪪
+                </span>
+
+                <input
+                  type="text"
+                  id="numeroEstampaAcme"
+                  name="numeroEstampaAcme"
+                  placeholder="Número de estampa ACME"
+                  autocomplete="off"
+                />
+
+              </div>
+
+              <small
+                id="numeroEstampaAcmeError"
+                class="fieldError"
+              ></small>
+
+            </div>
+
           </section>
 
           <!-- DATOS PERSONALES -->
