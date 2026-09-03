@@ -227,6 +227,9 @@ let firestoreUpdateDoc = null;
  
 
 let firestoreDeleteDoc = null;
+let firestoreRunTransaction = null;
+let cancelarEscuchaCotizacionesGrua = null;
+let solicitudCotizacionGruaActual = null;
 
  
 
@@ -323,6 +326,7 @@ async function iniciarFirebase() {
  
 
     firestoreDeleteDoc = firestoreModule.deleteDoc;
+    firestoreRunTransaction = firestoreModule.runTransaction;
 
  
 
@@ -3530,6 +3534,284 @@ function cerrarMenuMovil() {
 
  
 
+
+/* =========================================
+   COTIZACIÓN DE GRÚA
+========================================= */
+function abrirCotizacionGrua() {
+  if (!usuarioActual) {
+    mostrarModal("⚠", "Sesión no disponible", "Inicia sesión nuevamente para cotizar una grúa.");
+    return;
+  }
+
+  const overlay = document.getElementById("gruaCotizacionOverlay");
+  const form = document.getElementById("gruaCotizacionForm");
+  const vista = document.getElementById("gruaCotizacionesVista");
+  const error = document.getElementById("gruaFormError");
+  if (!overlay || !form || !vista) return;
+
+  form.reset();
+  form.hidden = false;
+  vista.hidden = true;
+  if (error) error.textContent = "";
+  actualizarFormularioGrua();
+  overlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarCotizacionGrua() {
+  document.getElementById("gruaCotizacionOverlay")?.classList.remove("active");
+  document.body.style.overflow = "";
+  if (cancelarEscuchaCotizacionesGrua) {
+    cancelarEscuchaCotizacionesGrua();
+    cancelarEscuchaCotizacionesGrua = null;
+  }
+}
+
+function actualizarFormularioGrua() {
+  const condicion = document.getElementById("gruaCondicion")?.value || "";
+  const esCarga = document.getElementById("gruaEsCarga")?.value === "si";
+  const estadoCarga = document.getElementById("gruaEstadoCarga")?.value || "";
+
+  const liberacionField = document.getElementById("gruaLiberacionField");
+  const liberacion = document.getElementById("gruaLiberacion");
+  if (liberacionField) liberacionField.hidden = condicion !== "siniestro";
+  if (liberacion) liberacion.required = condicion === "siniestro";
+
+  const estadoCargaField = document.getElementById("gruaEstadoCargaField");
+  const estadoCargaSelect = document.getElementById("gruaEstadoCarga");
+  if (estadoCargaField) estadoCargaField.hidden = !esCarga;
+  if (estadoCargaSelect) estadoCargaSelect.required = esCarga;
+
+  const conCarga = esCarga && estadoCarga === "con_carga";
+  const tipoCargaField = document.getElementById("gruaTipoCargaField");
+  const pesoCargaField = document.getElementById("gruaPesoCargaField");
+  const tipoCarga = document.getElementById("gruaTipoCarga");
+  const pesoCarga = document.getElementById("gruaPesoCarga");
+  if (tipoCargaField) tipoCargaField.hidden = !conCarga;
+  if (pesoCargaField) pesoCargaField.hidden = !conCarga;
+  if (tipoCarga) tipoCarga.required = conCarga;
+  if (pesoCarga) pesoCarga.required = conCarga;
+}
+
+async function enviarSolicitudCotizacionGrua(event) {
+  event?.preventDefault();
+  if (!usuarioActual) return;
+
+  const errorBox = document.getElementById("gruaFormError");
+  const boton = document.getElementById("gruaEnviarCotizacionBtn");
+  const categoria = document.getElementById("gruaCategoria")?.value || "";
+  const condicion = document.getElementById("gruaCondicion")?.value || "";
+  const liberacion = document.getElementById("gruaLiberacion")?.value || "";
+  const esCarga = document.getElementById("gruaEsCarga")?.value || "";
+  const estadoCarga = document.getElementById("gruaEstadoCarga")?.value || "";
+  const tipoCarga = document.getElementById("gruaTipoCarga")?.value.trim() || "";
+  const pesoCarga = document.getElementById("gruaPesoCarga")?.value.trim() || "";
+  const destino = document.getElementById("gruaDestino")?.value.trim() || "";
+  const comentarios = document.getElementById("gruaComentarios")?.value.trim() || "";
+
+  if (!categoria || !condicion || !esCarga || !destino) {
+    if (errorBox) errorBox.textContent = "Completa los datos obligatorios.";
+    return;
+  }
+  if (condicion === "siniestro" && !liberacion) {
+    if (errorBox) errorBox.textContent = "Indica si la unidad ya fue liberada.";
+    return;
+  }
+  if (esCarga === "si" && !estadoCarga) {
+    if (errorBox) errorBox.textContent = "Indica si la unidad de carga está vacía o con carga.";
+    return;
+  }
+  if (esCarga === "si" && estadoCarga === "con_carga" && (!tipoCarga || !pesoCarga)) {
+    if (errorBox) errorBox.textContent = "Indica qué carga lleva y su peso aproximado.";
+    return;
+  }
+
+  if (boton) boton.disabled = true;
+  if (errorBox) errorBox.textContent = "";
+
+  try {
+    const ubicacion = await obtenerUbicacion();
+    const resultado = await guardarSolicitudCotizacionGrua({
+      categoria, condicion, liberacion, esCarga, estadoCarga,
+      tipoCarga, pesoCarga, destino, comentarios, ubicacion
+    });
+
+    if (!resultado?.solicitudId) throw new Error("No fue posible crear la solicitud de cotización.");
+    solicitudCotizacionGruaActual = resultado.solicitudId;
+    document.getElementById("gruaCotizacionForm").hidden = true;
+    document.getElementById("gruaCotizacionesVista").hidden = false;
+    document.getElementById("gruaCotizacionTitle").textContent = `Cotizaciones · ${resultado.folio}`;
+    escucharCotizacionesGrua(resultado.solicitudId);
+    await cargarHistorialServicios();
+  } catch (error) {
+    console.error("Error creando cotización de grúa:", error);
+    if (errorBox) errorBox.textContent = error?.message || "No fue posible solicitar cotizaciones.";
+  } finally {
+    if (boton) boton.disabled = false;
+  }
+}
+
+async function guardarSolicitudCotizacionGrua(datosGrua) {
+  const folio = generarFolioServicio();
+  const ubicacionTexto = String(datosGrua.ubicacion || "");
+  const match = ubicacionTexto.match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i);
+  const latitud = match ? Number(match[1]) : null;
+  const longitud = match ? Number(match[2]) : null;
+  const tipoTarifa = perfilActual.tieneMembresia && perfilActual.estadoMembresia === "activa"
+    ? "Tarifa preferencial de miembro" : "Tarifa de público general";
+
+  const cliente = {
+    nombre: perfilActual.nombre || "", telefono: perfilActual.telefono || "",
+    correo: perfilActual.correo || "", tipoCliente: perfilActual.tipoCliente || "particular",
+    tieneMembresia: perfilActual.tieneMembresia === true,
+    numeroMiembro: perfilActual.numeroMiembro || "", estadoMembresia: perfilActual.estadoMembresia || "sin_membresia"
+  };
+  const vehiculo = {
+    marca: perfilActual.marca || "", subMarca: perfilActual.subMarca || "",
+    color: perfilActual.color || "", placas: perfilActual.placas || "", serie: perfilActual.serie || ""
+  };
+  const detalleGrua = {
+    categoria: datosGrua.categoria,
+    condicion: datosGrua.condicion,
+    liberacion: datosGrua.condicion === "siniestro" ? datosGrua.liberacion : "no_aplica",
+    esVehiculoCarga: datosGrua.esCarga === "si",
+    estadoCarga: datosGrua.esCarga === "si" ? datosGrua.estadoCarga : "no_aplica",
+    tipoCarga: datosGrua.tipoCarga || "",
+    pesoCargaAproximado: datosGrua.pesoCarga || "",
+    destino: datosGrua.destino,
+    comentarios: datosGrua.comentarios || ""
+  };
+
+  const servicioDoc = await firestoreAddDoc(firestoreCollection(db, "servicios"), {
+    usuarioId: usuarioActual.uid, uid: usuarioActual.uid, folio,
+    servicio: "Grúa", tipoServicio: "grua", estado: "pendiente_cotizacion",
+    tipoTarifa, ubicacion: ubicacionTexto,
+    ubicacionDatos: { latitud, longitud, precision: null, enlaceGoogleMaps: ubicacionTexto },
+    destino: datosGrua.destino, cliente, vehiculo, grua: detalleGrua,
+    creadoEn: firestoreServerTimestamp(), fechaCreacion: new Date().toISOString()
+  });
+
+  const solicitudDoc = await firestoreAddDoc(firestoreCollection(db, "solicitudes"), {
+    usuarioId: usuarioActual.uid, uid: usuarioActual.uid, uidCliente: usuarioActual.uid,
+    servicioId: servicioDoc.id, folio, estado: "pendiente_cotizacion", tipoTarifa,
+    servicio: { nombre: "Grúa", tipo: "grua" }, tipoServicio: "grua",
+    cliente, vehiculo, grua: detalleGrua,
+    ubicacion: { latitud, longitud, precision: null, enlaceGoogleMaps: ubicacionTexto },
+    destino: datosGrua.destino,
+    asignacion: { uidProveedor: "", nombreProveedor: "", telefonoProveedor: "", fotoProveedor: "", tiempoEstimadoMinutos: null },
+    cotizacionAutorizada: false, rechazadoPor: [], radioBusquedaKm: 70,
+    creadoEn: firestoreServerTimestamp(), fechaCreacion: new Date().toISOString()
+  });
+
+  await firestoreUpdateDoc(firestoreDoc(db, "servicios", servicioDoc.id), {
+    solicitudId: solicitudDoc.id, actualizadoEn: firestoreServerTimestamp()
+  });
+  return { folio, solicitudId: solicitudDoc.id, servicioId: servicioDoc.id };
+}
+
+function escucharCotizacionesGrua(solicitudId) {
+  if (cancelarEscuchaCotizacionesGrua) cancelarEscuchaCotizacionesGrua();
+  const quotesRef = firestoreCollection(db, "solicitudes", solicitudId, "cotizaciones");
+  cancelarEscuchaCotizacionesGrua = firestoreOnSnapshot(quotesRef, snapshot => {
+    const cotizaciones = snapshot.docs.map(docu => ({ id: docu.id, ...docu.data() }))
+      .filter(c => c.estado !== "retirada")
+      .sort((a,b) => Number(a.precio || 0) - Number(b.precio || 0));
+    renderizarCotizacionesGrua(solicitudId, cotizaciones);
+  }, error => {
+    console.error("Error leyendo cotizaciones:", error);
+    document.getElementById("gruaCotizacionesLista").innerHTML = '<p class="gruaFormError">No fue posible cargar las cotizaciones.</p>';
+  });
+}
+
+function renderizarCotizacionesGrua(solicitudId, cotizaciones) {
+  const lista = document.getElementById("gruaCotizacionesLista");
+  const waiting = document.getElementById("gruaWaitingBox");
+  if (!lista) return;
+  if (waiting) waiting.hidden = cotizaciones.length > 0;
+  if (!cotizaciones.length) { lista.innerHTML = ""; return; }
+
+  lista.innerHTML = cotizaciones.map(c => {
+    const precio = Number(c.precio || 0).toLocaleString("es-MX", {style:"currency",currency:"MXN"});
+    const nombre = c.nombreProveedor || "Proveedor de grúa";
+    const eta = Number(c.tiempoEstimadoMinutos || 0);
+    return `
+      <article class="gruaQuoteCard">
+        <div class="gruaQuoteTop"><div><b>${escaparHtml(nombre)}</b></div><span class="gruaQuotePrice">${escaparHtml(precio)}</span></div>
+        <div class="gruaQuoteMeta"><span>★ ${escaparHtml(String(c.calificacion ?? "5.0"))}</span>${eta ? `<span>ETA: ${eta} min</span>` : ""}</div>
+        ${c.observaciones ? `<p>${escaparHtml(c.observaciones)}</p>` : ""}
+        <button type="button" onclick="autorizarCotizacionGrua('${escaparAtributo(solicitudId)}','${escaparAtributo(c.id)}')">Autorizar esta cotización</button>
+      </article>`;
+  }).join("");
+}
+
+async function abrirCotizacionesGruaExistentes(solicitudId, folio = "") {
+  solicitudCotizacionGruaActual = solicitudId;
+  const overlay = document.getElementById("gruaCotizacionOverlay");
+  if (!overlay) return;
+  document.getElementById("gruaCotizacionForm").hidden = true;
+  document.getElementById("gruaCotizacionesVista").hidden = false;
+  document.getElementById("gruaCotizacionTitle").textContent = folio ? `Cotizaciones · ${folio}` : "Cotizaciones de grúa";
+  overlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+  escucharCotizacionesGrua(solicitudId);
+}
+
+async function autorizarCotizacionGrua(solicitudId, proveedorUid) {
+  if (!firestoreRunTransaction || !usuarioActual) return;
+  if (!window.confirm("¿Autorizar esta cotización y asignar el servicio a este proveedor?")) return;
+
+  try {
+    await firestoreRunTransaction(db, async transaction => {
+      const solicitudRef = firestoreDoc(db, "solicitudes", solicitudId);
+      const cotizacionRef = firestoreDoc(db, "solicitudes", solicitudId, "cotizaciones", proveedorUid);
+      const solicitudSnap = await transaction.get(solicitudRef);
+      const cotizacionSnap = await transaction.get(cotizacionRef);
+      if (!solicitudSnap.exists() || !cotizacionSnap.exists()) throw new Error("La cotización ya no está disponible.");
+      const solicitud = solicitudSnap.data();
+      const cotizacion = cotizacionSnap.data();
+      if (solicitud.uidCliente !== usuarioActual.uid && solicitud.usuarioId !== usuarioActual.uid) throw new Error("No puedes autorizar esta solicitud.");
+      if (solicitud.estado !== "pendiente_cotizacion" && solicitud.estado !== "esperando_autorizacion_cliente") throw new Error("Este servicio ya fue asignado o cerrado.");
+
+      const proveedorRef = firestoreDoc(db, "proveedores", proveedorUid);
+      const proveedorSnap = await transaction.get(proveedorRef);
+      if (!proveedorSnap.exists()) throw new Error("El proveedor ya no está disponible.");
+      const proveedor = proveedorSnap.data();
+      if (proveedor.activo !== true || proveedor.autorizado !== true || proveedor.disponible !== true || proveedor.servicioActualId) throw new Error("El proveedor ya no está disponible. Elige otra cotización.");
+
+      const asignacion = {
+        uidProveedor: proveedorUid,
+        nombreProveedor: cotizacion.nombreProveedor || proveedor.nombre || proveedor.nombreCompleto || "Proveedor",
+        telefonoProveedor: cotizacion.telefonoProveedor || proveedor.telefono || proveedor.celular || "",
+        fotoProveedor: cotizacion.fotoProveedor || proveedor.fotoProveedor || proveedor.foto || proveedor.fotoURL || "",
+        tipoProveedor: "grua",
+        tiempoEstimadoMinutos: Number(cotizacion.tiempoEstimadoMinutos || 0) || null
+      };
+      transaction.update(solicitudRef, {
+        estado: "asignado", asignacion, cotizacionAutorizada: true,
+        precioAutorizado: Number(cotizacion.precio || 0), proveedorAsignadoUid: proveedorUid,
+        fechaAutorizacionCotizacion: firestoreServerTimestamp(), actualizadoEn: firestoreServerTimestamp()
+      });
+      transaction.update(cotizacionRef, { estado: "autorizada", autorizada: true, fechaAutorizacion: firestoreServerTimestamp() });
+      transaction.update(proveedorRef, { disponible: false, ocupado: true, estadoConexion: "ocupado", servicioActualId: solicitudId, ultimaActualizacion: firestoreServerTimestamp() });
+      if (solicitud.servicioId) {
+        const servicioRef = firestoreDoc(db, "servicios", solicitud.servicioId);
+        transaction.update(servicioRef, {
+          estado: "asignado", asignacion, precioAutorizado: Number(cotizacion.precio || 0),
+          proveedorAsignadoUid: proveedorUid, fechaAsignacion: firestoreServerTimestamp(), actualizadoEn: firestoreServerTimestamp()
+        });
+      }
+    });
+
+    cerrarCotizacionGrua();
+    await cargarHistorialServicios();
+    mostrarModal("✓", "Cotización autorizada", "El proveedor elegido quedó asignado. Ya puedes continuar con el seguimiento del servicio.");
+  } catch (error) {
+    console.error("Error autorizando cotización:", error);
+    window.alert(error?.message || "No fue posible autorizar la cotización.");
+  }
+}
+
 /* =========================================
 
  
@@ -5016,7 +5298,7 @@ function renderizarHistorial(servicios) {
 
  
 
-        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button></td>
+        <td><button type="button" class="detailButton" onclick="verDetalle('${escaparAtributo(item.folio || item.id)}')">Ver detalle</button>${item.solicitudId && ["pendiente_cotizacion","cotizando","esperando_autorizacion_cliente"].includes(estado) ? `<button type="button" class="detailButton quoteButton" onclick="abrirCotizacionesGruaExistentes('${escaparAtributo(item.solicitudId)}','${escaparAtributo(item.folio || "") }')">Cotizaciones</button>` : ""}</td>
 
  
 
@@ -8279,6 +8561,13 @@ window.marcarTodasNotificacionesLeidas = marcarTodasNotificacionesLeidas;
 window.mostrarModal = mostrarModal;
 
  
+
+window.abrirCotizacionGrua = abrirCotizacionGrua;
+window.cerrarCotizacionGrua = cerrarCotizacionGrua;
+window.actualizarFormularioGrua = actualizarFormularioGrua;
+window.enviarSolicitudCotizacionGrua = enviarSolicitudCotizacionGrua;
+window.abrirCotizacionesGruaExistentes = abrirCotizacionesGruaExistentes;
+window.autorizarCotizacionGrua = autorizarCotizacionGrua;
 
 iniciarFirebase();
 
