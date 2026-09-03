@@ -64,6 +64,25 @@ const numeroMembresiaInput =
   document.getElementById("numeroMembresia");
 
 /* =========================================
+   AFILIACIÓN MONTEC / ACME
+========================================= */
+
+const afiliacionGremialInput =
+  document.getElementById("afiliacionGremial");
+
+const montecNumberBlock =
+  document.getElementById("montecNumberBlock");
+
+const acmeNumberBlock =
+  document.getElementById("acmeNumberBlock");
+
+const numeroEstampaMontecInput =
+  document.getElementById("numeroEstampaMontec");
+
+const numeroEstampaAcmeInput =
+  document.getElementById("numeroEstampaAcme");
+
+/* =========================================
    DATOS PERSONALES
 ========================================= */
 
@@ -157,6 +176,12 @@ const errores = {
   numeroMembresia:
     document.getElementById("numeroMembresiaError"),
 
+  numeroEstampaMontec:
+    document.getElementById("numeroEstampaMontecError"),
+
+  numeroEstampaAcme:
+    document.getElementById("numeroEstampaAcmeError"),
+
   nombre:
     document.getElementById("nombreError"),
 
@@ -233,6 +258,46 @@ function seleccionarTipoRegistro(esMiembro) {
     limpiarError(
       numeroMembresiaInput,
       errores.numeroMembresia
+    );
+  }
+}
+
+afiliacionGremialInput?.addEventListener(
+  "change",
+  actualizarCamposAfiliacion
+);
+
+function actualizarCamposAfiliacion() {
+  const afiliacion =
+    afiliacionGremialInput?.value || "ninguna";
+
+  const mostrarMontec =
+    afiliacion === "montec" || afiliacion === "ambos";
+
+  const mostrarAcme =
+    afiliacion === "acme" || afiliacion === "ambos";
+
+  if (montecNumberBlock) {
+    montecNumberBlock.hidden = !mostrarMontec;
+  }
+
+  if (acmeNumberBlock) {
+    acmeNumberBlock.hidden = !mostrarAcme;
+  }
+
+  if (!mostrarMontec && numeroEstampaMontecInput) {
+    numeroEstampaMontecInput.value = "";
+    limpiarError(
+      numeroEstampaMontecInput,
+      errores.numeroEstampaMontec
+    );
+  }
+
+  if (!mostrarAcme && numeroEstampaAcmeInput) {
+    numeroEstampaAcmeInput.value = "";
+    limpiarError(
+      numeroEstampaAcmeInput,
+      errores.numeroEstampaAcme
     );
   }
 }
@@ -378,6 +443,19 @@ function obtenerDatosFormulario() {
             numeroMembresiaInput.value
           )
         : "",
+
+    afiliacionGremial:
+      afiliacionGremialInput?.value || "ninguna",
+
+    numeroEstampaMontec:
+      numeroEstampaMontecInput?.value
+        .trim()
+        .toUpperCase() || "",
+
+    numeroEstampaAcme:
+      numeroEstampaAcmeInput?.value
+        .trim()
+        .toUpperCase() || "",
 
     nombre:
       limpiarTexto(nombreInput.value),
@@ -701,6 +779,26 @@ function construirPerfilUsuario(
     puedeUsarAlertas:
       membresia.puedeUsarAlertas,
 
+    afiliacionGremial:
+      datos.afiliacionGremial || "ninguna",
+
+    afiliaciones: {
+      montec: {
+        activo:
+          datos.afiliacionGremial === "montec" ||
+          datos.afiliacionGremial === "ambos",
+        numeroEstampa:
+          datos.numeroEstampaMontec || ""
+      },
+      acme: {
+        activo:
+          datos.afiliacionGremial === "acme" ||
+          datos.afiliacionGremial === "ambos",
+        numeroEstampa:
+          datos.numeroEstampaAcme || ""
+      }
+    },
+
     marca:
       datos.marca,
 
@@ -773,6 +871,34 @@ function validarFormulario(datos) {
 
       valido = false;
     }
+  }
+
+  if (
+    (datos.afiliacionGremial === "montec" ||
+      datos.afiliacionGremial === "ambos") &&
+    !datos.numeroEstampaMontec
+  ) {
+    marcarError(
+      numeroEstampaMontecInput,
+      errores.numeroEstampaMontec,
+      "Escribe tu número de estampa MONTEC."
+    );
+
+    valido = false;
+  }
+
+  if (
+    (datos.afiliacionGremial === "acme" ||
+      datos.afiliacionGremial === "ambos") &&
+    !datos.numeroEstampaAcme
+  ) {
+    marcarError(
+      numeroEstampaAcmeInput,
+      errores.numeroEstampaAcme,
+      "Escribe tu número de estampa ACME."
+    );
+
+    valido = false;
   }
 
   if (!datos.nombre) {
@@ -1007,6 +1133,14 @@ function limpiarTodosLosErrores() {
       errores.numeroMembresia
     ],
     [
+      numeroEstampaMontecInput,
+      errores.numeroEstampaMontec
+    ],
+    [
+      numeroEstampaAcmeInput,
+      errores.numeroEstampaAcme
+    ],
+    [
       nombreInput,
       errores.nombre
     ],
@@ -1085,6 +1219,14 @@ function enfocarPrimerError() {
   [
     numeroMembresiaInput,
     errores.numeroMembresia
+  ],
+  [
+    numeroEstampaMontecInput,
+    errores.numeroEstampaMontec
+  ],
+  [
+    numeroEstampaAcmeInput,
+    errores.numeroEstampaAcme
   ],
   [
     nombreInput,
@@ -1196,6 +1338,20 @@ numeroMembresiaInput?.addEventListener(
 
     numeroMembresiaInput.value =
       valor.slice(0, 10);
+  }
+);
+
+[numeroEstampaMontecInput, numeroEstampaAcmeInput].forEach(
+  campo => {
+    campo?.addEventListener(
+      "input",
+      () => {
+        campo.value = campo.value
+          .toUpperCase()
+          .replace(/\s+/g, " ")
+          .slice(0, 40);
+      }
+    );
   }
 );
 
@@ -1522,6 +1678,7 @@ window.addEventListener(
   "DOMContentLoaded",
   () => {
     seleccionarTipoRegistro(true);
+    actualizarCamposAfiliacion();
     nombreInput?.focus();
   }
 );
