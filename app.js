@@ -1,4 +1,9 @@
+
 /*
+
+ 
+
+ 
 
  
 
@@ -6,7 +11,15 @@
 
  
 
+ 
+
+ 
+
   Formato:
+
+ 
+
+ 
 
  
 
@@ -14,7 +27,15 @@
 
  
 
+ 
+
+ 
+
   Sin espacios, guiones ni signo +
+
+ 
+
+ 
 
  
 
@@ -22,7 +43,15 @@
 
  
 
+ 
+
+ 
+
 const TELEFONO_CABINA = "525519750497";
+
+ 
+
+ 
 
  
 
@@ -30,7 +59,15 @@ const TELEFONO_EMERGENCIAS = "525585373051";
 
  
 
+ 
+
+ 
+
 const TELEFONO_ASESOR = "525519750497";
+
+ 
+
+ 
 
  
 
@@ -38,11 +75,23 @@ const TELEFONO_ASESOR = "525519750497";
 
  
 
+ 
+
+ 
+
   VARIABLES
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -50,7 +99,15 @@ let seccionActual = "inicio";
 
  
 
+ 
+
+ 
+
 let usuarioActual = null;
+
+ 
+
+ 
 
  
 
@@ -58,7 +115,15 @@ let historialServicios = [];
 
  
 
+ 
+
+ 
+
 let vehiculosUsuario = [];
+
+ 
+
+ 
 
  
 
@@ -66,7 +131,15 @@ let notificacionesActuales = [];
 
  
 
+ 
+
+ 
+
 let cancelarEscuchaNotificaciones = null;
+
+ 
+
+ 
 
  
 
@@ -74,7 +147,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   nombre: "Usuario",
+
+ 
+
+ 
 
  
 
@@ -82,7 +163,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   correo: "",
+
+ 
+
+ 
 
  
 
@@ -90,7 +179,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   tieneMembresia: false,
+
+ 
+
+ 
 
  
 
@@ -98,7 +195,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   estadoMembresia: "sin_membresia",
+
+ 
+
+ 
 
  
 
@@ -106,7 +211,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   vigencia: "",
+
+ 
+
+ 
 
  
 
@@ -114,7 +227,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   puedeUsarAlertas: false,
+
+ 
+
+ 
 
  
 
@@ -122,7 +243,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   afiliacionGremial: "ninguna",
+
+ 
+
+ 
 
  
 
@@ -130,7 +259,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   numeroEstampaAcme: "",
+
+ 
+
+ 
 
  
 
@@ -138,7 +275,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   subMarca: "",
+
+ 
+
+ 
 
  
 
@@ -146,7 +291,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
   placas: "",
+
+ 
+
+ 
 
  
 
@@ -154,11 +307,23 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
 };
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -166,7 +331,15 @@ let perfilActual = {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -174,7 +347,15 @@ let auth = null;
 
  
 
+ 
+
+ 
+
 let db = null;
+
+ 
+
+ 
 
  
 
@@ -182,7 +363,15 @@ let firebaseSignOut = null;
 
  
 
+ 
+
+ 
+
 let firestoreDoc = null;
+
+ 
+
+ 
 
  
 
@@ -190,7 +379,15 @@ let firestoreGetDoc = null;
 
  
 
+ 
+
+ 
+
 let firestoreSetDoc = null;
+
+ 
+
+ 
 
  
 
@@ -198,7 +395,15 @@ let firestoreCollection = null;
 
  
 
+ 
+
+ 
+
 let firestoreQuery = null;
+
+ 
+
+ 
 
  
 
@@ -206,7 +411,15 @@ let firestoreWhere = null;
 
  
 
+ 
+
+ 
+
 let firestoreGetDocs = null;
+
+ 
+
+ 
 
  
 
@@ -214,7 +427,15 @@ let firestoreAddDoc = null;
 
  
 
+ 
+
+ 
+
 let firestoreServerTimestamp = null;
+
+ 
+
+ 
 
  
 
@@ -222,14 +443,29 @@ let firestoreOnSnapshot = null;
 
  
 
+ 
+
+ 
+
 let firestoreUpdateDoc = null;
 
  
 
+ 
+
+ 
+
 let firestoreDeleteDoc = null;
+
 let firestoreRunTransaction = null;
+
 let cancelarEscuchaCotizacionesGrua = null;
+
 let solicitudCotizacionGruaActual = null;
+
+ 
+
+ 
 
  
 
@@ -237,7 +473,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -245,7 +489,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     const authModule = await import(
+
+ 
+
+ 
 
  
 
@@ -253,7 +505,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -261,11 +521,23 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
       "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -273,7 +545,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     db = firebaseConfigModule.db;
+
+ 
+
+ 
 
  
 
@@ -281,7 +561,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     firestoreDoc = firestoreModule.doc;
+
+ 
+
+ 
 
  
 
@@ -289,7 +577,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     firestoreSetDoc = firestoreModule.setDoc;
+
+ 
+
+ 
 
  
 
@@ -297,7 +593,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     firestoreQuery = firestoreModule.query;
+
+ 
+
+ 
 
  
 
@@ -305,7 +609,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     firestoreGetDocs = firestoreModule.getDocs;
+
+ 
+
+ 
 
  
 
@@ -313,7 +625,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     firestoreServerTimestamp = firestoreModule.serverTimestamp;
+
+ 
+
+ 
 
  
 
@@ -321,12 +641,25 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     firestoreUpdateDoc = firestoreModule.updateDoc;
 
  
 
+ 
+
+ 
+
     firestoreDeleteDoc = firestoreModule.deleteDoc;
+
     firestoreRunTransaction = firestoreModule.runTransaction;
+
+ 
+
+ 
 
  
 
@@ -334,7 +667,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
       if (!user) {
+
+ 
+
+ 
 
  
 
@@ -342,11 +683,23 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
         return;
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -354,7 +707,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
       try {
+
+ 
+
+ 
 
  
 
@@ -362,7 +723,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
         await cargarHistorialServicios();
+
+ 
+
+ 
 
  
 
@@ -370,7 +739,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
         iniciarEscuchaNotificaciones(user.uid);
+
+ 
+
+ 
 
  
 
@@ -378,7 +755,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
         console.error("Error al cargar los datos del usuario:", error);
+
+ 
+
+ 
 
  
 
@@ -386,7 +771,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
         mostrarModal(
+
+ 
+
+ 
 
  
 
@@ -394,7 +787,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
           "No fue posible cargar tu perfil",
+
+ 
+
+ 
 
  
 
@@ -402,7 +803,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
         );
+
+ 
+
+ 
 
  
 
@@ -410,11 +819,23 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     });
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -422,11 +843,23 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
     mostrarModal(
 
  
 
+ 
+
+ 
+
       "⚠",
+
+ 
+
+ 
 
  
 
@@ -434,7 +867,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
       "La interfaz está disponible, pero Firebase no pudo iniciar. Revisa la conexión o la configuración."
+
+ 
+
+ 
 
  
 
@@ -442,7 +883,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -450,7 +899,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -458,7 +915,15 @@ async function iniciarFirebase() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -466,7 +931,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   const referenciaUsuario = firestoreDoc(db, "usuarios", user.uid);
+
+ 
+
+ 
 
  
 
@@ -474,7 +947,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   const datosUsuario = documentoUsuario.exists()
+
+ 
+
+ 
 
  
 
@@ -482,7 +963,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
     : {};
+
+ 
+
+ 
 
  
 
@@ -490,7 +979,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   const datosCombinados = combinarUsuarioYMembresia(
+
+ 
+
+ 
 
  
 
@@ -498,7 +995,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
     datosUsuario,
+
+ 
+
+ 
 
  
 
@@ -506,7 +1011,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -514,7 +1027,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   // Mantiene usuarios/{uid} como fuente principal del Dashboard.
+
+ 
+
+ 
 
  
 
@@ -522,11 +1043,23 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   // adquirió una membresía después de haber creado su cuenta.
 
  
 
+ 
+
+ 
+
   await firestoreSetDoc(
+
+ 
+
+ 
 
  
 
@@ -534,7 +1067,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
     {
+
+ 
+
+ 
 
  
 
@@ -542,7 +1083,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
       uid: user.uid,
+
+ 
+
+ 
 
  
 
@@ -550,7 +1099,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
       nombre:
+
+ 
+
+ 
 
  
 
@@ -558,7 +1115,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
         user.displayName ||
+
+ 
+
+ 
 
  
 
@@ -566,7 +1131,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
         "Usuario",
+
+ 
+
+ 
 
  
 
@@ -574,7 +1147,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -582,7 +1163,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -590,7 +1179,15 @@ async function cargarDatosUsuario(user) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -598,7 +1195,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
   const numero =
+
+ 
+
+ 
 
  
 
@@ -606,7 +1211,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     datosUsuario.numeroMembresia ||
+
+ 
+
+ 
 
  
 
@@ -614,7 +1227,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     "";
+
+ 
+
+ 
 
  
 
@@ -622,7 +1243,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     const directa = await firestoreGetDoc(
+
+ 
+
+ 
 
  
 
@@ -630,7 +1259,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -638,7 +1275,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
       return {
+
+ 
+
+ 
 
  
 
@@ -646,7 +1291,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
         ...directa.data()
+
+ 
+
+ 
 
  
 
@@ -654,11 +1307,23 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -666,7 +1331,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     ["uidUsuario", user.uid],
+
+ 
+
+ 
 
  
 
@@ -674,7 +1347,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
   ];
+
+ 
+
+ 
 
  
 
@@ -682,11 +1363,23 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     if (!valor) continue;
 
  
 
+ 
+
+ 
+
     const consulta = firestoreQuery(
+
+ 
+
+ 
 
  
 
@@ -694,7 +1387,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
       firestoreWhere(campo, "==", valor)
+
+ 
+
+ 
 
  
 
@@ -702,7 +1403,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
     const resultado = await firestoreGetDocs(consulta);
+
+ 
+
+ 
 
  
 
@@ -710,7 +1419,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
       const documento = resultado.docs[0];
+
+ 
+
+ 
 
  
 
@@ -718,7 +1435,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
         id: documento.id,
+
+ 
+
+ 
 
  
 
@@ -726,7 +1451,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
       };
+
+ 
+
+ 
 
  
 
@@ -734,7 +1467,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -742,7 +1483,15 @@ async function buscarMembresiaVinculada(user, datosUsuario) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -750,7 +1499,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
   const datosMembresia = membresia || {};
+
+ 
+
+ 
 
  
 
@@ -758,7 +1515,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     usuario.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -766,7 +1531,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     usuario.numeroSocio ||
+
+ 
+
+ 
 
  
 
@@ -774,7 +1547,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     datosMembresia.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -782,7 +1563,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     "";
+
+ 
+
+ 
 
  
 
@@ -790,7 +1579,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     datosMembresia.estadoMembresia ||
+
+ 
+
+ 
 
  
 
@@ -798,7 +1595,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     datosMembresia.estado ||
+
+ 
+
+ 
 
  
 
@@ -806,11 +1611,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     (numeroMiembro ? "activa" : "sin_membresia")
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -818,7 +1635,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     !["cancelada", "vencida", "sin_membresia"].includes(estadoMembresia);
+
+ 
+
+ 
 
  
 
@@ -826,7 +1651,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
   return {
+
+ 
+
+ 
 
  
 
@@ -834,7 +1667,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     nombre:
+
+ 
+
+ 
 
  
 
@@ -842,7 +1683,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.nombreRegistro ||
+
+ 
+
+ 
 
  
 
@@ -850,11 +1699,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       obtenerNombreCorreo(user.email) ||
 
  
 
+ 
+
+ 
+
       "Usuario",
+
+ 
+
+ 
 
  
 
@@ -862,7 +1723,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.telefono ||
+
+ 
+
+ 
 
  
 
@@ -870,7 +1739,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -878,7 +1755,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.correo ||
+
+ 
+
+ 
 
  
 
@@ -886,11 +1771,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       user.email ||
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -898,7 +1795,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.tipoCliente ||
+
+ 
+
+ 
 
  
 
@@ -906,7 +1811,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       "particular",
+
+ 
+
+ 
 
  
 
@@ -914,7 +1827,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     numeroMiembro: tieneMembresia ? numeroMiembro : "",
+
+ 
+
+ 
 
  
 
@@ -922,7 +1843,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     tipoMembresia:
+
+ 
+
+ 
 
  
 
@@ -930,7 +1859,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.plan ||
+
+ 
+
+ 
 
  
 
@@ -938,7 +1875,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       (tieneMembresia ? usuario.tipoCliente || "particular" : ""),
+
+ 
+
+ 
 
  
 
@@ -946,7 +1891,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.vigencia ||
+
+ 
+
+ 
 
  
 
@@ -954,7 +1907,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.vigencia ||
+
+ 
+
+ 
 
  
 
@@ -962,7 +1923,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -970,7 +1939,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     puedeUsarAlertas: tieneMembresia,
+
+ 
+
+ 
 
  
 
@@ -978,7 +1955,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.marca ||
+
+ 
+
+ 
 
  
 
@@ -986,7 +1971,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.marcaRegistro ||
+
+ 
+
+ 
 
  
 
@@ -994,7 +1987,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     subMarca:
+
+ 
+
+ 
 
  
 
@@ -1002,7 +2003,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.submarca ||
+
+ 
+
+ 
 
  
 
@@ -1010,7 +2019,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       vehiculoUsuario.submarca ||
+
+ 
+
+ 
 
  
 
@@ -1018,7 +2035,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -1026,7 +2051,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.color ||
+
+ 
+
+ 
 
  
 
@@ -1034,11 +2067,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.colorRegistro ||
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -1046,7 +2091,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.placas ||
+
+ 
+
+ 
 
  
 
@@ -1054,11 +2107,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.placasRegistro ||
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -1066,7 +2131,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       usuario.serie ||
+
+ 
+
+ 
 
  
 
@@ -1074,7 +2147,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       datosMembresia.serieRegistro ||
+
+ 
+
+ 
 
  
 
@@ -1082,7 +2163,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
     vehiculoPrincipal: {
+
+ 
+
+ 
 
  
 
@@ -1090,7 +2179,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         usuario.marca ||
+
+ 
+
+ 
 
  
 
@@ -1098,11 +2195,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         datosMembresia.marcaRegistro ||
 
  
 
+ 
+
+ 
+
         "",
+
+ 
+
+ 
 
  
 
@@ -1110,7 +2219,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         usuario.subMarca ||
+
+ 
+
+ 
 
  
 
@@ -1118,7 +2235,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         vehiculoUsuario.subMarca ||
+
+ 
+
+ 
 
  
 
@@ -1126,11 +2251,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         datosMembresia.subMarcaRegistro ||
 
  
 
+ 
+
+ 
+
         "",
+
+ 
+
+ 
 
  
 
@@ -1138,7 +2275,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         usuario.color ||
+
+ 
+
+ 
 
  
 
@@ -1146,11 +2291,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         datosMembresia.colorRegistro ||
 
  
 
+ 
+
+ 
+
         "",
+
+ 
+
+ 
 
  
 
@@ -1158,7 +2315,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         usuario.placas ||
+
+ 
+
+ 
 
  
 
@@ -1166,7 +2331,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         datosMembresia.placasRegistro ||
+
+ 
+
+ 
 
  
 
@@ -1174,7 +2347,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
       serie:
+
+ 
+
+ 
 
  
 
@@ -1182,7 +2363,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         vehiculoUsuario.serie ||
+
+ 
+
+ 
 
  
 
@@ -1190,7 +2379,15 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
         ""
+
+ 
+
+ 
 
  
 
@@ -1198,11 +2395,23 @@ function combinarUsuarioYMembresia(user, usuario = {}, membresia = null) {
 
  
 
+ 
+
+ 
+
   };
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1210,7 +2419,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
   const vehiculo = datos.vehiculoPrincipal || {};
+
+ 
+
+ 
 
  
 
@@ -1218,7 +2435,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     nombre:
+
+ 
+
+ 
 
  
 
@@ -1226,7 +2451,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       user.displayName ||
+
+ 
+
+ 
 
  
 
@@ -1234,7 +2467,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       "Usuario",
+
+ 
+
+ 
 
  
 
@@ -1242,7 +2483,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     correo: datos.correo || user.email || "",
+
+ 
+
+ 
 
  
 
@@ -1250,7 +2499,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     tieneMembresia: datos.tieneMembresia === true,
+
+ 
+
+ 
 
  
 
@@ -1258,7 +2515,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       datos.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -1266,11 +2531,23 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       datos.numeroMembresia ||
 
  
 
+ 
+
+ 
+
       "",
+
+ 
+
+ 
 
  
 
@@ -1278,7 +2555,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       datos.estadoMembresia ||
+
+ 
+
+ 
 
  
 
@@ -1286,7 +2571,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     ),
+
+ 
+
+ 
 
  
 
@@ -1294,7 +2587,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     vigencia: formatearVigencia(
+
+ 
+
+ 
 
  
 
@@ -1302,7 +2603,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     ),
+
+ 
+
+ 
 
  
 
@@ -1310,7 +2619,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       datos.tarifa ||
+
+ 
+
+ 
 
  
 
@@ -1318,7 +2635,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     puedeUsarAlertas:
+
+ 
+
+ 
 
  
 
@@ -1326,7 +2651,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       normalizarEstado(datos.estadoMembresia || "activa") === "activa",
+
+ 
+
+ 
 
  
 
@@ -1334,7 +2667,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     afiliacionGremial: datos.afiliacionGremial || "ninguna",
+
+ 
+
+ 
 
  
 
@@ -1342,7 +2683,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     numeroEstampaAcme: datos.numeroEstampaAcme || "",
+
+ 
+
+ 
 
  
 
@@ -1350,7 +2699,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     subMarca:
+
+ 
+
+ 
 
  
 
@@ -1358,7 +2715,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       datos.submarca ||
+
+ 
+
+ 
 
  
 
@@ -1366,7 +2731,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
       vehiculo.submarca ||
+
+ 
+
+ 
 
  
 
@@ -1374,7 +2747,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     color: datos.color || vehiculo.color || "",
+
+ 
+
+ 
 
  
 
@@ -1382,7 +2763,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
     serie: datos.serie || vehiculo.serie || ""
+
+ 
+
+ 
 
  
 
@@ -1390,7 +2779,15 @@ function construirPerfilDashboard(user, datos) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1398,7 +2795,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
   perfilActual = {
+
+ 
+
+ 
 
  
 
@@ -1406,7 +2811,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
       user.displayName ||
+
+ 
+
+ 
 
  
 
@@ -1414,7 +2827,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
       "Usuario",
+
+ 
+
+ 
 
  
 
@@ -1422,7 +2843,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     correo: user.email || "",
+
+ 
+
+ 
 
  
 
@@ -1430,7 +2859,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     tieneMembresia: false,
+
+ 
+
+ 
 
  
 
@@ -1438,7 +2875,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     estadoMembresia: "sin_membresia",
+
+ 
+
+ 
 
  
 
@@ -1446,7 +2891,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     vigencia: "",
+
+ 
+
+ 
 
  
 
@@ -1454,7 +2907,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     puedeUsarAlertas: false,
+
+ 
+
+ 
 
  
 
@@ -1462,7 +2923,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     subMarca: "",
+
+ 
+
+ 
 
  
 
@@ -1470,7 +2939,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
     placas: "",
+
+ 
+
+ 
 
  
 
@@ -1478,7 +2955,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -1486,7 +2971,15 @@ function cargarDatosBasicos(user) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1494,7 +2987,15 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
   if (!correo) return "";
+
+ 
+
+ 
 
  
 
@@ -1502,7 +3003,15 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
   return nombre
+
+ 
+
+ 
 
  
 
@@ -1510,7 +3019,15 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
     .replace(/\b\w/g, letra =>
+
+ 
+
+ 
 
  
 
@@ -1518,11 +3035,23 @@ function obtenerNombreCorreo(correo) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1530,7 +3059,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
   const valor = String(estado || "")
+
+ 
+
+ 
 
  
 
@@ -1538,7 +3075,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
     .toLowerCase()
+
+ 
+
+ 
 
  
 
@@ -1546,7 +3091,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
   const equivalencias = {
+
+ 
+
+ 
 
  
 
@@ -1554,7 +3107,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
     active: "activa",
+
+ 
+
+ 
 
  
 
@@ -1562,7 +3123,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
     asignado: "activa",
+
+ 
+
+ 
 
  
 
@@ -1570,7 +3139,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
     vigente: "activa",
+
+ 
+
+ 
 
  
 
@@ -1578,11 +3155,23 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
     vencido: "vencida"
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -1590,7 +3179,15 @@ function normalizarEstado(estado) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1598,11 +3195,23 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
   if (!valor) return "";
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -1610,11 +3219,23 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     typeof valor.toDate === "function"
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -1622,7 +3243,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
       .toDate()
+
+ 
+
+ 
 
  
 
@@ -1630,7 +3259,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         "es-MX",
+
+ 
+
+ 
 
  
 
@@ -1638,7 +3275,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
           day: "2-digit",
+
+ 
+
+ 
 
  
 
@@ -1646,7 +3291,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
           year: "numeric"
+
+ 
+
+ 
 
  
 
@@ -1654,11 +3307,23 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1666,7 +3331,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
   if (!texto) return "";
+
+ 
+
+ 
 
  
 
@@ -1674,7 +3347,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     const fecha = new Date(texto);
+
+ 
+
+ 
 
  
 
@@ -1682,7 +3363,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
       return fecha.toLocaleDateString(
+
+ 
+
+ 
 
  
 
@@ -1690,7 +3379,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         {
+
+ 
+
+ 
 
  
 
@@ -1698,7 +3395,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
           month: "long",
+
+ 
+
+ 
 
  
 
@@ -1706,7 +3411,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -1714,11 +3427,23 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1726,11 +3451,23 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -1738,7 +3475,15 @@ function formatearVigencia(valor) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -1746,7 +3491,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarAfiliacionesPantalla(perfil);
+
+ 
+
+ 
 
  
 
@@ -1754,7 +3507,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia === true &&
+
+ 
+
+ 
 
  
 
@@ -1762,7 +3523,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1770,7 +3539,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     `Hola, ${perfil.nombre}`
+
+ 
+
+ 
 
  
 
@@ -1778,7 +3555,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1786,7 +3571,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.nombre
+
+ 
+
+ 
 
  
 
@@ -1794,7 +3587,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1802,11 +3603,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.nombre
 
  
 
+ 
+
+ 
+
       .trim()
+
+ 
+
+ 
 
  
 
@@ -1814,7 +3627,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       .toUpperCase() || "U"
+
+ 
+
+ 
 
  
 
@@ -1822,7 +3643,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1830,7 +3659,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -1838,7 +3675,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -1846,7 +3691,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1854,11 +3707,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1866,7 +3731,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     obtenerTextoEstado(perfil)
+
+ 
+
+ 
 
  
 
@@ -1874,7 +3747,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1882,7 +3763,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -1890,7 +3779,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.vigencia ||
+
+ 
+
+ 
 
  
 
@@ -1898,7 +3795,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1906,11 +3811,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1918,7 +3835,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -1926,7 +3851,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.tipoMembresia ||
+
+ 
+
+ 
 
  
 
@@ -1934,7 +3867,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
             perfil.tipoCliente
+
+ 
+
+ 
 
  
 
@@ -1942,7 +3883,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1950,11 +3899,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1962,11 +3923,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
 
  
 
+ 
+
+ 
+
       ? (
+
+ 
+
+ 
 
  
 
@@ -1974,11 +3947,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           "AS CLICK"
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -1986,11 +3971,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -1998,11 +3995,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
 
  
 
+ 
+
+ 
+
       ? (
+
+ 
+
+ 
 
  
 
@@ -2010,7 +4019,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           "PENDIENTE"
+
+ 
+
+ 
 
  
 
@@ -2018,7 +4035,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "No aplica"
+
+ 
+
+ 
 
  
 
@@ -2026,7 +4051,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2034,11 +4067,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
 
  
 
+ 
+
+ 
+
       ? (
+
+ 
+
+ 
 
  
 
@@ -2046,7 +4091,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           "Pendiente"
+
+ 
+
+ 
 
  
 
@@ -2054,11 +4107,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "No aplica"
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2066,7 +4131,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -2074,7 +4147,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2082,11 +4163,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     if (esMiembroActivo) {
 
  
 
+ 
+
+ 
+
       badge.textContent =
+
+ 
+
+ 
 
  
 
@@ -2094,11 +4187,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     } else if (perfil.tieneMembresia) {
 
  
 
+ 
+
+ 
+
       badge.textContent =
+
+ 
+
+ 
 
  
 
@@ -2106,7 +4211,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     } else {
+
+ 
+
+ 
 
  
 
@@ -2114,7 +4227,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         "Cliente sin membresía";
+
+ 
+
+ 
 
  
 
@@ -2122,7 +4243,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2130,7 +4259,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -2138,7 +4275,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2146,7 +4291,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     estadoPrincipal.classList.toggle(
+
+ 
+
+ 
 
  
 
@@ -2154,7 +4307,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       !esMiembroActivo
+
+ 
+
+ 
 
  
 
@@ -2162,7 +4323,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2170,7 +4339,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarPerfilPantalla(perfil);
+
+ 
+
+ 
 
  
 
@@ -2178,11 +4355,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.puedeUsarAlertas
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2190,7 +4379,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2198,7 +4395,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2206,7 +4411,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     tituloMembresia.textContent =
+
+ 
+
+ 
 
  
 
@@ -2214,7 +4427,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         ? "Información de tu membresía"
+
+ 
+
+ 
 
  
 
@@ -2222,7 +4443,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2230,7 +4459,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2238,7 +4475,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2246,7 +4491,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     beneficiosTexto.textContent =
+
+ 
+
+ 
 
  
 
@@ -2254,7 +4507,15 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         ? "Consulta los beneficios incluidos en tu membresía activa."
+
+ 
+
+ 
 
  
 
@@ -2262,11 +4523,23 @@ function actualizarDatosPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2274,7 +4547,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const contenedor = document.getElementById("affiliationLogos");
+
+ 
+
+ 
 
  
 
@@ -2282,7 +4563,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const logoAcme = document.getElementById("logoAcme");
+
+ 
+
+ 
 
  
 
@@ -2290,7 +4579,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const afiliaciones = perfil?.afiliaciones || {};
+
+ 
+
+ 
 
  
 
@@ -2298,7 +4595,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const montecActivo =
+
+ 
+
+ 
 
  
 
@@ -2306,11 +4611,23 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     seleccion === "montec" ||
 
  
 
+ 
+
+ 
+
     seleccion === "ambos";
+
+ 
+
+ 
 
  
 
@@ -2318,7 +4635,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     afiliaciones?.acme?.activo === true ||
+
+ 
+
+ 
 
  
 
@@ -2326,7 +4651,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     seleccion === "ambos";
+
+ 
+
+ 
 
  
 
@@ -2334,7 +4667,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   logoAcme.hidden = !acmeActivo;
+
+ 
+
+ 
 
  
 
@@ -2342,7 +4683,15 @@ function actualizarAfiliacionesPantalla(perfil) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2350,7 +4699,15 @@ function actualizarTexto(id, texto) {
 
  
 
+ 
+
+ 
+
   const elemento =
+
+ 
+
+ 
 
  
 
@@ -2358,7 +4715,15 @@ function actualizarTexto(id, texto) {
 
  
 
+ 
+
+ 
+
   if (elemento) {
+
+ 
+
+ 
 
  
 
@@ -2366,11 +4731,23 @@ function actualizarTexto(id, texto) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2378,7 +4755,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
   if (!perfil.tieneMembresia) {
+
+ 
+
+ 
 
  
 
@@ -2386,7 +4771,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2394,7 +4787,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     activa: "ACTIVA",
+
+ 
+
+ 
 
  
 
@@ -2402,7 +4803,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     disponible: "ACTIVA",
+
+ 
+
+ 
 
  
 
@@ -2410,7 +4819,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     pendiente_activacion: "PENDIENTE",
+
+ 
+
+ 
 
  
 
@@ -2418,11 +4835,23 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     cancelada: "CANCELADA"
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -2430,7 +4859,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
     textos[perfil.estadoMembresia] ||
+
+ 
+
+ 
 
  
 
@@ -2438,7 +4875,15 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
       .replace(/_/g, " ")
+
+ 
+
+ 
 
  
 
@@ -2446,11 +4891,23 @@ function obtenerTextoEstado(perfil) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2458,7 +4915,15 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
   return tipo === "servicio_publico"
+
+ 
+
+ 
 
  
 
@@ -2466,7 +4931,15 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
     : "Particular";
+
+ 
+
+ 
 
  
 
@@ -2474,7 +4947,15 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -2482,7 +4963,15 @@ function obtenerTipoClienteTexto(tipo) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -2490,7 +4979,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const inicial =
+
+ 
+
+ 
 
  
 
@@ -2498,7 +4995,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const nombreVehiculo =
+
+ 
+
+ 
 
  
 
@@ -2506,7 +5011,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -2514,7 +5027,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto("perfilAvatar", inicial);
+
+ 
+
+ 
 
  
 
@@ -2522,11 +5043,23 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto("perfilCorreoResumen", perfil.correo || "Correo no registrado");
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2534,7 +5067,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -2542,7 +5083,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "Cliente registrado"
+
+ 
+
+ 
 
  
 
@@ -2550,7 +5099,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2558,7 +5115,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -2566,7 +5131,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "No aplica"
+
+ 
+
+ 
 
  
 
@@ -2574,7 +5147,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2582,7 +5163,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -2590,7 +5179,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "No aplica"
+
+ 
+
+ 
 
  
 
@@ -2598,7 +5195,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2606,7 +5211,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     perfil.tieneMembresia && perfil.estadoMembresia === "activa"
+
+ 
+
+ 
 
  
 
@@ -2614,11 +5227,23 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       : "Público general"
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2626,7 +5251,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto("perfilTelefono", perfil.telefono || "No registrado");
+
+ 
+
+ 
 
  
 
@@ -2634,7 +5267,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2642,11 +5283,23 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     obtenerTipoClienteTexto(perfil.tipoCliente)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -2654,7 +5307,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2662,7 +5323,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     `Placas: ${perfil.placas || "Sin registrar"}`
+
+ 
+
+ 
 
  
 
@@ -2670,7 +5339,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2678,7 +5355,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     `Color: ${perfil.color || "Sin registrar"}`
+
+ 
+
+ 
 
  
 
@@ -2686,7 +5371,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -2694,7 +5387,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     `Serie: ${perfil.serie || "Sin registrar"}`
+
+ 
+
+ 
 
  
 
@@ -2702,11 +5403,23 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -2714,7 +5427,15 @@ function actualizarPerfilPantalla(perfil) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -2722,7 +5443,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const nombreVehiculo =
+
+ 
+
+ 
 
  
 
@@ -2730,7 +5459,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       perfil.marca,
+
+ 
+
+ 
 
  
 
@@ -2738,11 +5475,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     ]
 
  
 
+ 
+
+ 
+
       .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -2750,7 +5499,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   const tituloVehiculo =
+
+ 
+
+ 
 
  
 
@@ -2758,7 +5515,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     "Vehículo sin registrar";
+
+ 
+
+ 
 
  
 
@@ -2766,7 +5531,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2774,7 +5547,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2782,7 +5563,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     const titulo =
+
+ 
+
+ 
 
  
 
@@ -2790,7 +5579,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     const textos =
+
+ 
+
+ 
 
  
 
@@ -2798,7 +5595,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         "span"
+
+ 
+
+ 
 
  
 
@@ -2806,7 +5611,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     if (titulo) {
+
+ 
+
+ 
 
  
 
@@ -2814,11 +5627,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         tituloVehiculo;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -2826,7 +5651,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       textos[0].textContent =
+
+ 
+
+ 
 
  
 
@@ -2834,7 +5667,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.placas ||
+
+ 
+
+ 
 
  
 
@@ -2842,11 +5683,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -2854,7 +5707,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       textos[1].textContent =
+
+ 
+
+ 
 
  
 
@@ -2862,7 +5723,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.color ||
+
+ 
+
+ 
 
  
 
@@ -2870,7 +5739,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
+
+ 
+
+ 
 
  
 
@@ -2878,7 +5755,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2886,7 +5771,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2894,7 +5787,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -2902,11 +5803,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     const titulo =
 
  
 
+ 
+
+ 
+
       vehicleFullCard.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2914,7 +5827,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -2922,7 +5843,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       vehicleFullCard.querySelectorAll(
+
+ 
+
+ 
 
  
 
@@ -2930,7 +5859,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -2938,7 +5875,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       vehicleFullCard.querySelector(
+
+ 
+
+ 
 
  
 
@@ -2946,7 +5891,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -2954,7 +5907,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       titulo.textContent =
+
+ 
+
+ 
 
  
 
@@ -2962,7 +5923,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -2970,7 +5939,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       parrafos[0].textContent =
+
+ 
+
+ 
 
  
 
@@ -2978,7 +5955,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.placas ||
+
+ 
+
+ 
 
  
 
@@ -2986,11 +5971,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -2998,7 +5995,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       parrafos[1].textContent =
+
+ 
+
+ 
 
  
 
@@ -3006,7 +6011,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           perfil.color ||
+
+ 
+
+ 
 
  
 
@@ -3014,11 +6027,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
         }`;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -3026,7 +6051,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
       etiqueta.textContent =
+
+ 
+
+ 
 
  
 
@@ -3034,7 +6067,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
           ? `Serie: ${perfil.serie}`
+
+ 
+
+ 
 
  
 
@@ -3042,7 +6083,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -3050,11 +6099,23 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -3062,7 +6123,15 @@ function actualizarVehiculoPantalla(perfil) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -3070,11 +6139,23 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
   puedeUsarlas
 
  
 
+ 
+
+ 
+
 ) {
+
+ 
+
+ 
 
  
 
@@ -3082,7 +6163,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
     document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -3090,7 +6179,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3098,7 +6195,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
   seccionAlertas.style.display =
+
+ 
+
+ 
 
  
 
@@ -3106,7 +6211,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
       ? ""
+
+ 
+
+ 
 
  
 
@@ -3114,11 +6227,23 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -3126,7 +6251,15 @@ function configurarAlertas(
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -3134,7 +6267,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   seccion,
+
+ 
+
+ 
 
  
 
@@ -3142,7 +6283,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
 ) {
+
+ 
+
+ 
 
  
 
@@ -3150,7 +6299,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   if (seccion === "historial") {
+
+ 
+
+ 
 
  
 
@@ -3158,7 +6315,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -3166,7 +6331,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     cargarVehiculos();
+
+ 
+
+ 
 
  
 
@@ -3174,7 +6347,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -3182,7 +6363,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .forEach(section => {
+
+ 
+
+ 
 
  
 
@@ -3190,7 +6379,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -3198,7 +6395,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -3206,7 +6411,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3214,7 +6427,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     seccionDestino.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -3222,7 +6443,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -3230,11 +6459,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .forEach(item => {
 
  
 
+ 
+
+ 
+
       item.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -3242,7 +6483,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         item.dataset.section === seccion
+
+ 
+
+ 
 
  
 
@@ -3250,7 +6499,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         item.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -3258,7 +6515,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -3266,7 +6531,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .querySelectorAll(
+
+ 
+
+ 
 
  
 
@@ -3274,7 +6547,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     )
+
+ 
+
+ 
 
  
 
@@ -3282,7 +6563,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       item.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -3290,7 +6579,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -3298,11 +6595,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     boton.closest(".mobileBottomNav")
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3310,7 +6619,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   } else {
+
+ 
+
+ 
 
  
 
@@ -3318,7 +6635,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       Array.from(
+
+ 
+
+ 
 
  
 
@@ -3326,11 +6651,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
           ".mobileBottomNav button"
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -3338,7 +6675,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         item
+
+ 
+
+ 
 
  
 
@@ -3346,11 +6691,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
           ?.includes(`'${seccion}'`)
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -3358,11 +6715,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -3370,7 +6739,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       ".topNavigation button"
+
+ 
+
+ 
 
  
 
@@ -3378,7 +6755,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     .forEach(item => {
+
+ 
+
+ 
 
  
 
@@ -3386,7 +6771,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -3394,7 +6787,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     Array.from(
+
+ 
+
+ 
 
  
 
@@ -3402,11 +6803,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         ".topNavigation button"
 
  
 
+ 
+
+ 
+
       )
+
+ 
+
+ 
 
  
 
@@ -3414,7 +6827,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
       item
+
+ 
+
+ 
 
  
 
@@ -3422,11 +6843,23 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
         ?.includes(`'${seccion}'`)
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3434,7 +6867,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   cerrarMenuMovil();
+
+ 
+
+ 
 
  
 
@@ -3442,7 +6883,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
     top: 0,
+
+ 
+
+ 
 
  
 
@@ -3450,7 +6899,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -3458,7 +6915,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -3466,7 +6931,15 @@ function cambiarSeccion(
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -3474,11 +6947,23 @@ function abrirMenuMovil() {
 
  
 
+ 
+
+ 
+
   document
 
  
 
+ 
+
+ 
+
     .getElementById("sidebar")
+
+ 
+
+ 
 
  
 
@@ -3486,11 +6971,23 @@ function abrirMenuMovil() {
 
  
 
+ 
+
+ 
+
   document
 
  
 
+ 
+
+ 
+
     .getElementById("menuOverlay")
+
+ 
+
+ 
 
  
 
@@ -3498,7 +6995,15 @@ function abrirMenuMovil() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3506,7 +7011,15 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -3514,11 +7027,23 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
     ?.classList.remove("mobileOpen");
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -3526,293 +7051,595 @@ function cerrarMenuMovil() {
 
  
 
+ 
+
+ 
+
     ?.classList.remove("active");
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
+ 
 
 /* =========================================
+
    COTIZACIÓN DE GRÚA
+
 ========================================= */
+
 function abrirCotizacionGrua() {
+
   if (!usuarioActual) {
+
     mostrarModal("⚠", "Sesión no disponible", "Inicia sesión nuevamente para cotizar una grúa.");
+
     return;
+
   }
 
+ 
+
   const overlay = document.getElementById("gruaCotizacionOverlay");
+
   const form = document.getElementById("gruaCotizacionForm");
+
   const vista = document.getElementById("gruaCotizacionesVista");
+
   const error = document.getElementById("gruaFormError");
+
   if (!overlay || !form || !vista) return;
 
+ 
+
   form.reset();
+
   form.hidden = false;
+
   vista.hidden = true;
+
   if (error) error.textContent = "";
+
   actualizarFormularioGrua();
+
   overlay.classList.add("active");
+
   document.body.style.overflow = "hidden";
+
 }
+
+ 
 
 function cerrarCotizacionGrua() {
+
   document.getElementById("gruaCotizacionOverlay")?.classList.remove("active");
+
   document.body.style.overflow = "";
+
   if (cancelarEscuchaCotizacionesGrua) {
+
     cancelarEscuchaCotizacionesGrua();
+
     cancelarEscuchaCotizacionesGrua = null;
+
   }
+
 }
+
+ 
 
 function actualizarFormularioGrua() {
+
   const condicion = document.getElementById("gruaCondicion")?.value || "";
+
   const esCarga = document.getElementById("gruaEsCarga")?.value === "si";
+
   const estadoCarga = document.getElementById("gruaEstadoCarga")?.value || "";
+
+ 
 
   const liberacionField = document.getElementById("gruaLiberacionField");
+
   const liberacion = document.getElementById("gruaLiberacion");
+
   if (liberacionField) liberacionField.hidden = condicion !== "siniestro";
+
   if (liberacion) liberacion.required = condicion === "siniestro";
 
+ 
+
   const estadoCargaField = document.getElementById("gruaEstadoCargaField");
+
   const estadoCargaSelect = document.getElementById("gruaEstadoCarga");
+
   if (estadoCargaField) estadoCargaField.hidden = !esCarga;
+
   if (estadoCargaSelect) estadoCargaSelect.required = esCarga;
 
+ 
+
   const conCarga = esCarga && estadoCarga === "con_carga";
+
   const tipoCargaField = document.getElementById("gruaTipoCargaField");
+
   const pesoCargaField = document.getElementById("gruaPesoCargaField");
+
   const tipoCarga = document.getElementById("gruaTipoCarga");
+
   const pesoCarga = document.getElementById("gruaPesoCarga");
+
   if (tipoCargaField) tipoCargaField.hidden = !conCarga;
+
   if (pesoCargaField) pesoCargaField.hidden = !conCarga;
+
   if (tipoCarga) tipoCarga.required = conCarga;
+
   if (pesoCarga) pesoCarga.required = conCarga;
+
 }
+
+ 
 
 async function enviarSolicitudCotizacionGrua(event) {
+
   event?.preventDefault();
+
   if (!usuarioActual) return;
 
+ 
+
   const errorBox = document.getElementById("gruaFormError");
+
   const boton = document.getElementById("gruaEnviarCotizacionBtn");
+
   const categoria = document.getElementById("gruaCategoria")?.value || "";
+
   const condicion = document.getElementById("gruaCondicion")?.value || "";
+
   const liberacion = document.getElementById("gruaLiberacion")?.value || "";
+
   const esCarga = document.getElementById("gruaEsCarga")?.value || "";
+
   const estadoCarga = document.getElementById("gruaEstadoCarga")?.value || "";
+
   const tipoCarga = document.getElementById("gruaTipoCarga")?.value.trim() || "";
+
   const pesoCarga = document.getElementById("gruaPesoCarga")?.value.trim() || "";
+
   const destino = document.getElementById("gruaDestino")?.value.trim() || "";
+
   const comentarios = document.getElementById("gruaComentarios")?.value.trim() || "";
 
+ 
+
   if (!categoria || !condicion || !esCarga || !destino) {
+
     if (errorBox) errorBox.textContent = "Completa los datos obligatorios.";
+
     return;
+
   }
+
   if (condicion === "siniestro" && !liberacion) {
+
     if (errorBox) errorBox.textContent = "Indica si la unidad ya fue liberada.";
+
     return;
+
   }
+
   if (esCarga === "si" && !estadoCarga) {
+
     if (errorBox) errorBox.textContent = "Indica si la unidad de carga está vacía o con carga.";
+
     return;
+
   }
+
   if (esCarga === "si" && estadoCarga === "con_carga" && (!tipoCarga || !pesoCarga)) {
+
     if (errorBox) errorBox.textContent = "Indica qué carga lleva y su peso aproximado.";
+
     return;
+
   }
+
+ 
 
   if (boton) boton.disabled = true;
+
   if (errorBox) errorBox.textContent = "";
 
+ 
+
   try {
+
     const ubicacion = await obtenerUbicacion();
+
     const resultado = await guardarSolicitudCotizacionGrua({
+
       categoria, condicion, liberacion, esCarga, estadoCarga,
+
       tipoCarga, pesoCarga, destino, comentarios, ubicacion
+
     });
+
+ 
 
     if (!resultado?.solicitudId) throw new Error("No fue posible crear la solicitud de cotización.");
+
     solicitudCotizacionGruaActual = resultado.solicitudId;
+
     document.getElementById("gruaCotizacionForm").hidden = true;
+
     document.getElementById("gruaCotizacionesVista").hidden = false;
+
     document.getElementById("gruaCotizacionTitle").textContent = `Cotizaciones · ${resultado.folio}`;
+
     escucharCotizacionesGrua(resultado.solicitudId);
+
     await cargarHistorialServicios();
+
   } catch (error) {
+
     console.error("Error creando cotización de grúa:", error);
+
     if (errorBox) errorBox.textContent = error?.message || "No fue posible solicitar cotizaciones.";
+
   } finally {
+
     if (boton) boton.disabled = false;
+
   }
+
 }
+
+ 
 
 async function guardarSolicitudCotizacionGrua(datosGrua) {
+
   const folio = generarFolioServicio();
+
   const ubicacionTexto = String(datosGrua.ubicacion || "");
+
   const match = ubicacionTexto.match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i);
+
   const latitud = match ? Number(match[1]) : null;
+
   const longitud = match ? Number(match[2]) : null;
+
   const tipoTarifa = perfilActual.tieneMembresia && perfilActual.estadoMembresia === "activa"
+
     ? "Tarifa preferencial de miembro" : "Tarifa de público general";
 
+ 
+
   const cliente = {
+
     nombre: perfilActual.nombre || "", telefono: perfilActual.telefono || "",
+
     correo: perfilActual.correo || "", tipoCliente: perfilActual.tipoCliente || "particular",
+
     tieneMembresia: perfilActual.tieneMembresia === true,
+
     numeroMiembro: perfilActual.numeroMiembro || "", estadoMembresia: perfilActual.estadoMembresia || "sin_membresia"
+
   };
+
   const vehiculo = {
+
     marca: perfilActual.marca || "", subMarca: perfilActual.subMarca || "",
+
     color: perfilActual.color || "", placas: perfilActual.placas || "", serie: perfilActual.serie || ""
+
   };
+
   const detalleGrua = {
+
     categoria: datosGrua.categoria,
+
     condicion: datosGrua.condicion,
+
     liberacion: datosGrua.condicion === "siniestro" ? datosGrua.liberacion : "no_aplica",
+
     esVehiculoCarga: datosGrua.esCarga === "si",
+
     estadoCarga: datosGrua.esCarga === "si" ? datosGrua.estadoCarga : "no_aplica",
+
     tipoCarga: datosGrua.tipoCarga || "",
+
     pesoCargaAproximado: datosGrua.pesoCarga || "",
+
     destino: datosGrua.destino,
+
     comentarios: datosGrua.comentarios || ""
+
   };
 
-  const servicioDoc = await firestoreAddDoc(firestoreCollection(db, "servicios"), {
+ 
+
+  // Generamos ambos IDs primero para guardar las referencias cruzadas desde la creación.
+
+  // Así evitamos un update adicional que las reglas normales de servicios no permiten.
+
+  const servicioRef = firestoreDoc(firestoreCollection(db, "servicios"));
+
+  const solicitudRef = firestoreDoc(firestoreCollection(db, "solicitudes"));
+
+ 
+
+  await firestoreSetDoc(servicioRef, {
+
     usuarioId: usuarioActual.uid, uid: usuarioActual.uid, folio,
+
+    solicitudId: solicitudRef.id,
+
     servicio: "Grúa", tipoServicio: "grua", estado: "pendiente_cotizacion",
+
     tipoTarifa, ubicacion: ubicacionTexto,
+
     ubicacionDatos: { latitud, longitud, precision: null, enlaceGoogleMaps: ubicacionTexto },
+
     destino: datosGrua.destino, cliente, vehiculo, grua: detalleGrua,
+
     creadoEn: firestoreServerTimestamp(), fechaCreacion: new Date().toISOString()
+
   });
 
-  const solicitudDoc = await firestoreAddDoc(firestoreCollection(db, "solicitudes"), {
+ 
+
+  await firestoreSetDoc(solicitudRef, {
+
     usuarioId: usuarioActual.uid, uid: usuarioActual.uid, uidCliente: usuarioActual.uid,
-    servicioId: servicioDoc.id, folio, estado: "pendiente_cotizacion", tipoTarifa,
+
+    servicioId: servicioRef.id, folio, estado: "pendiente_cotizacion", tipoTarifa,
+
     servicio: { nombre: "Grúa", tipo: "grua" }, tipoServicio: "grua",
+
     cliente, vehiculo, grua: detalleGrua,
+
     ubicacion: { latitud, longitud, precision: null, enlaceGoogleMaps: ubicacionTexto },
+
     destino: datosGrua.destino,
+
     asignacion: { uidProveedor: "", nombreProveedor: "", telefonoProveedor: "", fotoProveedor: "", tiempoEstimadoMinutos: null },
+
     cotizacionAutorizada: false, rechazadoPor: [], radioBusquedaKm: 70,
+
     creadoEn: firestoreServerTimestamp(), fechaCreacion: new Date().toISOString()
+
   });
 
-  await firestoreUpdateDoc(firestoreDoc(db, "servicios", servicioDoc.id), {
-    solicitudId: solicitudDoc.id, actualizadoEn: firestoreServerTimestamp()
-  });
-  return { folio, solicitudId: solicitudDoc.id, servicioId: servicioDoc.id };
+ 
+
+  return { folio, solicitudId: solicitudRef.id, servicioId: servicioRef.id };
+
 }
+
+ 
 
 function escucharCotizacionesGrua(solicitudId) {
+
   if (cancelarEscuchaCotizacionesGrua) cancelarEscuchaCotizacionesGrua();
+
   const quotesRef = firestoreCollection(db, "solicitudes", solicitudId, "cotizaciones");
+
   cancelarEscuchaCotizacionesGrua = firestoreOnSnapshot(quotesRef, snapshot => {
+
     const cotizaciones = snapshot.docs.map(docu => ({ id: docu.id, ...docu.data() }))
+
       .filter(c => c.estado !== "retirada")
+
       .sort((a,b) => Number(a.precio || 0) - Number(b.precio || 0));
+
     renderizarCotizacionesGrua(solicitudId, cotizaciones);
+
   }, error => {
+
     console.error("Error leyendo cotizaciones:", error);
+
     document.getElementById("gruaCotizacionesLista").innerHTML = '<p class="gruaFormError">No fue posible cargar las cotizaciones.</p>';
+
   });
+
 }
+
+ 
 
 function renderizarCotizacionesGrua(solicitudId, cotizaciones) {
+
   const lista = document.getElementById("gruaCotizacionesLista");
+
   const waiting = document.getElementById("gruaWaitingBox");
+
   if (!lista) return;
+
   if (waiting) waiting.hidden = cotizaciones.length > 0;
+
   if (!cotizaciones.length) { lista.innerHTML = ""; return; }
 
+ 
+
   lista.innerHTML = cotizaciones.map(c => {
+
     const precio = Number(c.precio || 0).toLocaleString("es-MX", {style:"currency",currency:"MXN"});
+
     const nombre = c.nombreProveedor || "Proveedor de grúa";
+
     const eta = Number(c.tiempoEstimadoMinutos || 0);
+
     return `
+
       <article class="gruaQuoteCard">
+
         <div class="gruaQuoteTop"><div><b>${escaparHtml(nombre)}</b></div><span class="gruaQuotePrice">${escaparHtml(precio)}</span></div>
+
         <div class="gruaQuoteMeta"><span>★ ${escaparHtml(String(c.calificacion ?? "5.0"))}</span>${eta ? `<span>ETA: ${eta} min</span>` : ""}</div>
+
         ${c.observaciones ? `<p>${escaparHtml(c.observaciones)}</p>` : ""}
+
         <button type="button" onclick="autorizarCotizacionGrua('${escaparAtributo(solicitudId)}','${escaparAtributo(c.id)}')">Autorizar esta cotización</button>
+
       </article>`;
+
   }).join("");
+
 }
+
+ 
 
 async function abrirCotizacionesGruaExistentes(solicitudId, folio = "") {
+
   solicitudCotizacionGruaActual = solicitudId;
+
   const overlay = document.getElementById("gruaCotizacionOverlay");
+
   if (!overlay) return;
+
   document.getElementById("gruaCotizacionForm").hidden = true;
+
   document.getElementById("gruaCotizacionesVista").hidden = false;
+
   document.getElementById("gruaCotizacionTitle").textContent = folio ? `Cotizaciones · ${folio}` : "Cotizaciones de grúa";
+
   overlay.classList.add("active");
+
   document.body.style.overflow = "hidden";
+
   escucharCotizacionesGrua(solicitudId);
+
 }
+
+ 
 
 async function autorizarCotizacionGrua(solicitudId, proveedorUid) {
+
   if (!firestoreRunTransaction || !usuarioActual) return;
+
   if (!window.confirm("¿Autorizar esta cotización y asignar el servicio a este proveedor?")) return;
 
+ 
+
   try {
+
     await firestoreRunTransaction(db, async transaction => {
+
       const solicitudRef = firestoreDoc(db, "solicitudes", solicitudId);
+
       const cotizacionRef = firestoreDoc(db, "solicitudes", solicitudId, "cotizaciones", proveedorUid);
+
       const solicitudSnap = await transaction.get(solicitudRef);
+
       const cotizacionSnap = await transaction.get(cotizacionRef);
+
       if (!solicitudSnap.exists() || !cotizacionSnap.exists()) throw new Error("La cotización ya no está disponible.");
+
       const solicitud = solicitudSnap.data();
+
       const cotizacion = cotizacionSnap.data();
+
       if (solicitud.uidCliente !== usuarioActual.uid && solicitud.usuarioId !== usuarioActual.uid) throw new Error("No puedes autorizar esta solicitud.");
+
       if (solicitud.estado !== "pendiente_cotizacion" && solicitud.estado !== "esperando_autorizacion_cliente") throw new Error("Este servicio ya fue asignado o cerrado.");
 
+ 
+
       const proveedorRef = firestoreDoc(db, "proveedores", proveedorUid);
+
       const proveedorSnap = await transaction.get(proveedorRef);
+
       if (!proveedorSnap.exists()) throw new Error("El proveedor ya no está disponible.");
+
       const proveedor = proveedorSnap.data();
+
       if (proveedor.activo !== true || proveedor.autorizado !== true || proveedor.disponible !== true || proveedor.servicioActualId) throw new Error("El proveedor ya no está disponible. Elige otra cotización.");
 
+ 
+
       const asignacion = {
+
         uidProveedor: proveedorUid,
+
         nombreProveedor: cotizacion.nombreProveedor || proveedor.nombre || proveedor.nombreCompleto || "Proveedor",
+
         telefonoProveedor: cotizacion.telefonoProveedor || proveedor.telefono || proveedor.celular || "",
+
         fotoProveedor: cotizacion.fotoProveedor || proveedor.fotoProveedor || proveedor.foto || proveedor.fotoURL || "",
+
         tipoProveedor: "grua",
+
         tiempoEstimadoMinutos: Number(cotizacion.tiempoEstimadoMinutos || 0) || null
+
       };
+
       transaction.update(solicitudRef, {
+
         estado: "asignado", asignacion, cotizacionAutorizada: true,
+
         precioAutorizado: Number(cotizacion.precio || 0), proveedorAsignadoUid: proveedorUid,
+
         fechaAutorizacionCotizacion: firestoreServerTimestamp(), actualizadoEn: firestoreServerTimestamp()
+
       });
+
       transaction.update(cotizacionRef, { estado: "autorizada", autorizada: true, fechaAutorizacion: firestoreServerTimestamp() });
-      transaction.update(proveedorRef, { disponible: false, ocupado: true, estadoConexion: "ocupado", servicioActualId: solicitudId, ultimaActualizacion: firestoreServerTimestamp() });
+
+      // El cliente no modifica el documento del proveedor.
+
+      // El propio proveedor se marca ocupado al detectar el servicio asignado.
+
       if (solicitud.servicioId) {
+
         const servicioRef = firestoreDoc(db, "servicios", solicitud.servicioId);
+
         transaction.update(servicioRef, {
+
           estado: "asignado", asignacion, precioAutorizado: Number(cotizacion.precio || 0),
+
           proveedorAsignadoUid: proveedorUid, fechaAsignacion: firestoreServerTimestamp(), actualizadoEn: firestoreServerTimestamp()
+
         });
+
       }
+
     });
 
+ 
+
     cerrarCotizacionGrua();
+
     await cargarHistorialServicios();
+
     mostrarModal("✓", "Cotización autorizada", "El proveedor elegido quedó asignado. Ya puedes continuar con el seguimiento del servicio.");
+
   } catch (error) {
+
     console.error("Error autorizando cotización:", error);
+
     window.alert(error?.message || "No fue posible autorizar la cotización.");
+
   }
+
 }
 
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -3820,7 +7647,15 @@ async function autorizarCotizacionGrua(solicitudId, proveedorUid) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -3828,11 +7663,23 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   if (!usuarioActual) {
 
  
 
+ 
+
+ 
+
     mostrarModal(
+
+ 
+
+ 
 
  
 
@@ -3840,7 +7687,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
       "Sesión no disponible",
+
+ 
+
+ 
 
  
 
@@ -3848,7 +7703,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -3856,7 +7719,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -3864,7 +7735,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     perfilActual.tieneMembresia &&
+
+ 
+
+ 
 
  
 
@@ -3872,7 +7751,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
       ? "Tarifa preferencial de miembro"
+
+ 
+
+ 
 
  
 
@@ -3880,7 +7767,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   const ubicacion = await obtenerUbicacion();
+
+ 
+
+ 
 
  
 
@@ -3888,7 +7783,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     servicio,
+
+ 
+
+ 
 
  
 
@@ -3896,7 +7799,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     ubicacion,
+
+ 
+
+ 
 
  
 
@@ -3904,7 +7815,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3912,7 +7831,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     servicio,
+
+ 
+
+ 
 
  
 
@@ -3920,7 +7847,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     ubicacion,
+
+ 
+
+ 
 
  
 
@@ -3928,11 +7863,23 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   const url =
+
+ 
+
+ 
 
  
 
@@ -3940,7 +7887,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
     `?text=${encodeURIComponent(mensaje)}`;
+
+ 
+
+ 
 
  
 
@@ -3948,7 +7903,15 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   if (folio) {
+
+ 
+
+ 
 
  
 
@@ -3956,11 +7919,23 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3968,7 +7943,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
   crearInterfazAuxilioVial();
+
+ 
+
+ 
 
  
 
@@ -3976,7 +7959,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
   if (!overlay) return;
+
+ 
+
+ 
 
  
 
@@ -3984,7 +7975,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
     input.checked = false;
+
+ 
+
+ 
 
  
 
@@ -3992,7 +7991,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const aviso = document.getElementById("avisoGasolina");
+
+ 
+
+ 
 
  
 
@@ -4000,7 +8007,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const confirmar = document.getElementById("confirmarAuxilioVial");
+
+ 
+
+ 
 
  
 
@@ -4008,7 +8023,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
   if (aceptar) aceptar.checked = false;
+
+ 
+
+ 
 
  
 
@@ -4016,7 +8039,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
   overlay.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -4024,7 +8055,15 @@ function abrirAuxilioVial() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4032,7 +8071,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const seleccionado = document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -4040,7 +8087,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -4048,7 +8103,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const aceptar = document.getElementById("aceptarCostoGasolina");
+
+ 
+
+ 
 
  
 
@@ -4056,7 +8119,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const esGasolina = seleccionado?.value === "Surtir gasolina";
+
+ 
+
+ 
 
  
 
@@ -4064,7 +8135,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
   if (aceptar && !esGasolina) aceptar.checked = false;
+
+ 
+
+ 
 
  
 
@@ -4072,7 +8151,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
     confirmar.disabled = !seleccionado || (esGasolina && !aceptar?.checked);
+
+ 
+
+ 
 
  
 
@@ -4080,7 +8167,15 @@ function seleccionarTipoAuxilioVial() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4088,7 +8183,15 @@ async function confirmarAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const seleccionado = document.querySelector(
+
+ 
+
+ 
 
  
 
@@ -4096,7 +8199,15 @@ async function confirmarAuxilioVial() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -4104,7 +8215,15 @@ async function confirmarAuxilioVial() {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -4112,7 +8231,15 @@ async function confirmarAuxilioVial() {
 
  
 
+ 
+
+ 
+
     !document.getElementById("aceptarCostoGasolina")?.checked
+
+ 
+
+ 
 
  
 
@@ -4120,11 +8247,23 @@ async function confirmarAuxilioVial() {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4132,11 +8271,23 @@ async function confirmarAuxilioVial() {
 
  
 
+ 
+
+ 
+
   await solicitarServicio("Auxilio vial", seleccionado.value);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4144,11 +8295,23 @@ function cerrarAuxilioVial(event = null) {
 
  
 
+ 
+
+ 
+
   if (event && event.target.id !== "auxilioVialOverlay") return;
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -4156,7 +8319,15 @@ function cerrarAuxilioVial(event = null) {
 
  
 
+ 
+
+ 
+
     ?.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -4164,7 +8335,15 @@ function cerrarAuxilioVial(event = null) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4172,7 +8351,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
   if (document.getElementById("auxilioVialOverlay")) return;
+
+ 
+
+ 
 
  
 
@@ -4180,7 +8367,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
   const overlay = document.createElement("div");
+
+ 
+
+ 
 
  
 
@@ -4188,7 +8383,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
   overlay.className = "asClickCustomOverlay";
+
+ 
+
+ 
 
  
 
@@ -4196,7 +8399,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
   overlay.innerHTML = `
+
+ 
+
+ 
 
  
 
@@ -4204,7 +8415,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
       <button type="button" class="asClickCustomClose" onclick="cerrarAuxilioVial()" aria-label="Cerrar">✕</button>
+
+ 
+
+ 
 
  
 
@@ -4212,7 +8431,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
       <h2 id="auxilioVialTitulo">Auxilio Vial</h2>
+
+ 
+
+ 
 
  
 
@@ -4220,11 +8447,23 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
       <div class="asClickOptionList">
 
  
 
+ 
+
+ 
+
         <label class="asClickOption">
+
+ 
+
+ 
 
  
 
@@ -4232,7 +8471,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
           <span>🔋</span><b>Paso de corriente</b>
+
+ 
+
+ 
 
  
 
@@ -4240,7 +8487,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
         <label class="asClickOption">
+
+ 
+
+ 
 
  
 
@@ -4248,11 +8503,23 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
           <span>🛞</span><b>Cambio de llanta</b>
 
  
 
+ 
+
+ 
+
         </label>
+
+ 
+
+ 
 
  
 
@@ -4260,7 +8527,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
           <input type="radio" name="tipoAuxilioVial" value="Surtir gasolina" onchange="seleccionarTipoAuxilioVial()">
+
+ 
+
+ 
 
  
 
@@ -4268,11 +8543,23 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
         </label>
 
  
 
+ 
+
+ 
+
       </div>
+
+ 
+
+ 
 
  
 
@@ -4280,7 +8567,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
         <b>⚠ Aviso importante</b>
+
+ 
+
+ 
 
  
 
@@ -4288,7 +8583,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
         <label>
+
+ 
+
+ 
 
  
 
@@ -4296,7 +8599,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
           He leído y acepto que el costo del combustible será cubierto por mí.
+
+ 
+
+ 
 
  
 
@@ -4304,7 +8615,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
       </div>
+
+ 
+
+ 
 
  
 
@@ -4312,7 +8631,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
         <button type="button" class="asClickSecondaryButton" onclick="cerrarAuxilioVial()">Cancelar</button>
+
+ 
+
+ 
 
  
 
@@ -4320,7 +8647,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
       </div>
+
+ 
+
+ 
 
  
 
@@ -4328,7 +8663,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
   `;
+
+ 
+
+ 
 
  
 
@@ -4336,7 +8679,15 @@ function crearInterfazAuxilioVial() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4344,7 +8695,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
   servicio,
+
+ 
+
+ 
 
  
 
@@ -4352,7 +8711,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
   ubicacion,
+
+ 
+
+ 
 
  
 
@@ -4360,7 +8727,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
 ) {
+
+ 
+
+ 
 
  
 
@@ -4368,7 +8743,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     perfilActual.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -4376,7 +8759,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
           perfilActual.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -4384,7 +8775,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -4392,7 +8791,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
   return [
+
+ 
+
+ 
 
  
 
@@ -4400,7 +8807,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -4408,7 +8823,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Tipo de cliente: ${obtenerTipoClienteTexto(perfilActual.tipoCliente)}`,
+
+ 
+
+ 
 
  
 
@@ -4416,11 +8839,23 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Estado: ${obtenerTextoEstado(perfilActual)}`,
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -4428,11 +8863,23 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Nombre: ${perfilActual.nombre || "No registrado"}`,
 
  
 
+ 
+
+ 
+
     `Teléfono: ${perfilActual.telefono || "No registrado"}`,
+
+ 
+
+ 
 
  
 
@@ -4440,7 +8887,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -4448,7 +8903,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Marca: ${perfilActual.marca || "No registrada"}`,
+
+ 
+
+ 
 
  
 
@@ -4456,11 +8919,23 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Color: ${perfilActual.color || "No registrado"}`,
 
  
 
+ 
+
+ 
+
     `Placas: ${perfilActual.placas || "No registradas"}`,
+
+ 
+
+ 
 
  
 
@@ -4468,7 +8943,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -4476,7 +8959,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Servicio: ${servicio}`,
+
+ 
+
+ 
 
  
 
@@ -4484,11 +8975,23 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
     `Ubicación: ${ubicacion}`,
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -4496,7 +8999,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
   ].join("\n");
+
+ 
+
+ 
 
  
 
@@ -4504,7 +9015,15 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -4512,241 +9031,483 @@ function construirMensajeServicio(
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
 async function guardarSolicitudServicio(servicio, tipoTarifa, ubicacion, detalleServicio = "") {
 
+ 
+
   if (!usuarioActual) return;
+
+ 
+
+ 
 
  
 
   const folio = generarFolioServicio();
 
+ 
+
   const servicioNormalizado = String(servicio || "")
+
+ 
 
     .trim()
 
+ 
+
     .toLowerCase()
 
+ 
+
     .normalize("NFD")
+
+ 
 
     .replace(/[\u0300-\u036f]/g, "");
 
  
 
+ 
+
+ 
+
   const tiposProveedor = {
+
+ 
 
     ajustador: "ajustador",
 
+ 
+
     abogado: "abogado",
+
+ 
 
     "auxilio vial": "auxilio_vial",
 
+ 
+
     grua: "grua"
 
+ 
+
   };
+
+ 
+
+ 
 
  
 
   const tipoProveedor =
 
+ 
+
     tiposProveedor[servicioNormalizado] ||
+
+ 
 
     servicioNormalizado.replace(/\s+/g, "_");
 
  
 
+ 
+
+ 
+
   const datosCliente = {
+
+ 
 
     nombre: perfilActual.nombre || "",
 
+ 
+
     telefono: perfilActual.telefono || "",
+
+ 
 
     correo: perfilActual.correo || "",
 
+ 
+
     tipoCliente: perfilActual.tipoCliente || "particular",
+
+ 
 
     tieneMembresia: perfilActual.tieneMembresia === true,
 
+ 
+
     numeroMiembro: perfilActual.numeroMiembro || "",
+
+ 
 
     estadoMembresia: perfilActual.estadoMembresia || "sin_membresia"
 
+ 
+
   };
+
+ 
+
+ 
 
  
 
   const datosVehiculo = {
 
+ 
+
     marca: perfilActual.marca || "",
+
+ 
 
     subMarca: perfilActual.subMarca || "",
 
+ 
+
     color: perfilActual.color || "",
+
+ 
 
     placas: perfilActual.placas || "",
 
+ 
+
     serie: perfilActual.serie || ""
+
+ 
 
   };
 
  
 
+ 
+
+ 
+
   const ubicacionTexto = String(ubicacion || "");
+
+ 
 
   const coincidenciaUbicacion = ubicacionTexto.match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i);
 
+ 
+
   const latitud = coincidenciaUbicacion ? Number(coincidenciaUbicacion[1]) : null;
+
+ 
 
   const longitud = coincidenciaUbicacion ? Number(coincidenciaUbicacion[2]) : null;
 
  
 
+ 
+
+ 
+
   try {
+
+ 
 
     const documentoServicio = await firestoreAddDoc(
 
+ 
+
       firestoreCollection(db, "servicios"),
+
+ 
 
       {
 
+ 
+
         usuarioId: usuarioActual.uid,
+
+ 
 
         uid: usuarioActual.uid,
 
+ 
+
         folio,
+
+ 
 
         servicio,
 
+ 
+
         tipoServicio: tipoProveedor,
+
+ 
 
         tipoAuxilio: detalleServicio || "",
 
+ 
+
         estado: "solicitado",
+
+ 
 
         tipoTarifa,
 
+ 
+
         ubicacion: ubicacionTexto,
+
+ 
 
         ubicacionDatos: {
 
+ 
+
           latitud,
+
+ 
 
           longitud,
 
+ 
+
           precision: null,
+
+ 
 
           enlaceGoogleMaps: ubicacionTexto
 
+ 
+
         },
+
+ 
 
         cliente: datosCliente,
 
+ 
+
         vehiculo: datosVehiculo,
+
+ 
 
         creadoEn: firestoreServerTimestamp(),
 
+ 
+
         fechaCreacion: new Date().toISOString()
+
+ 
 
       }
 
+ 
+
     );
+
+ 
+
+ 
 
  
 
     await firestoreAddDoc(
 
+ 
+
       firestoreCollection(db, "solicitudes"),
+
+ 
 
       {
 
+ 
+
         usuarioId: usuarioActual.uid,
+
+ 
 
         uid: usuarioActual.uid,
 
+ 
+
         uidCliente: usuarioActual.uid,
+
+ 
 
         servicioId: documentoServicio.id,
 
+ 
+
         folio,
+
+ 
 
         estado: "pendiente_cabina",
 
+ 
+
         tipoTarifa,
+
+ 
 
         servicio: {
 
+ 
+
           nombre: servicio,
+
+ 
 
           tipo: tipoProveedor,
 
+ 
+
           tipoAuxilio: detalleServicio || ""
 
+ 
+
         },
+
+ 
 
         tipoServicio: tipoProveedor,
 
+ 
+
         tipoAuxilio: detalleServicio || "",
+
+ 
 
         cliente: datosCliente,
 
+ 
+
         vehiculo: datosVehiculo,
+
+ 
 
         ubicacion: {
 
+ 
+
           latitud,
+
+ 
 
           longitud,
 
+ 
+
           precision: null,
+
+ 
 
           enlaceGoogleMaps: ubicacionTexto
 
+ 
+
         },
+
+ 
 
         asignacion: {
 
+ 
+
           uidProveedor: "",
+
+ 
 
           nombreProveedor: "",
 
+ 
+
           telefonoProveedor: "",
+
+ 
 
           fotoProveedor: "",
 
+ 
+
           tiempoEstimadoMinutos: null
+
+ 
 
         },
 
+ 
+
         rechazadoPor: [],
+
+ 
 
         radioBusquedaKm: 10,
 
+ 
+
         creadoEn: firestoreServerTimestamp(),
+
+ 
 
         fechaCreacion: new Date().toISOString()
 
+ 
+
       }
+
+ 
 
     );
 
  
 
+ 
+
+ 
+
     await cargarHistorialServicios();
+
+ 
 
     return folio;
 
+ 
+
   } catch (error) {
+
+ 
 
     console.error("No fue posible guardar la solicitud:", error);
 
+ 
+
     return "";
+
+ 
 
   }
 
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4754,7 +9515,15 @@ function generarFolioServicio() {
 
  
 
+ 
+
+ 
+
   const fecha = new Date();
+
+ 
+
+ 
 
  
 
@@ -4762,7 +9531,15 @@ function generarFolioServicio() {
 
  
 
+ 
+
+ 
+
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+
+ 
+
+ 
 
  
 
@@ -4770,7 +9547,15 @@ function generarFolioServicio() {
 
  
 
+ 
+
+ 
+
   const aleatorio = Math.floor(1000 + Math.random() * 9000);
+
+ 
+
+ 
 
  
 
@@ -4778,7 +9563,15 @@ function generarFolioServicio() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4786,11 +9579,23 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
   if (!usuarioActual) return;
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -4798,7 +9603,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
       firestoreCollection(db, "servicios"),
+
+ 
+
+ 
 
  
 
@@ -4806,7 +9619,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4814,7 +9635,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
     historialServicios = resultado.docs
+
+ 
+
+ 
 
  
 
@@ -4822,7 +9651,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
         id: documento.id,
+
+ 
+
+ 
 
  
 
@@ -4830,7 +9667,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
       }))
+
+ 
+
+ 
 
  
 
@@ -4838,7 +9683,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
     actualizarResumenHistorial();
+
+ 
+
+ 
 
  
 
@@ -4846,7 +9699,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -4854,7 +9715,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
     renderizarHistorial([]);
+
+ 
+
+ 
 
  
 
@@ -4862,7 +9731,15 @@ async function cargarHistorialServicios() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4870,7 +9747,15 @@ function obtenerMilisegundos(servicio) {
 
  
 
+ 
+
+ 
+
   const fecha = servicio.creadoEn || servicio.fechaCreacion || servicio.fecha || "";
+
+ 
+
+ 
 
  
 
@@ -4878,11 +9763,23 @@ function obtenerMilisegundos(servicio) {
 
  
 
+ 
+
+ 
+
     return fecha.toDate().getTime();
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4890,11 +9787,23 @@ function obtenerMilisegundos(servicio) {
 
  
 
+ 
+
+ 
+
   return Number.isNaN(valor) ? 0 : valor;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4902,7 +9811,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
   const estadosProceso = [
+
+ 
+
+ 
 
  
 
@@ -4910,7 +9827,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     "asignado",
+
+ 
+
+ 
 
  
 
@@ -4918,7 +9843,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     "en_proceso",
+
+ 
+
+ 
 
  
 
@@ -4926,7 +9859,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     "arribo"
+
+ 
+
+ 
 
  
 
@@ -4934,11 +9875,23 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
   actualizarTexto("historialTotal", String(historialServicios.length));
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -4946,7 +9899,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     String(historialServicios.filter(item =>
+
+ 
+
+ 
 
  
 
@@ -4954,7 +9915,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     ).length)
+
+ 
+
+ 
 
  
 
@@ -4962,7 +9931,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
   actualizarTexto(
+
+ 
+
+ 
 
  
 
@@ -4970,7 +9947,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     String(historialServicios.filter(item =>
+
+ 
+
+ 
 
  
 
@@ -4978,7 +9963,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
         normalizarEstado(item.estado)
+
+ 
+
+ 
 
  
 
@@ -4986,11 +9979,23 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     ).length)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -4998,7 +10003,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
     "historialCancelados",
+
+ 
+
+ 
 
  
 
@@ -5006,7 +10019,15 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
       ["cancelado", "cancelada"].includes(normalizarEstado(item.estado))
+
+ 
+
+ 
 
  
 
@@ -5014,11 +10035,23 @@ function actualizarResumenHistorial() {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5026,7 +10059,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
   const busqueda =
+
+ 
+
+ 
 
  
 
@@ -5034,7 +10075,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       ?.value.trim().toLowerCase() || "";
+
+ 
+
+ 
 
  
 
@@ -5042,7 +10091,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
     document.getElementById("filtroEstadoHistorial")?.value || "todos";
+
+ 
+
+ 
 
  
 
@@ -5050,7 +10107,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
     document.getElementById("filtroTipoHistorial")?.value || "todos";
+
+ 
+
+ 
 
  
 
@@ -5058,7 +10123,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
     const vehiculo = item.vehiculo || {};
+
+ 
+
+ 
 
  
 
@@ -5066,7 +10139,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       item.folio,
+
+ 
+
+ 
 
  
 
@@ -5074,7 +10155,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       item.tipoServicio,
+
+ 
+
+ 
 
  
 
@@ -5082,7 +10171,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       vehiculo.subMarca,
+
+ 
+
+ 
 
  
 
@@ -5090,7 +10187,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       item.marca,
+
+ 
+
+ 
 
  
 
@@ -5098,7 +10203,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       item.placas
+
+ 
+
+ 
 
  
 
@@ -5106,7 +10219,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -5114,7 +10235,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       .toLowerCase();
+
+ 
+
+ 
 
  
 
@@ -5122,7 +10251,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
     const tipoItem = String(item.servicio || item.tipoServicio || "")
+
+ 
+
+ 
 
  
 
@@ -5130,7 +10267,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       .toLowerCase();
+
+ 
+
+ 
 
  
 
@@ -5138,7 +10283,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       (!busqueda || texto.includes(busqueda)) &&
+
+ 
+
+ 
 
  
 
@@ -5146,7 +10299,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
       (tipo === "todos" || tipoItem === tipo)
+
+ 
+
+ 
 
  
 
@@ -5154,7 +10315,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -5162,7 +10331,15 @@ function filtrarHistorial() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5170,7 +10347,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
   const cuerpo = document.getElementById("historialServiciosBody");
+
+ 
+
+ 
 
  
 
@@ -5178,7 +10363,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
   if (!servicios.length) {
+
+ 
+
+ 
 
  
 
@@ -5186,7 +10379,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
       <tr class="emptyHistoryRow">
+
+ 
+
+ 
 
  
 
@@ -5194,7 +10395,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
           <div class="emptyHistory">
+
+ 
+
+ 
 
  
 
@@ -5202,7 +10411,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
             <b>No hay servicios para mostrar</b>
+
+ 
+
+ 
 
  
 
@@ -5210,7 +10427,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -5218,7 +10443,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
       </tr>
+
+ 
+
+ 
 
  
 
@@ -5226,11 +10459,23 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5238,7 +10483,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
     const vehiculo = item.vehiculo || {};
+
+ 
+
+ 
 
  
 
@@ -5246,7 +10499,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
     const estado = normalizarEstado(item.estado || "solicitado");
+
+ 
+
+ 
 
  
 
@@ -5254,7 +10515,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
       vehiculo.marca || item.marca,
+
+ 
+
+ 
 
  
 
@@ -5262,7 +10531,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
     ].filter(Boolean).join(" ") || "Vehículo no registrado";
+
+ 
+
+ 
 
  
 
@@ -5270,7 +10547,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
     return `
+
+ 
+
+ 
 
  
 
@@ -5278,7 +10563,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
         <td><b>${escaparHtml(item.folio || item.id.slice(0, 8).toUpperCase())}</b></td>
+
+ 
+
+ 
 
  
 
@@ -5286,7 +10579,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
         <td>${escaparHtml(nombreVehiculo)}<br><small>${escaparHtml(placas)}</small></td>
+
+ 
+
+ 
 
  
 
@@ -5294,7 +10595,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
         <td><span class="status ${obtenerClaseEstado(estado)}">${escaparHtml(obtenerEtiquetaEstado(estado))}</span></td>
+
+ 
+
+ 
 
  
 
@@ -5302,7 +10611,15 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
       </tr>
+
+ 
+
+ 
 
  
 
@@ -5310,11 +10627,23 @@ function renderizarHistorial(servicios) {
 
  
 
+ 
+
+ 
+
   }).join("");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5322,7 +10651,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
   const valor = item.creadoEn || item.fechaCreacion || item.fecha || "";
+
+ 
+
+ 
 
  
 
@@ -5330,7 +10667,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
   if (valor && typeof valor.toDate === "function") {
+
+ 
+
+ 
 
  
 
@@ -5338,7 +10683,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
   } else {
+
+ 
+
+ 
 
  
 
@@ -5346,7 +10699,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5354,7 +10715,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
   return fecha.toLocaleDateString("es-MX", {
+
+ 
+
+ 
 
  
 
@@ -5362,7 +10731,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
     month: "short",
+
+ 
+
+ 
 
  
 
@@ -5370,7 +10747,15 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
     hour: "2-digit",
+
+ 
+
+ 
 
  
 
@@ -5378,11 +10763,23 @@ function formatearFechaServicio(item) {
 
  
 
+ 
+
+ 
+
   });
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5390,7 +10787,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
   const etiquetas = {
+
+ 
+
+ 
 
  
 
@@ -5398,7 +10803,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
     asignado: "Asignado",
+
+ 
+
+ 
 
  
 
@@ -5406,7 +10819,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
     en_camino: "En camino",
+
+ 
+
+ 
 
  
 
@@ -5414,7 +10835,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
     en_proceso: "En proceso",
+
+ 
+
+ 
 
  
 
@@ -5422,7 +10851,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
     terminado: "Finalizado",
+
+ 
+
+ 
 
  
 
@@ -5430,7 +10867,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
     cancelado: "Cancelado",
+
+ 
+
+ 
 
  
 
@@ -5438,7 +10883,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -5446,7 +10899,15 @@ function obtenerEtiquetaEstado(estado) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5454,7 +10915,15 @@ function obtenerClaseEstado(estado) {
 
  
 
+ 
+
+ 
+
   if (["finalizado", "terminado", "completado"].includes(estado)) {
+
+ 
+
+ 
 
  
 
@@ -5462,7 +10931,15 @@ function obtenerClaseEstado(estado) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5470,11 +10947,23 @@ function obtenerClaseEstado(estado) {
 
  
 
+ 
+
+ 
+
     return "cancelled";
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5482,7 +10971,15 @@ function obtenerClaseEstado(estado) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5490,7 +10987,15 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
   return String(valor ?? "")
+
+ 
+
+ 
 
  
 
@@ -5498,7 +11003,15 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll("<", "&lt;")
+
+ 
+
+ 
 
  
 
@@ -5506,7 +11019,15 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll('"', "&quot;")
+
+ 
+
+ 
 
  
 
@@ -5514,7 +11035,15 @@ function escaparHtml(valor) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5522,7 +11051,15 @@ function escaparAtributo(valor) {
 
  
 
+ 
+
+ 
+
   return String(valor ?? "")
+
+ 
+
+ 
 
  
 
@@ -5530,7 +11067,15 @@ function escaparAtributo(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll("'", "\\'")
+
+ 
+
+ 
 
  
 
@@ -5538,7 +11083,15 @@ function escaparAtributo(valor) {
 
  
 
+ 
+
+ 
+
     .replaceAll("\r", " ");
+
+ 
+
+ 
 
  
 
@@ -5546,7 +11099,15 @@ function escaparAtributo(valor) {
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -5554,7 +11115,15 @@ function escaparAtributo(valor) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -5562,7 +11131,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
   return new Promise(resolve => {
+
+ 
+
+ 
 
  
 
@@ -5570,7 +11147,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
       resolve(
+
+ 
+
+ 
 
  
 
@@ -5578,7 +11163,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -5586,7 +11179,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -5594,7 +11195,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
       posicion => {
+
+ 
+
+ 
 
  
 
@@ -5602,7 +11211,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
           posicion.coords.latitude;
+
+ 
+
+ 
 
  
 
@@ -5610,11 +11227,23 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
           posicion.coords.longitude;
 
  
 
+ 
+
+ 
+
         resolve(
+
+ 
+
+ 
 
  
 
@@ -5622,11 +11251,23 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
         );
 
  
 
+ 
+
+ 
+
       },
+
+ 
+
+ 
 
  
 
@@ -5634,7 +11275,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
         resolve(
+
+ 
+
+ 
 
  
 
@@ -5642,7 +11291,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
         );
+
+ 
+
+ 
 
  
 
@@ -5650,7 +11307,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
       {
+
+ 
+
+ 
 
  
 
@@ -5658,7 +11323,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
         timeout: 8000,
+
+ 
+
+ 
 
  
 
@@ -5666,7 +11339,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -5674,7 +11355,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -5682,7 +11371,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -5690,7 +11387,15 @@ function obtenerUbicacion() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -5698,7 +11403,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
   if (!perfilActual.puedeUsarAlertas) {
+
+ 
+
+ 
 
  
 
@@ -5706,7 +11419,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
       "🔒",
+
+ 
+
+ 
 
  
 
@@ -5714,7 +11435,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
       "Las alertas de robo y montachoques están disponibles únicamente para miembros AS CLICK activos."
+
+ 
+
+ 
 
  
 
@@ -5722,7 +11451,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -5730,7 +11467,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
   const confirmar = confirm(
+
+ 
+
+ 
 
  
 
@@ -5738,11 +11483,23 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   if (!confirmar) return;
+
+ 
+
+ 
 
  
 
@@ -5750,11 +11507,23 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     await obtenerUbicacion();
 
  
 
+ 
+
+ 
+
   const mensaje = [
+
+ 
+
+ 
 
  
 
@@ -5762,7 +11531,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -5770,7 +11547,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     `Membresía: ${perfilActual.numeroMiembro || "No registrada"}`,
+
+ 
+
+ 
 
  
 
@@ -5778,11 +11563,23 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     `Teléfono: ${perfilActual.telefono || "No registrado"}`,
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -5790,7 +11587,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     `Marca: ${perfilActual.marca || "No registrada"}`,
+
+ 
+
+ 
 
  
 
@@ -5798,7 +11603,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     `Color: ${perfilActual.color || "No registrado"}`,
+
+ 
+
+ 
 
  
 
@@ -5806,11 +11619,23 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     `Serie: ${perfilActual.serie || "No registrada"}`,
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -5818,7 +11643,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -5826,11 +11659,23 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
   ].join("\n");
 
  
 
+ 
+
+ 
+
   const url =
+
+ 
+
+ 
 
  
 
@@ -5838,7 +11683,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     `?text=${encodeURIComponent(mensaje)}`;
+
+ 
+
+ 
 
  
 
@@ -5846,7 +11699,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     url,
+
+ 
+
+ 
 
  
 
@@ -5854,7 +11715,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
     "noopener,noreferrer"
+
+ 
+
+ 
 
  
 
@@ -5862,11 +11731,23 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -5874,7 +11755,15 @@ async function activarAlerta(tipo) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -5882,7 +11771,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
   const mensaje = [
+
+ 
+
+ 
 
  
 
@@ -5890,7 +11787,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
     "",
+
+ 
+
+ 
 
  
 
@@ -5898,7 +11803,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
     `Teléfono: ${perfilActual.telefono || ""}`,
+
+ 
+
+ 
 
  
 
@@ -5906,7 +11819,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
       perfilActual.tieneMembresia
+
+ 
+
+ 
 
  
 
@@ -5914,7 +11835,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
             perfilActual.numeroMiembro ||
+
+ 
+
+ 
 
  
 
@@ -5922,7 +11851,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
           )
+
+ 
+
+ 
 
  
 
@@ -5930,7 +11867,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
     }`
+
+ 
+
+ 
 
  
 
@@ -5938,7 +11883,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
   const url =
+
+ 
+
+ 
 
  
 
@@ -5946,7 +11899,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
     `?text=${encodeURIComponent(mensaje)}`;
+
+ 
+
+ 
 
  
 
@@ -5954,7 +11915,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
     url,
+
+ 
+
+ 
 
  
 
@@ -5962,7 +11931,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
     "noopener,noreferrer"
+
+ 
+
+ 
 
  
 
@@ -5970,11 +11947,23 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -5982,7 +11971,15 @@ function hablarAsesor() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -5990,7 +11987,15 @@ function verDetalle(folio) {
 
  
 
+ 
+
+ 
+
   mostrarModal(
+
+ 
+
+ 
 
  
 
@@ -5998,7 +12003,15 @@ function verDetalle(folio) {
 
  
 
+ 
+
+ 
+
     `Servicio ${folio}`,
+
+ 
+
+ 
 
  
 
@@ -6006,11 +12019,23 @@ function verDetalle(folio) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6018,11 +12043,23 @@ function verMembresia() {
 
  
 
+ 
+
+ 
+
   cambiarSeccion("beneficios");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6030,7 +12067,15 @@ function agregarVehiculo() {
 
  
 
+ 
+
+ 
+
   const overlay = document.getElementById("vehicleModalOverlay");
+
+ 
+
+ 
 
  
 
@@ -6038,7 +12083,15 @@ function agregarVehiculo() {
 
  
 
+ 
+
+ 
+
   const error = document.getElementById("vehicleFormError");
+
+ 
+
+ 
 
  
 
@@ -6046,7 +12099,15 @@ function agregarVehiculo() {
 
  
 
+ 
+
+ 
+
   if (error) error.textContent = "";
+
+ 
+
+ 
 
  
 
@@ -6054,7 +12115,15 @@ function agregarVehiculo() {
 
  
 
+ 
+
+ 
+
   if (principal) principal.checked = vehiculosUsuario.length === 0;
+
+ 
+
+ 
 
  
 
@@ -6062,7 +12131,15 @@ function agregarVehiculo() {
 
  
 
+ 
+
+ 
+
   overlay?.setAttribute("aria-hidden", "false");
+
+ 
+
+ 
 
  
 
@@ -6070,7 +12147,15 @@ function agregarVehiculo() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6078,7 +12163,15 @@ function cerrarModalVehiculo(event = null) {
 
  
 
+ 
+
+ 
+
   if (event && event.target.id !== "vehicleModalOverlay") return;
+
+ 
+
+ 
 
  
 
@@ -6086,7 +12179,15 @@ function cerrarModalVehiculo(event = null) {
 
  
 
+ 
+
+ 
+
   overlay?.classList.remove("active");
+
+ 
+
+ 
 
  
 
@@ -6094,11 +12195,23 @@ function cerrarModalVehiculo(event = null) {
 
  
 
+ 
+
+ 
+
   document.body.style.overflow = "";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6106,7 +12219,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
   const lista = document.getElementById("vehiclesList");
+
+ 
+
+ 
 
  
 
@@ -6114,7 +12235,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
   lista.innerHTML = `
+
+ 
+
+ 
 
  
 
@@ -6122,7 +12251,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       <span>🚙</span>
+
+ 
+
+ 
 
  
 
@@ -6130,7 +12267,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     </div>
+
+ 
+
+ 
 
  
 
@@ -6138,7 +12283,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -6146,7 +12299,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       db,
+
+ 
+
+ 
 
  
 
@@ -6154,7 +12315,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       usuarioActual.uid,
+
+ 
+
+ 
 
  
 
@@ -6162,7 +12331,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6170,7 +12347,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     if (resultado.empty && (perfilActual.marca || perfilActual.placas || perfilActual.serie)) {
+
+ 
+
+ 
 
  
 
@@ -6178,7 +12363,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         db,
+
+ 
+
+ 
 
  
 
@@ -6186,7 +12379,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         usuarioActual.uid,
+
+ 
+
+ 
 
  
 
@@ -6194,7 +12395,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         "vehiculo-principal"
+
+ 
+
+ 
 
  
 
@@ -6202,7 +12411,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       await firestoreSetDoc(referenciaInicial, {
+
+ 
+
+ 
 
  
 
@@ -6210,7 +12427,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         subMarca: perfilActual.subMarca || "",
+
+ 
+
+ 
 
  
 
@@ -6218,7 +12443,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         placas: String(perfilActual.placas || "").toUpperCase(),
+
+ 
+
+ 
 
  
 
@@ -6226,7 +12459,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         principal: true,
+
+ 
+
+ 
 
  
 
@@ -6234,7 +12475,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         estadoMembresiaVehiculo:
+
+ 
+
+ 
 
  
 
@@ -6242,11 +12491,23 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
             ? "activo"
 
  
 
+ 
+
+ 
+
             : "sin_membresia",
+
+ 
+
+ 
 
  
 
@@ -6254,7 +12515,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         creadoEn: firestoreServerTimestamp()
+
+ 
+
+ 
 
  
 
@@ -6262,11 +12531,23 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       resultado = await firestoreGetDocs(referenciaVehiculos);
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6274,7 +12555,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       id: documento.id,
+
+ 
+
+ 
 
  
 
@@ -6282,7 +12571,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     }));
+
+ 
+
+ 
 
  
 
@@ -6290,7 +12587,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       await establecerVehiculoPrincipal(vehiculosUsuario[0].id, false);
+
+ 
+
+ 
 
  
 
@@ -6298,7 +12603,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6306,11 +12619,23 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     renderizarVehiculos();
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -6318,7 +12643,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
     vehiculosUsuario = [];
+
+ 
+
+ 
 
  
 
@@ -6326,7 +12659,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       <div class="vehiclesEmptyState">
+
+ 
+
+ 
 
  
 
@@ -6334,7 +12675,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
         <b>No fue posible cargar los vehículos</b>
+
+ 
+
+ 
 
  
 
@@ -6342,7 +12691,15 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
       </div>
+
+ 
+
+ 
 
  
 
@@ -6350,11 +12707,23 @@ async function cargarVehiculos() {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6362,11 +12731,23 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
   const lista = document.getElementById("vehiclesList");
 
  
 
+ 
+
+ 
+
   if (!lista) return;
+
+ 
+
+ 
 
  
 
@@ -6374,7 +12755,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
     lista.innerHTML = `
+
+ 
+
+ 
 
  
 
@@ -6382,7 +12771,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
         <span>🚙</span>
+
+ 
+
+ 
 
  
 
@@ -6390,7 +12787,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
         <p>Presiona “Agregar vehículo” para registrar el primero.</p>
+
+ 
+
+ 
 
  
 
@@ -6398,7 +12803,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
     `;
+
+ 
+
+ 
 
  
 
@@ -6406,7 +12819,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6414,7 +12835,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
     const nombre = [vehiculo.marca, vehiculo.subMarca].filter(Boolean).join(" ") || "Vehículo";
+
+ 
+
+ 
 
  
 
@@ -6422,7 +12851,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
       (vehiculo.membresiaAplicada === true ? "activo" : "sin_membresia");
+
+ 
+
+ 
 
  
 
@@ -6430,7 +12867,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
       estadoVehiculo === "activo"
+
+ 
+
+ 
 
  
 
@@ -6438,7 +12883,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
         : estadoVehiculo === "pendiente_autorizacion"
+
+ 
+
+ 
 
  
 
@@ -6446,11 +12899,23 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
           : "⚠ Sin beneficios de membresía";
 
  
 
+ 
+
+ 
+
     return `
+
+ 
+
+ 
 
  
 
@@ -6458,7 +12923,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
         <div class="savedVehicleIcon">🚙</div>
+
+ 
+
+ 
 
  
 
@@ -6466,7 +12939,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
           <h3>${escaparHtml(nombre)}</h3>
+
+ 
+
+ 
 
  
 
@@ -6474,7 +12955,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
           <p>Color: ${escaparHtml(vehiculo.color || "Sin registrar")}</p>
+
+ 
+
+ 
 
  
 
@@ -6482,11 +12971,23 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
           <small class="vehicleMembershipStatus">${textoMembresiaVehiculo}</small>
 
  
 
+ 
+
+ 
+
         </div>
+
+ 
+
+ 
 
  
 
@@ -6494,7 +12995,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
           ${vehiculo.principal
+
+ 
+
+ 
 
  
 
@@ -6502,7 +13011,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
             : `<button type="button" onclick="establecerVehiculoPrincipal('${escaparAtributo(vehiculo.id)}')">Usar como principal</button>`}
+
+ 
+
+ 
 
  
 
@@ -6510,7 +13027,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
         </div>
+
+ 
+
+ 
 
  
 
@@ -6518,7 +13043,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
     `;
+
+ 
+
+ 
 
  
 
@@ -6526,7 +13059,15 @@ function renderizarVehiculos() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6534,7 +13075,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   event?.preventDefault();
+
+ 
+
+ 
 
  
 
@@ -6542,7 +13091,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   const boton = document.getElementById("guardarVehiculoButton");
+
+ 
+
+ 
 
  
 
@@ -6550,7 +13107,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   const marca = document.getElementById("nuevoVehiculoMarca")?.value.trim() || "";
+
+ 
+
+ 
 
  
 
@@ -6558,7 +13123,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   const color = document.getElementById("nuevoVehiculoColor")?.value.trim() || "";
+
+ 
+
+ 
 
  
 
@@ -6566,7 +13139,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   const serie = document.getElementById("nuevoVehiculoSerie")?.value.trim().toUpperCase() || "";
+
+ 
+
+ 
 
  
 
@@ -6574,7 +13155,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   const coberturaSeleccionada =
+
+ 
+
+ 
 
  
 
@@ -6582,7 +13171,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     "sin_membresia";
+
+ 
+
+ 
 
  
 
@@ -6590,7 +13187,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   if (!marca || !subMarca || !color || !placas || !serie) {
+
+ 
+
+ 
 
  
 
@@ -6598,11 +13203,23 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6610,7 +13227,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     if (error) {
+
+ 
+
+ 
 
  
 
@@ -6618,7 +13243,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6626,7 +13259,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6634,7 +13275,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     if (error) error.textContent = "Ya tienes un vehículo registrado con esas placas.";
+
+ 
+
+ 
 
  
 
@@ -6642,7 +13291,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6650,7 +13307,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     boton.disabled = true;
+
+ 
+
+ 
 
  
 
@@ -6658,7 +13323,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6666,7 +13339,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -6674,7 +13355,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     if (debeSerPrincipal) {
+
+ 
+
+ 
 
  
 
@@ -6682,7 +13371,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         firestoreUpdateDoc(
+
+ 
+
+ 
 
  
 
@@ -6690,11 +13387,23 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
           { principal: false }
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -6702,7 +13411,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6710,7 +13427,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
       firestoreCollection(db, "usuarios", usuarioActual.uid, "vehiculos"),
+
+ 
+
+ 
 
  
 
@@ -6718,7 +13443,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         marca,
+
+ 
+
+ 
 
  
 
@@ -6726,7 +13459,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         color,
+
+ 
+
+ 
 
  
 
@@ -6734,7 +13475,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         serie,
+
+ 
+
+ 
 
  
 
@@ -6742,7 +13491,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         membresiaAplicada: false,
+
+ 
+
+ 
 
  
 
@@ -6750,7 +13507,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
           solicitaAutorizacion
+
+ 
+
+ 
 
  
 
@@ -6758,7 +13523,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
             : "sin_membresia",
+
+ 
+
+ 
 
  
 
@@ -6766,11 +13539,23 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         numeroMembresiaSolicitada:
 
  
 
+ 
+
+ 
+
           solicitaAutorizacion
+
+ 
+
+ 
 
  
 
@@ -6778,7 +13563,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
             : "",
+
+ 
+
+ 
 
  
 
@@ -6786,7 +13579,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
           solicitaAutorizacion
+
+ 
+
+ 
 
  
 
@@ -6794,7 +13595,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
             : null,
+
+ 
+
+ 
 
  
 
@@ -6802,11 +13611,23 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
       }
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6814,7 +13635,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
       await actualizarVehiculoPrincipalUsuario({
+
+ 
+
+ 
 
  
 
@@ -6822,7 +13651,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         marca,
+
+ 
+
+ 
 
  
 
@@ -6830,7 +13667,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         color,
+
+ 
+
+ 
 
  
 
@@ -6838,7 +13683,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
         serie,
+
+ 
+
+ 
 
  
 
@@ -6846,11 +13699,23 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
       });
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6858,7 +13723,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     await cargarVehiculos();
+
+ 
+
+ 
 
  
 
@@ -6866,7 +13739,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     console.error("Error al guardar el vehículo:", errorGuardar);
+
+ 
+
+ 
 
  
 
@@ -6874,7 +13755,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
   } finally {
+
+ 
+
+ 
 
  
 
@@ -6882,7 +13771,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
       boton.disabled = false;
+
+ 
+
+ 
 
  
 
@@ -6890,7 +13787,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6898,7 +13803,15 @@ async function guardarNuevoVehiculo(event) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6906,11 +13819,23 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
   if (!usuarioActual || !idVehiculo) return;
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -6918,7 +13843,15 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
       firestoreUpdateDoc(
+
+ 
+
+ 
 
  
 
@@ -6926,11 +13859,23 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
         { principal: item.id === idVehiculo }
 
  
 
+ 
+
+ 
+
       )
+
+ 
+
+ 
 
  
 
@@ -6938,7 +13883,15 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
     const seleccionado = vehiculosUsuario.find(item => item.id === idVehiculo);
+
+ 
+
+ 
 
  
 
@@ -6946,11 +13899,23 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
       await actualizarVehiculoPrincipalUsuario({ ...seleccionado, principal: true });
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6958,7 +13923,15 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -6966,7 +13939,15 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
     mostrarModal("⚠", "No fue posible actualizar", "Inténtalo nuevamente en unos momentos.");
+
+ 
+
+ 
 
  
 
@@ -6974,7 +13955,15 @@ async function establecerVehiculoPrincipal(idVehiculo, recargar = true) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6982,7 +13971,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
   if (!usuarioActual || !vehiculo) return;
+
+ 
+
+ 
 
  
 
@@ -6990,7 +13987,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
     marca: vehiculo.marca || "",
+
+ 
+
+ 
 
  
 
@@ -6998,7 +14003,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
     color: vehiculo.color || "",
+
+ 
+
+ 
 
  
 
@@ -7006,7 +14019,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
     serie: vehiculo.serie || "",
+
+ 
+
+ 
 
  
 
@@ -7014,7 +14035,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
       id: vehiculo.id || "",
+
+ 
+
+ 
 
  
 
@@ -7022,7 +14051,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
       subMarca: vehiculo.subMarca || "",
+
+ 
+
+ 
 
  
 
@@ -7030,7 +14067,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
       placas: vehiculo.placas || "",
+
+ 
+
+ 
 
  
 
@@ -7038,7 +14083,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
       membresiaAplicada: vehiculo.membresiaAplicada === true,
+
+ 
+
+ 
 
  
 
@@ -7046,7 +14099,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
         vehiculo.estadoMembresiaVehiculo ||
+
+ 
+
+ 
 
  
 
@@ -7054,11 +14115,23 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
       requiereAutorizacion: vehiculo.requiereAutorizacion === true
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -7066,7 +14139,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -7074,7 +14155,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
     firestoreDoc(db, "usuarios", usuarioActual.uid),
+
+ 
+
+ 
 
  
 
@@ -7082,11 +14171,23 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
     { merge: true }
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -7094,7 +14195,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
   actualizarVehiculoPantalla(perfilActual);
+
+ 
+
+ 
 
  
 
@@ -7102,7 +14211,15 @@ async function actualizarVehiculoPrincipalUsuario(vehiculo) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7110,7 +14227,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
   if (!usuarioActual || !idVehiculo || !firestoreDeleteDoc) return;
+
+ 
+
+ 
 
  
 
@@ -7118,7 +14243,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
   if (!vehiculo) return;
+
+ 
+
+ 
 
  
 
@@ -7126,7 +14259,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -7134,11 +14275,23 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
       firestoreDoc(db, "usuarios", usuarioActual.uid, "vehiculos", idVehiculo)
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -7146,7 +14299,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
     if (vehiculo.principal && vehiculosUsuario.length) {
+
+ 
+
+ 
 
  
 
@@ -7154,7 +14315,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
     } else if (vehiculo.principal) {
+
+ 
+
+ 
 
  
 
@@ -7162,7 +14331,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
         id: "", marca: "", subMarca: "", color: "", placas: "", serie: ""
+
+ 
+
+ 
 
  
 
@@ -7170,7 +14347,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -7178,7 +14363,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -7186,7 +14379,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
     mostrarModal("⚠", "No fue posible eliminar", "Inténtalo nuevamente en unos momentos.");
+
+ 
+
+ 
 
  
 
@@ -7194,7 +14395,15 @@ async function eliminarVehiculo(idVehiculo) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7202,7 +14411,15 @@ function mostrarTerminos() {
 
  
 
+ 
+
+ 
+
   mostrarModal(
+
+ 
+
+ 
 
  
 
@@ -7210,7 +14427,15 @@ function mostrarTerminos() {
 
  
 
+ 
+
+ 
+
     "Términos de las alertas",
+
+ 
+
+ 
 
  
 
@@ -7218,11 +14443,23 @@ function mostrarTerminos() {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7230,7 +14467,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
   if (!firestoreOnSnapshot || !uidUsuario) return;
+
+ 
+
+ 
 
  
 
@@ -7238,11 +14483,23 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
     cancelarEscuchaNotificaciones();
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7250,7 +14507,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
     firestoreCollection(db, "notificaciones"),
+
+ 
+
+ 
 
  
 
@@ -7258,7 +14523,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -7266,7 +14539,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
     consulta,
+
+ 
+
+ 
 
  
 
@@ -7274,7 +14555,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
       notificacionesActuales = resultado.docs
+
+ 
+
+ 
 
  
 
@@ -7282,11 +14571,23 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
         .sort((a, b) => obtenerFechaNotificacion(b) - obtenerFechaNotificacion(a));
 
  
 
+ 
+
+ 
+
       actualizarContadorNotificaciones();
+
+ 
+
+ 
 
  
 
@@ -7294,7 +14595,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
         renderizarNotificaciones();
+
+ 
+
+ 
 
  
 
@@ -7302,7 +14611,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -7310,7 +14627,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
       console.error("No fue posible cargar las notificaciones:", error);
+
+ 
+
+ 
 
  
 
@@ -7318,7 +14643,15 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
       actualizarContadorNotificaciones();
+
+ 
+
+ 
 
  
 
@@ -7326,11 +14659,23 @@ function iniciarEscuchaNotificaciones(uidUsuario) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7338,7 +14683,15 @@ function obtenerFechaNotificacion(notificacion) {
 
  
 
+ 
+
+ 
+
   const valor =
+
+ 
+
+ 
 
  
 
@@ -7346,7 +14699,15 @@ function obtenerFechaNotificacion(notificacion) {
 
  
 
+ 
+
+ 
+
     notificacion.creadoEn ||
+
+ 
+
+ 
 
  
 
@@ -7354,7 +14715,15 @@ function obtenerFechaNotificacion(notificacion) {
 
  
 
+ 
+
+ 
+
     "";
+
+ 
+
+ 
 
  
 
@@ -7362,11 +14731,23 @@ function obtenerFechaNotificacion(notificacion) {
 
  
 
+ 
+
+ 
+
     return valor.toDate().getTime();
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7374,11 +14755,23 @@ function obtenerFechaNotificacion(notificacion) {
 
  
 
+ 
+
+ 
+
   return Number.isNaN(fecha) ? 0 : fecha;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7386,7 +14779,15 @@ function actualizarContadorNotificaciones() {
 
  
 
+ 
+
+ 
+
   const contador = document.getElementById("notificationCounter") ||
+
+ 
+
+ 
 
  
 
@@ -7394,7 +14795,15 @@ function actualizarContadorNotificaciones() {
 
  
 
+ 
+
+ 
+
   if (!contador) return;
+
+ 
+
+ 
 
  
 
@@ -7402,7 +14811,15 @@ function actualizarContadorNotificaciones() {
 
  
 
+ 
+
+ 
+
   contador.textContent = String(noLeidas);
+
+ 
+
+ 
 
  
 
@@ -7410,7 +14827,15 @@ function actualizarContadorNotificaciones() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7418,7 +14843,15 @@ function abrirNotificaciones() {
 
  
 
+ 
+
+ 
+
   crearInterfazNotificaciones();
+
+ 
+
+ 
 
  
 
@@ -7426,7 +14859,15 @@ function abrirNotificaciones() {
 
  
 
+ 
+
+ 
+
   document.getElementById("notificacionesOverlay")?.classList.add("active");
+
+ 
+
+ 
 
  
 
@@ -7434,7 +14875,15 @@ function abrirNotificaciones() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7442,7 +14891,15 @@ function cerrarNotificaciones(event = null) {
 
  
 
+ 
+
+ 
+
   if (event && event.target.id !== "notificacionesOverlay") return;
+
+ 
+
+ 
 
  
 
@@ -7450,11 +14907,23 @@ function cerrarNotificaciones(event = null) {
 
  
 
+ 
+
+ 
+
   document.body.style.overflow = "";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7462,7 +14931,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
   if (document.getElementById("notificacionesOverlay")) return;
+
+ 
+
+ 
 
  
 
@@ -7470,7 +14947,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
   const overlay = document.createElement("div");
+
+ 
+
+ 
 
  
 
@@ -7478,7 +14963,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
   overlay.className = "asClickCustomOverlay";
+
+ 
+
+ 
 
  
 
@@ -7486,7 +14979,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
   overlay.innerHTML = `
+
+ 
+
+ 
 
  
 
@@ -7494,7 +14995,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
       <button type="button" class="asClickCustomClose" onclick="cerrarNotificaciones()" aria-label="Cerrar">✕</button>
+
+ 
+
+ 
 
  
 
@@ -7502,7 +15011,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
         <div>
+
+ 
+
+ 
 
  
 
@@ -7510,11 +15027,23 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
           <div><h2 id="notificacionesTitulo">Notificaciones</h2><p>Avisos de tu cuenta y servicios.</p></div>
 
  
 
+ 
+
+ 
+
         </div>
+
+ 
+
+ 
 
  
 
@@ -7522,7 +15051,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
       </div>
+
+ 
+
+ 
 
  
 
@@ -7530,11 +15067,23 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
     </section>
 
  
 
+ 
+
+ 
+
   `;
+
+ 
+
+ 
 
  
 
@@ -7542,7 +15091,15 @@ function crearInterfazNotificaciones() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7550,7 +15107,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
   const lista = document.getElementById("listaNotificaciones");
+
+ 
+
+ 
 
  
 
@@ -7558,7 +15123,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
   if (!notificacionesActuales.length) {
+
+ 
+
+ 
 
  
 
@@ -7566,7 +15139,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
       <div class="asClickEmptyNotifications">
+
+ 
+
+ 
 
  
 
@@ -7574,7 +15155,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
         <b>No tienes notificaciones</b>
+
+ 
+
+ 
 
  
 
@@ -7582,7 +15171,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
       </div>
+
+ 
+
+ 
 
  
 
@@ -7590,11 +15187,23 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7602,7 +15211,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
     const noLeida = item.leida !== true;
+
+ 
+
+ 
 
  
 
@@ -7610,7 +15227,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
       <article class="asClickNotificationItem ${noLeida ? "unread" : ""}">
+
+ 
+
+ 
 
  
 
@@ -7618,7 +15243,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
         <div class="asClickNotificationContent">
+
+ 
+
+ 
 
  
 
@@ -7626,7 +15259,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
           <p>${escaparHtml(item.mensaje || item.texto || "")}</p>
+
+ 
+
+ 
 
  
 
@@ -7634,7 +15275,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
         </div>
+
+ 
+
+ 
 
  
 
@@ -7642,7 +15291,15 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
       </article>
+
+ 
+
+ 
 
  
 
@@ -7650,11 +15307,23 @@ function renderizarNotificaciones() {
 
  
 
+ 
+
+ 
+
   }).join("");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7662,7 +15331,15 @@ function obtenerIconoNotificacion(tipo) {
 
  
 
+ 
+
+ 
+
   const iconos = {
+
+ 
+
+ 
 
  
 
@@ -7670,7 +15347,15 @@ function obtenerIconoNotificacion(tipo) {
 
  
 
+ 
+
+ 
+
     membresia: "⭐",
+
+ 
+
+ 
 
  
 
@@ -7678,7 +15363,15 @@ function obtenerIconoNotificacion(tipo) {
 
  
 
+ 
+
+ 
+
     promocion: "🎁",
+
+ 
+
+ 
 
  
 
@@ -7686,7 +15379,15 @@ function obtenerIconoNotificacion(tipo) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -7694,7 +15395,15 @@ function obtenerIconoNotificacion(tipo) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7702,7 +15411,15 @@ function formatearFechaNotificacion(item) {
 
  
 
+ 
+
+ 
+
   const milisegundos = obtenerFechaNotificacion(item);
+
+ 
+
+ 
 
  
 
@@ -7710,7 +15427,15 @@ function formatearFechaNotificacion(item) {
 
  
 
+ 
+
+ 
+
   return new Date(milisegundos).toLocaleDateString("es-MX", {
+
+ 
+
+ 
 
  
 
@@ -7718,7 +15443,15 @@ function formatearFechaNotificacion(item) {
 
  
 
+ 
+
+ 
+
     month: "short",
+
+ 
+
+ 
 
  
 
@@ -7726,7 +15459,15 @@ function formatearFechaNotificacion(item) {
 
  
 
+ 
+
+ 
+
     hour: "2-digit",
+
+ 
+
+ 
 
  
 
@@ -7734,11 +15475,23 @@ function formatearFechaNotificacion(item) {
 
  
 
+ 
+
+ 
+
   });
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7746,11 +15499,23 @@ async function marcarNotificacionLeida(idNotificacion) {
 
  
 
+ 
+
+ 
+
   if (!idNotificacion || !firestoreUpdateDoc) return;
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -7758,7 +15523,15 @@ async function marcarNotificacionLeida(idNotificacion) {
 
  
 
+ 
+
+ 
+
       firestoreDoc(db, "notificaciones", idNotificacion),
+
+ 
+
+ 
 
  
 
@@ -7766,11 +15539,23 @@ async function marcarNotificacionLeida(idNotificacion) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -7778,11 +15563,23 @@ async function marcarNotificacionLeida(idNotificacion) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7790,7 +15587,15 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
   const pendientes = notificacionesActuales.filter(item => item.leida !== true);
+
+ 
+
+ 
 
  
 
@@ -7798,7 +15603,15 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -7806,7 +15619,15 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
       pendientes.map(item =>
+
+ 
+
+ 
 
  
 
@@ -7814,7 +15635,15 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
           firestoreDoc(db, "notificaciones", item.id),
+
+ 
+
+ 
 
  
 
@@ -7822,7 +15651,15 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -7830,11 +15667,23 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -7842,11 +15691,23 @@ async function marcarTodasNotificacionesLeidas() {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7854,7 +15715,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
   if (document.getElementById("asClickFuncionesNuevasStyles")) return;
+
+ 
+
+ 
 
  
 
@@ -7862,7 +15731,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
   estilos.id = "asClickFuncionesNuevasStyles";
+
+ 
+
+ 
 
  
 
@@ -7870,7 +15747,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickCustomOverlay{position:fixed;inset:0;background:rgba(3,24,48,.64);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}
+
+ 
+
+ 
 
  
 
@@ -7878,7 +15763,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickCustomModal{position:relative;width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:28px;box-shadow:0 24px 80px rgba(0,0,0,.28);font-family:inherit;color:#102f52}
+
+ 
+
+ 
 
  
 
@@ -7886,7 +15779,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickCustomIcon{width:58px;height:58px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:#e9f8f0;font-size:28px}
+
+ 
+
+ 
 
  
 
@@ -7894,7 +15795,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickCustomIntro{text-align:center;color:#687d94;margin:0 0 20px}
+
+ 
+
+ 
 
  
 
@@ -7902,7 +15811,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickOption{display:flex;align-items:center;gap:12px;border:1px solid #d9e3ee;border-radius:10px;padding:14px;cursor:pointer}
+
+ 
+
+ 
 
  
 
@@ -7910,7 +15827,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickOption input{width:18px;height:18px}
+
+ 
+
+ 
 
  
 
@@ -7918,7 +15843,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickFuelNotice{margin-top:16px;padding:14px;border:1px solid #f0c56a;border-radius:10px;background:#fff8e8;color:#684b0c}
+
+ 
+
+ 
 
  
 
@@ -7926,7 +15859,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickFuelNotice label{display:flex;gap:9px;align-items:flex-start;font-size:13px;font-weight:600}
+
+ 
+
+ 
 
  
 
@@ -7934,7 +15875,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickCustomActions button{flex:1;border-radius:8px;padding:12px 14px;font-weight:700;cursor:pointer}
+
+ 
+
+ 
 
  
 
@@ -7942,7 +15891,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickSecondaryButton{border:1px solid #cad7e5;background:#fff;color:#173b63}
+
+ 
+
+ 
 
  
 
@@ -7950,7 +15907,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickNotificationHeader{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-right:30px;margin-bottom:16px}
+
+ 
+
+ 
 
  
 
@@ -7958,7 +15923,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickNotificationBell{width:44px;height:44px;border-radius:12px;background:#eef5ff;display:grid;place-items:center;font-size:22px}
+
+ 
+
+ 
 
  
 
@@ -7966,7 +15939,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickNotificationList{display:grid;gap:9px;max-height:60vh;overflow:auto}
+
+ 
+
+ 
 
  
 
@@ -7974,7 +15955,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickNotificationItem.unread{border-left:4px solid #176ddc;background:#f5f9ff}
+
+ 
+
+ 
 
  
 
@@ -7982,7 +15971,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
     .asClickEmptyNotifications{text-align:center;padding:42px 18px;color:#71849a}.asClickEmptyNotifications span{display:block;font-size:38px;margin-bottom:10px}.asClickEmptyNotifications b{display:block;color:#173b63;margin-bottom:6px}
+
+ 
+
+ 
 
  
 
@@ -7990,7 +15987,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
   `;
+
+ 
+
+ 
 
  
 
@@ -7998,7 +16003,15 @@ function agregarEstilosFuncionesNuevas() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8006,7 +16019,15 @@ function abrirMenuUsuario() {
 
  
 
+ 
+
+ 
+
   cambiarSeccion("perfil");
+
+ 
+
+ 
 
  
 
@@ -8014,7 +16035,15 @@ function abrirMenuUsuario() {
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -8022,7 +16051,15 @@ function abrirMenuUsuario() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -8030,7 +16067,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   const confirmar = confirm(
+
+ 
+
+ 
 
  
 
@@ -8038,7 +16083,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -8046,7 +16099,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -8054,11 +16115,23 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
       throw new Error("Firebase Authentication no está disponible.");
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -8066,7 +16139,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
     window.location.replace(
+
+ 
+
+ 
 
  
 
@@ -8074,7 +16155,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8082,7 +16171,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -8090,11 +16187,23 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
       error
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8102,7 +16211,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
       "No fue posible cerrar la sesión. Inténtalo nuevamente."
+
+ 
+
+ 
 
  
 
@@ -8110,7 +16227,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8118,7 +16243,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -8126,7 +16259,15 @@ async function cerrarSesion() {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -8134,7 +16275,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   icono,
+
+ 
+
+ 
 
  
 
@@ -8142,7 +16291,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   texto
+
+ 
+
+ 
 
  
 
@@ -8150,11 +16307,23 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
   const modalIcon =
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -8162,7 +16331,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8170,7 +16347,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -8178,7 +16363,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8186,7 +16379,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -8194,7 +16395,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8202,7 +16411,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     document.getElementById(
+
+ 
+
+ 
 
  
 
@@ -8210,7 +16427,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8218,11 +16443,23 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     modalIcon.textContent = icono;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8230,11 +16467,23 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     modalTitle.textContent = titulo;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8242,11 +16491,23 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
     modalText.textContent = texto;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8254,7 +16515,15 @@ function mostrarModal(
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8262,7 +16531,15 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -8270,7 +16547,15 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
     event.target.id !== "modalOverlay"
+
+ 
+
+ 
 
  
 
@@ -8278,11 +16563,23 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8290,7 +16587,15 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
     .getElementById("modalOverlay")
+
+ 
+
+ 
 
  
 
@@ -8298,11 +16603,23 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -8310,7 +16627,15 @@ function cerrarModal(event = null) {
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -8318,7 +16643,15 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
   "keydown",
+
+ 
+
+ 
 
  
 
@@ -8326,11 +16659,23 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
     if (event.key === "Escape") {
 
  
 
+ 
+
+ 
+
       cerrarMenuMovil();
+
+ 
+
+ 
 
  
 
@@ -8338,7 +16683,15 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -8346,7 +16699,15 @@ document.addEventListener(
 
  
 
+ 
+
+ 
+
 );
+
+ 
+
+ 
 
  
 
@@ -8354,7 +16715,15 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
   "resize",
+
+ 
+
+ 
 
  
 
@@ -8362,7 +16731,15 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
     if (window.innerWidth > 760) {
+
+ 
+
+ 
 
  
 
@@ -8370,7 +16747,15 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -8378,11 +16763,23 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
 );
 
  
 
+ 
+
+ 
+
 /* =========================================
+
+ 
+
+ 
 
  
 
@@ -8390,7 +16787,15 @@ window.addEventListener(
 
  
 
+ 
+
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -8398,7 +16803,15 @@ window.cambiarSeccion =
 
  
 
+ 
+
+ 
+
   cambiarSeccion;
+
+ 
+
+ 
 
  
 
@@ -8406,7 +16819,15 @@ window.abrirMenuMovil =
 
  
 
+ 
+
+ 
+
   abrirMenuMovil;
+
+ 
+
+ 
 
  
 
@@ -8414,7 +16835,15 @@ window.cerrarMenuMovil =
 
  
 
+ 
+
+ 
+
   cerrarMenuMovil;
+
+ 
+
+ 
 
  
 
@@ -8422,7 +16851,15 @@ window.solicitarServicio =
 
  
 
+ 
+
+ 
+
   solicitarServicio;
+
+ 
+
+ 
 
  
 
@@ -8430,7 +16867,15 @@ window.activarAlerta =
 
  
 
+ 
+
+ 
+
   activarAlerta;
+
+ 
+
+ 
 
  
 
@@ -8438,7 +16883,15 @@ window.hablarAsesor =
 
  
 
+ 
+
+ 
+
   hablarAsesor;
+
+ 
+
+ 
 
  
 
@@ -8446,7 +16899,15 @@ window.verDetalle =
 
  
 
+ 
+
+ 
+
   verDetalle;
+
+ 
+
+ 
 
  
 
@@ -8454,7 +16915,15 @@ window.verMembresia =
 
  
 
+ 
+
+ 
+
   verMembresia;
+
+ 
+
+ 
 
  
 
@@ -8462,7 +16931,15 @@ window.agregarVehiculo =
 
  
 
+ 
+
+ 
+
   agregarVehiculo;
+
+ 
+
+ 
 
  
 
@@ -8470,7 +16947,15 @@ window.cerrarModalVehiculo = cerrarModalVehiculo;
 
  
 
+ 
+
+ 
+
 window.guardarNuevoVehiculo = guardarNuevoVehiculo;
+
+ 
+
+ 
 
  
 
@@ -8478,7 +16963,15 @@ window.establecerVehiculoPrincipal = establecerVehiculoPrincipal;
 
  
 
+ 
+
+ 
+
 window.eliminarVehiculo = eliminarVehiculo;
+
+ 
+
+ 
 
  
 
@@ -8486,7 +16979,15 @@ window.mostrarTerminos =
 
  
 
+ 
+
+ 
+
   mostrarTerminos;
+
+ 
+
+ 
 
  
 
@@ -8494,7 +16995,15 @@ window.abrirNotificaciones =
 
  
 
+ 
+
+ 
+
   abrirNotificaciones;
+
+ 
+
+ 
 
  
 
@@ -8502,7 +17011,15 @@ window.abrirMenuUsuario =
 
  
 
+ 
+
+ 
+
   abrirMenuUsuario;
+
+ 
+
+ 
 
  
 
@@ -8510,7 +17027,15 @@ window.cerrarSesion =
 
  
 
+ 
+
+ 
+
   cerrarSesion;
+
+ 
+
+ 
 
  
 
@@ -8518,7 +17043,15 @@ window.cerrarModal =
 
  
 
+ 
+
+ 
+
   cerrarModal;
+
+ 
+
+ 
 
  
 
@@ -8526,7 +17059,15 @@ window.filtrarHistorial =
 
  
 
+ 
+
+ 
+
   filtrarHistorial;
+
+ 
+
+ 
 
  
 
@@ -8534,7 +17075,15 @@ window.abrirAuxilioVial = abrirAuxilioVial;
 
  
 
+ 
+
+ 
+
 window.seleccionarTipoAuxilioVial = seleccionarTipoAuxilioVial;
+
+ 
+
+ 
 
  
 
@@ -8542,7 +17091,15 @@ window.confirmarAuxilioVial = confirmarAuxilioVial;
 
  
 
+ 
+
+ 
+
 window.cerrarAuxilioVial = cerrarAuxilioVial;
+
+ 
+
+ 
 
  
 
@@ -8550,7 +17107,15 @@ window.cerrarNotificaciones = cerrarNotificaciones;
 
  
 
+ 
+
+ 
+
 window.marcarNotificacionLeida = marcarNotificacionLeida;
+
+ 
+
+ 
 
  
 
@@ -8558,16 +17123,31 @@ window.marcarTodasNotificacionesLeidas = marcarTodasNotificacionesLeidas;
 
  
 
+ 
+
+ 
+
 window.mostrarModal = mostrarModal;
 
  
 
+ 
+
+ 
+
 window.abrirCotizacionGrua = abrirCotizacionGrua;
+
 window.cerrarCotizacionGrua = cerrarCotizacionGrua;
+
 window.actualizarFormularioGrua = actualizarFormularioGrua;
+
 window.enviarSolicitudCotizacionGrua = enviarSolicitudCotizacionGrua;
+
 window.abrirCotizacionesGruaExistentes = abrirCotizacionesGruaExistentes;
+
 window.autorizarCotizacionGrua = autorizarCotizacionGrua;
+
+ 
 
 iniciarFirebase();
 
@@ -8575,11 +17155,25 @@ iniciarFirebase();
 
  
 
+ 
+
+ 
+
+ 
+
 /* =========================================
+
+ 
 
    COBERTURA DE MEMBRESÍA DEL VEHÍCULO
 
+ 
+
 ========================================= */
+
+ 
+
+ 
 
  
 
@@ -8587,7 +17181,15 @@ document.addEventListener("change", event => {
 
  
 
+ 
+
+ 
+
   if (event.target?.name !== "nuevoVehiculoCobertura") return;
+
+ 
+
+ 
 
  
 
@@ -8595,7 +17197,15 @@ document.addEventListener("change", event => {
 
  
 
+ 
+
+ 
+
   const avisoSinMembresia = document.getElementById("vehicleNoMembershipNotice");
+
+ 
+
+ 
 
  
 
@@ -8603,11 +17213,23 @@ document.addEventListener("change", event => {
 
  
 
+ 
+
+ 
+
   if (avisoSinMembresia) avisoSinMembresia.hidden = !sinMembresia;
 
  
 
+ 
+
+ 
+
   if (avisoAutorizacion) avisoAutorizacion.hidden = sinMembresia;
+
+ 
+
+ 
 
  
 
