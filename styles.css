@@ -7817,3 +7817,25 @@ th {
 }
 
  
+
+
+/* =========================================
+   COTIZACIÓN DE GRÚA
+========================================= */
+.gruaCotizacionPanel{width:min(760px,100%)}
+.gruaCotizacionForm,.gruaCotizacionesVista{padding:20px 22px 24px}
+.gruaEyebrow{display:block;color:#6541c7;font-weight:800;letter-spacing:.08em;margin-bottom:4px}
+.gruaIntro{padding:13px 14px;margin-bottom:16px;border:1px solid #dcd5f5;border-radius:10px;background:#f8f6ff;color:#536980;line-height:1.5;font-size:13px}
+.gruaFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gruaFormGrid label{display:flex;flex-direction:column;gap:6px;color:#536980;font-size:13px}
+.gruaFormGrid .fullWidth{grid-column:1/-1}
+.gruaFormGrid input,.gruaFormGrid select,.gruaFormGrid textarea{width:100%;border:1px solid #cbd7e5;border-radius:8px;padding:12px;font:inherit;background:#fff;color:#182438}
+.gruaFormGrid textarea{resize:vertical}
+.gruaFormError{min-height:20px;color:#c82431;margin:10px 0 0;font-size:13px}
+.gruaWaitingBox{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid #d8e5f5;border-radius:12px;background:#f5f9ff;color:#536980;margin-bottom:14px}
+.gruaWaitingBox b{display:block;color:#092b52;margin-bottom:4px}.gruaWaitingBox p{margin:0;font-size:13px;line-height:1.4}.gruaWaitingIcon{font-size:28px}
+.gruaCotizacionesLista{display:grid;gap:12px}
+.gruaQuoteCard{border:1px solid #dce5f0;border-radius:12px;padding:15px;background:#fff;box-shadow:0 4px 14px rgba(5,43,92,.05)}
+.gruaQuoteTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.gruaQuoteTop b{color:#092b52}.gruaQuotePrice{font-size:20px;font-weight:900;color:#087a3e}.gruaQuoteMeta{display:flex;gap:10px;flex-wrap:wrap;margin:9px 0;color:#62758c;font-size:12px}.gruaQuoteCard p{margin:8px 0;color:#536980;line-height:1.45;font-size:13px}.gruaQuoteCard button{width:100%;border:0;border-radius:8px;padding:11px 14px;background:#6541c7;color:#fff;font-weight:800;cursor:pointer}.gruaQuotesActions{margin-top:16px}
+.detailButton.quoteButton{margin-left:6px;background:#6541c7;color:#fff;border-color:#6541c7}
+@media(max-width:700px){.gruaFormGrid{grid-template-columns:1fr}.gruaFormGrid .fullWidth{grid-column:auto}.gruaCotizacionForm,.gruaCotizacionesVista{padding:16px}.gruaQuoteTop{flex-direction:column}}
