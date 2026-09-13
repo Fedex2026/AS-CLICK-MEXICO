@@ -1986,9 +1986,7 @@ async function enviarSolicitudCotizacionGrua(event) {
 
   try {
 
-    const costoCliente = obtenerCostoServicioCliente(servicio);
-
-  const ubicacion = await obtenerUbicacion();
+    const ubicacion = await obtenerUbicacion();
 
     const resultado = await guardarSolicitudCotizacionGrua({
 
