@@ -2358,6 +2358,8 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
       : "Tarifa de público general";
 
+  const costoCliente = obtenerCostoServicioCliente(servicio);
+
   const ubicacion = await obtenerUbicacion();
 
   const folio = await guardarSolicitudServicio(
