@@ -36,6 +36,9 @@
 
     @media(max-width:700px){.vehiclesPage{padding:18px}.savedVehicleCard{grid-template-columns:60px 1fr}.savedVehicleActions{grid-column:1/-1;align-items:stretch}.vehicleFormGrid{grid-template-columns:1fr}.vehicleForm .fullWidth{grid-column:auto}}
 
+    /* AUTOCOMPLETADO GPS - SOLO DESTINO DE GRÚA */
+    .gruaDestinoSugerencia{display:block;width:100%;border:0;border-bottom:1px solid #edf1f6;background:#fff;padding:11px 12px;text-align:left;color:#243b53;font:inherit;line-height:1.35;cursor:pointer}.gruaDestinoSugerencia:last-child{border-bottom:0}.gruaDestinoSugerencia:hover,.gruaDestinoSugerencia:focus{background:#f5f9ff;outline:none}
+
     /* SELECTOR DE AUXILIO VIAL */
 
     .auxilioOptions {
@@ -2702,7 +2705,13 @@
 
               <span>Destino</span>
 
-              <input id="gruaDestino" type="text" maxlength="220" required placeholder="Dirección, taller, corralón o destino final">
+              <div id="gruaDestinoAutocomplete" style="position:relative;">
+                <div style="display:flex;gap:8px;align-items:stretch;">
+                  <input id="gruaDestino" type="text" maxlength="220" required placeholder="Escribe dirección, taller, corralón o destino final" autocomplete="off" style="flex:1;min-width:0;">
+                  <button id="gruaDestinoGpsBtn" type="button" title="Usar mi ubicación actual como destino" style="border:1px solid #cbd7e5;background:#fff;border-radius:8px;padding:0 12px;cursor:pointer;font-size:18px;">📍</button>
+                </div>
+                <div id="gruaDestinoSugerencias" hidden style="position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:5000;background:#fff;border:1px solid #cbd7e5;border-radius:10px;box-shadow:0 12px 28px rgba(5,43,92,.16);overflow:hidden;"></div>
+              </div>
 
             </label>
 
