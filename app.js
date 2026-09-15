@@ -4993,37 +4993,64 @@ async function solicitarServicio(servicio, detalleServicio = "") {
  
 
   const url =
-
- 
-
     `https://wa.me/${TELEFONO_CABINA}` +
-
- 
-
     `?text=${encodeURIComponent(mensaje)}`;
 
- 
+  const esIOS =
+    /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-  const esIPhoneIPad = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if (esIPhoneIPad) {
-
+  if (esIOS) {
     /*
-     * iPhone/iPad: el servicio ya quedó guardado en Firebase.
-     * Abrimos WhatsApp directamente en la misma navegación para evitar
-     * el bloqueo de Safari. No usa about:blank.
+     * iPhone/iPad:
+     * El servicio ya quedó guardado en Firebase antes de llegar aquí.
+     * Abrimos la app de WhatsApp con su esquema nativo para NO mandar
+     * al cliente a WhatsApp Web y conservar AS CLICK en segundo plano.
+     * Cuando el cliente regresa de WhatsApp, AS CLICK abre seguimiento.
      */
-    window.location.assign(url);
-    return;
+    const urlWhatsAppIOS =
+      `whatsapp://send?phone=${TELEFONO_CABINA}` +
+      `&text=${encodeURIComponent(mensaje)}`;
 
+    if (folio) {
+      let salioAWhatsApp = false;
+      let redireccionRealizada = false;
+
+      const abrirSeguimiento = () => {
+        if (redireccionRealizada) return;
+        redireccionRealizada = true;
+        document.removeEventListener("visibilitychange", detectarRegresoWhatsApp);
+        window.location.href =
+          `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
+      };
+
+      const detectarRegresoWhatsApp = () => {
+        if (document.hidden) {
+          salioAWhatsApp = true;
+          return;
+        }
+
+        if (salioAWhatsApp) {
+          abrirSeguimiento();
+        }
+      };
+
+      document.addEventListener("visibilitychange", detectarRegresoWhatsApp);
+
+      // Respaldo: si iOS no dispara visibilitychange al regresar,
+      // el temporizador continúa cuando Safari/PWA vuelve al frente.
+      setTimeout(abrirSeguimiento, 2500);
+    }
+
+    window.location.href = urlWhatsAppIOS;
+    return;
   }
 
   window.open(url, "_blank", "noopener,noreferrer");
 
   if (folio) {
-
-    window.location.href = `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
-
+    window.location.href =
+      `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
   }
 
  
