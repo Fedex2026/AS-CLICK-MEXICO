@@ -4874,79 +4874,155 @@ async function autorizarCotizacionGrua(solicitudId, proveedorUid) {
 
 async function solicitarServicio(servicio, detalleServicio = "") {
 
+ 
+
   if (!usuarioActual) {
+
+ 
+
     mostrarModal(
+
+ 
+
       "⚠",
+
+ 
+
       "Sesión no disponible",
+
+ 
+
       "Inicia sesión nuevamente para solicitar el servicio."
+
+ 
+
     );
+
+ 
+
     return;
+
+ 
+
   }
 
-  /*
-   * CORRECCIÓN IPHONE / SAFARI:
-   * La pestaña de WhatsApp se abre inmediatamente con el toque del usuario,
-   * antes de obtener ubicación o guardar en Firebase. Así Safari no la
-   * interpreta como una ventana emergente tardía y no la bloquea.
-   */
-  const ventanaWhatsApp = window.open("about:blank", "_blank");
+ 
 
   const tipoTarifa =
+
+ 
+
     perfilActual.tieneMembresia &&
+
+ 
+
     perfilActual.estadoMembresia === "activa"
+
+ 
+
       ? "Tarifa preferencial de miembro"
+
+ 
+
       : "Tarifa de público general";
+
+ 
 
   const costoCliente = obtenerCostoServicioCliente(servicio);
 
-  try {
-    const ubicacion = await obtenerUbicacion();
+ 
 
-    const folio = await guardarSolicitudServicio(
-      servicio,
-      tipoTarifa,
-      ubicacion,
-      detalleServicio,
-      costoCliente
-    );
+  const ubicacion = await obtenerUbicacion();
 
-    const mensaje = construirMensajeServicio(
-      servicio,
-      tipoTarifa,
-      ubicacion,
-      detalleServicio,
-      costoCliente
-    );
+ 
 
-    const url =
-      `https://wa.me/${TELEFONO_CABINA}` +
-      `?text=${encodeURIComponent(mensaje)}`;
+  const folio = await guardarSolicitudServicio(
 
-    if (ventanaWhatsApp && !ventanaWhatsApp.closed) {
-      ventanaWhatsApp.location.href = url;
-    } else {
-      window.location.href = url;
-      return;
-    }
+ 
 
-    if (folio) {
-      window.location.href =
-        `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
-    }
-  } catch (error) {
-    if (ventanaWhatsApp && !ventanaWhatsApp.closed) {
-      ventanaWhatsApp.close();
-    }
+    servicio,
 
-    console.error("Error solicitando servicio:", error);
+ 
 
-    mostrarModal(
-      "⚠",
-      "No fue posible solicitar el servicio",
-      error?.message || "Inténtalo nuevamente."
-    );
+    tipoTarifa,
+
+ 
+
+    ubicacion,
+
+ 
+
+    detalleServicio,
+
+ 
+
+    costoCliente
+
+ 
+
+  );
+
+ 
+
+  const mensaje = construirMensajeServicio(
+
+ 
+
+    servicio,
+
+ 
+
+    tipoTarifa,
+
+ 
+
+    ubicacion,
+
+ 
+
+    detalleServicio,
+
+ 
+
+    costoCliente
+
+ 
+
+  );
+
+ 
+
+  const url =
+
+ 
+
+    `https://wa.me/${TELEFONO_CABINA}` +
+
+ 
+
+    `?text=${encodeURIComponent(mensaje)}`;
+
+ 
+
+  window.open(url, "_blank", "noopener,noreferrer");
+
+ 
+
+  if (folio) {
+
+ 
+
+    window.location.href = `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
+
+ 
+
   }
+
+ 
+
 }
+
+ 
 
 function abrirAuxilioVial() {
 
