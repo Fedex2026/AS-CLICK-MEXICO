@@ -5004,17 +5004,25 @@ async function solicitarServicio(servicio, detalleServicio = "") {
 
  
 
-  window.open(url, "_blank", "noopener,noreferrer");
+  const esIPhoneIPad = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
- 
+  if (esIPhoneIPad) {
+
+    /*
+     * iPhone/iPad: el servicio ya quedó guardado en Firebase.
+     * Abrimos WhatsApp directamente en la misma navegación para evitar
+     * el bloqueo de Safari. No usa about:blank.
+     */
+    window.location.assign(url);
+    return;
+
+  }
+
+  window.open(url, "_blank", "noopener,noreferrer");
 
   if (folio) {
 
- 
-
     window.location.href = `./servicio-seguimiento.html?folio=${encodeURIComponent(folio)}`;
-
- 
 
   }
 
