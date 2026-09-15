@@ -336,6 +336,11 @@ let ubicacionGruaActual = "";
 
 let ubicacionGruaObteniendo = false;
 
+// Solo para Destino de Grúa: dirección seleccionada y coordenadas GPS.
+let destinoGruaSeleccionado = { direccion: "", latitud: null, longitud: null };
+let temporizadorAutocompleteDestinoGrua = null;
+let controladorAutocompleteDestinoGrua = null;
+
  
 
 async function iniciarFirebase() {
@@ -3717,13 +3722,159 @@ function prepararUbicacionActualGrua() {
   const destino = document.getElementById("gruaDestino");
 
   if (destino) {
-
     destino.placeholder = "Escribe nombre del lugar o dirección";
-
-    destino.setAttribute("autocomplete", "street-address");
-
+    destino.setAttribute("autocomplete", "off");
+    configurarAutocompleteDestinoGrua();
   }
 
+}
+
+function configurarAutocompleteDestinoGrua() {
+  const input = document.getElementById("gruaDestino");
+  const lista = document.getElementById("gruaDestinoSugerencias");
+  const botonGps = document.getElementById("gruaDestinoGpsBtn");
+  if (!input || !lista) return;
+  if (input.dataset.autocompleteGpsListo === "1") return;
+
+  input.dataset.autocompleteGpsListo = "1";
+
+  input.addEventListener("input", () => {
+    destinoGruaSeleccionado = { direccion: "", latitud: null, longitud: null };
+    clearTimeout(temporizadorAutocompleteDestinoGrua);
+
+    const texto = input.value.trim();
+    if (texto.length < 3) {
+      lista.innerHTML = "";
+      lista.hidden = true;
+      return;
+    }
+
+    temporizadorAutocompleteDestinoGrua = setTimeout(() => {
+      buscarSugerenciasDestinoGrua(texto);
+    }, 350);
+  });
+
+  input.addEventListener("focus", () => {
+    if (lista.children.length) lista.hidden = false;
+  });
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest("#gruaDestinoAutocomplete")) lista.hidden = true;
+  });
+
+  botonGps?.addEventListener("click", usarGpsComoDestinoGrua);
+}
+
+async function buscarSugerenciasDestinoGrua(texto) {
+  const lista = document.getElementById("gruaDestinoSugerencias");
+  if (!lista) return;
+
+  if (controladorAutocompleteDestinoGrua) controladorAutocompleteDestinoGrua.abort();
+  controladorAutocompleteDestinoGrua = new AbortController();
+
+  try {
+    let vista = "";
+    const matchOrigen = String(ubicacionGruaActual || "").match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i);
+
+    if (matchOrigen) {
+      const lat = Number(matchOrigen[1]);
+      const lon = Number(matchOrigen[2]);
+      if (Number.isFinite(lat) && Number.isFinite(lon)) {
+        vista = `&viewbox=${lon - 0.7},${lat + 0.7},${lon + 0.7},${lat - 0.7}&bounded=0`;
+      }
+    }
+
+    const endpoint =
+      `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=mx&q=${encodeURIComponent(texto)}` +
+      vista;
+
+    const respuesta = await fetch(endpoint, {
+      signal: controladorAutocompleteDestinoGrua.signal,
+      headers: { "Accept": "application/json" }
+    });
+
+    if (!respuesta.ok) throw new Error("No fue posible consultar direcciones.");
+
+    const resultados = await respuesta.json();
+    lista.innerHTML = "";
+
+    resultados.forEach(resultado => {
+      const direccion = String(resultado.display_name || "").trim();
+      const latitud = Number(resultado.lat);
+      const longitud = Number(resultado.lon);
+      if (!direccion || !Number.isFinite(latitud) || !Number.isFinite(longitud)) return;
+
+      const opcion = document.createElement("button");
+      opcion.type = "button";
+      opcion.className = "gruaDestinoSugerencia";
+      opcion.textContent = direccion;
+      opcion.addEventListener("click", () => seleccionarDestinoGrua(direccion, latitud, longitud));
+      lista.appendChild(opcion);
+    });
+
+    lista.hidden = lista.children.length === 0;
+  } catch (error) {
+    if (error?.name === "AbortError") return;
+    console.warn("No fue posible autocompletar el destino de grúa:", error);
+    lista.innerHTML = "";
+    lista.hidden = true;
+  }
+}
+
+function seleccionarDestinoGrua(direccion, latitud, longitud) {
+  const input = document.getElementById("gruaDestino");
+  const lista = document.getElementById("gruaDestinoSugerencias");
+
+  destinoGruaSeleccionado = {
+    direccion: String(direccion || "").trim(),
+    latitud: Number(latitud),
+    longitud: Number(longitud)
+  };
+
+  if (input) input.value = destinoGruaSeleccionado.direccion;
+  if (lista) {
+    lista.innerHTML = "";
+    lista.hidden = true;
+  }
+}
+
+async function usarGpsComoDestinoGrua() {
+  const boton = document.getElementById("gruaDestinoGpsBtn");
+  const errorBox = document.getElementById("gruaFormError");
+  if (boton) boton.disabled = true;
+  if (errorBox) errorBox.textContent = "";
+
+  try {
+    if (!navigator.geolocation) throw new Error("GPS no disponible.");
+
+    const posicion = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 15000
+      });
+    });
+
+    const latitud = posicion.coords.latitude;
+    const longitud = posicion.coords.longitude;
+    let direccion = `${latitud.toFixed(6)}, ${longitud.toFixed(6)}`;
+
+    try {
+      const endpoint =
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(latitud)}&lon=${encodeURIComponent(longitud)}`;
+      const respuesta = await fetch(endpoint, { headers: { "Accept": "application/json" } });
+      if (respuesta.ok) {
+        const datos = await respuesta.json();
+        if (datos?.display_name) direccion = datos.display_name;
+      }
+    } catch (_) {}
+
+    seleccionarDestinoGrua(direccion, latitud, longitud);
+  } catch (error) {
+    if (errorBox) errorBox.textContent = "No fue posible usar el GPS como destino. Revisa el permiso de ubicación.";
+  } finally {
+    if (boton) boton.disabled = false;
+  }
 }
 
  
@@ -3833,6 +3984,13 @@ function abrirCotizacionGrua() {
  
 
   form.reset();
+
+  destinoGruaSeleccionado = { direccion: "", latitud: null, longitud: null };
+  const listaDestinoGrua = document.getElementById("gruaDestinoSugerencias");
+  if (listaDestinoGrua) {
+    listaDestinoGrua.innerHTML = "";
+    listaDestinoGrua.hidden = true;
+  }
 
   ubicacionGruaActual = "";
 
@@ -4142,7 +4300,9 @@ async function enviarSolicitudCotizacionGrua(event) {
 
  
 
-      tipoCarga, pesoCarga, destino, comentarios, ubicacion
+      tipoCarga, pesoCarga, destino, comentarios, ubicacion,
+      destinoLatitud: Number.isFinite(destinoGruaSeleccionado.latitud) ? destinoGruaSeleccionado.latitud : null,
+      destinoLongitud: Number.isFinite(destinoGruaSeleccionado.longitud) ? destinoGruaSeleccionado.longitud : null
 
  
 
@@ -4278,25 +4438,25 @@ async function guardarSolicitudCotizacionGrua(datosGrua) {
 
  
 
-  const destinoMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(datosGrua.destino)}`;
+  const destinoTieneGps =
+    Number.isFinite(datosGrua.destinoLatitud) &&
+    Number.isFinite(datosGrua.destinoLongitud);
 
- 
+  const destinoMapsUrl = destinoTieneGps
+    ? `https://maps.google.com/?q=${datosGrua.destinoLatitud},${datosGrua.destinoLongitud}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(datosGrua.destino)}`;
 
   const destinoDatos = {
 
- 
-
     direccion: datosGrua.destino,
-
- 
 
     nombre: datosGrua.destino,
 
- 
+    latitud: destinoTieneGps ? datosGrua.destinoLatitud : null,
+
+    longitud: destinoTieneGps ? datosGrua.destinoLongitud : null,
 
     enlaceGoogleMaps: destinoMapsUrl
-
- 
 
   };
 
